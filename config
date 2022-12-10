@@ -1,0 +1,12 @@
+[user]
+  name = breezybuildsagame
+  email = breezy@megabreezy.com
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = true
+	ignorecase = true
+	precomposeunicode = true
+[remote "origin"]
+	url = git@github.com-breezybuildsagame:breezybuildsagame/breezybuilds-wordle.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
