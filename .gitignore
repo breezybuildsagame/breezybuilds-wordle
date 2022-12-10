@@ -9,6 +9,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+*/xcuserdata/*
 
 #ignore cache data
 shared/build/kotlin/*
