@@ -10,6 +10,7 @@
 .cxx
 local.properties
 */xcuserdata/*
+**/xcuserdata/*
 
 #ignore cache data
 shared/build/kotlin/*
