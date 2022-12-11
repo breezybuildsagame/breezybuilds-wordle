@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId = "ly.tithe.breezybuilds_wordle.android"
         minSdk = 24
-        targetSdk = Versions.androidCompileSdk
+        targetSdk = Version.androidCompileSdk
         versionCode = 1
         versionName = "1.0"
     }
@@ -17,7 +17,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.composeCompilerVersion
+        kotlinCompilerExtensionVersion = Version.composeCompilerVersion
     }
     packagingOptions {
         resources {
