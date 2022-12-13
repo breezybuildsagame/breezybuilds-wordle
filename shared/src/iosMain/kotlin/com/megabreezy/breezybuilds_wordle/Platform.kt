@@ -1,4 +1,4 @@
-package ly.tithe.breezybuilds_wordle
+package com.megabreezy.breezybuilds_wordle
 
 import platform.UIKit.UIDevice
 

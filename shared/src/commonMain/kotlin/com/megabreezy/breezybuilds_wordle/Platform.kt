@@ -1,4 +1,4 @@
-package ly.tithe.breezybuilds_wordle
+package com.megabreezy.breezybuilds_wordle
 
 interface Platform {
     val name: String

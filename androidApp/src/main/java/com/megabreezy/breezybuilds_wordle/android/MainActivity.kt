@@ -1,4 +1,4 @@
-package ly.tithe.breezybuilds_wordle.android
+package com.megabreezy.breezybuilds_wordle.android
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -16,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ly.tithe.breezybuilds_wordle.Greeting
+import com.megabreezy.breezybuilds_wordle.Greeting
 
 @Composable
 fun MyApplicationTheme(

@@ -1,5 +1,15 @@
 object Dependency
 {
+    // Dependency injection
+    object Koin
+    {
+        const val android = "io.insert-koin:koin-android:${Version.koinVersion}"
+        const val common = "io.insert-koin:koin-core:${Version.koinVersion}"
+        const val test = "io.insert-koin:koin-test:${Version.koinVersion}"
+        const val testJunit = "io.insert-koin:koin-test-junit4:${Version.koinVersion}"
+        //const val ktor = "io.insert-koin:koin-ktor:$koin_version:${Constant.koinVersion}"
+    }
+
     // Centralized resources
     object MokoResources
     {

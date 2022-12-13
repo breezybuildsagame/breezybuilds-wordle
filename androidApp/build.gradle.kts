@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "ly.tithe.breezybuilds_wordle.android"
-    compileSdk = 32
+    namespace = "com.megabreezy.breezybuilds_wordle.android"
+    compileSdk = Version.androidCompileSdk
     defaultConfig {
-        applicationId = "ly.tithe.breezybuilds_wordle.android"
-        minSdk = 24
+        applicationId = "com.megabreezy.breezybuilds_wordle.android"
+        minSdk = Version.androidMinCompileSdk
         targetSdk = Version.androidCompileSdk
         versionCode = 1
         versionName = "1.0"

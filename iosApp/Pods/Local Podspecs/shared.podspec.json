@@ -1,13 +1,13 @@
 {
   "name": "shared",
   "version": "1.0",
-  "homepage": "Link to the Shared Module homepage",
+  "homepage": "https://github.com/breezybuildsagame/breezybuilds-wordle",
   "source": {
     "http": ""
   },
   "authors": "",
   "license": "",
-  "summary": "Some description for the Shared Module",
+  "summary": "Shared module for BreezyBuilds-Wordle",
   "vendored_frameworks": "build/cocoapods/framework/shared.framework",
   "libraries": "c++",
   "platforms": {

@@ -12,8 +12,8 @@ kotlin {
     iosSimulatorArm64()
 
     cocoapods {
-        summary = "Some description for the Shared Module"
-        homepage = "Link to the Shared Module homepage"
+        summary = "Shared module for BreezyBuilds-Wordle"
+        homepage = "https://github.com/breezybuildsagame/breezybuilds-wordle"
         version = "1.0"
         ios.deploymentTarget = "14.1"
         podfile = project.file("../iosApp/Podfile")
@@ -25,12 +25,14 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation(Dependency.Koin.common)
                 implementation(Dependency.MokoResources.common)
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation(Dependency.Koin.test)
                 implementation(Dependency.MokoResources.commonTest)
             }
         }
@@ -39,7 +41,12 @@ kotlin {
                 implementation(Dependency.MokoResources.android)
             }
         }
-        val androidTest by getting
+        val androidTest by getting {
+            dependencies {
+                implementation(Dependency.Koin.test)
+                implementation(Dependency.Koin.testJunit)
+            }
+        }
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -82,7 +89,7 @@ android {
     }
 
     defaultConfig {
-        minSdk = 24
+        minSdk = Version.androidMinCompileSdk
         targetSdk = Version.androidCompileSdk
     }
 }

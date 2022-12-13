@@ -1,4 +1,4 @@
-package ly.tithe.breezybuilds_wordle
+package com.megabreezy.breezybuilds_wordle
 
 class AndroidPlatform : Platform {
     override val name: String = "Android ${android.os.Build.VERSION.SDK_INT}"
