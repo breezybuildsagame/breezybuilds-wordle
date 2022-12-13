@@ -7,6 +7,6 @@ class CoreKoinModule
 {
     fun module(): Module = module()
     {
-        
+
     }
 }
