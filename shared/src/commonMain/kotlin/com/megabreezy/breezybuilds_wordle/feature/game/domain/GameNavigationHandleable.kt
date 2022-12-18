@@ -1,6 +1,6 @@
 package com.megabreezy.breezybuilds_wordle.feature.game.domain
 
-interface GameNavigationHandler
+interface GameNavigationHandleable
 {
     fun onHelpOptionClicked()
     fun onStatsOptionClicked()
