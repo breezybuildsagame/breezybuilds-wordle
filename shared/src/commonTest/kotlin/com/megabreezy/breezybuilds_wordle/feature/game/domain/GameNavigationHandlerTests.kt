@@ -3,7 +3,7 @@ package com.megabreezy.breezybuilds_wordle.feature.game.domain
 import com.megabreezy.breezybuilds_wordle.core.navigation.AppNavigationHandleable
 import com.megabreezy.breezybuilds_wordle.core.navigation.AppRoute
 import com.megabreezy.breezybuilds_wordle.core.navigation.NavigationDirection
-import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
+import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
@@ -24,7 +24,7 @@ class GameNavigationHandlerTests
         startKoin()
         {
             modules(
-                CoreKoinModule().module(),
+                GameKoinModule().module(),
                 module { single<AppNavigationHandleable> { appNavigator } }
             )
         }
