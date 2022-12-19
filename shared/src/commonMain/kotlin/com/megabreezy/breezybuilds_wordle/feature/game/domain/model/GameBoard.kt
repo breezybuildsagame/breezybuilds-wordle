@@ -11,7 +11,7 @@ class GameBoard(private val rows: List<List<Tile>> = listOf())
     {
         fun letter() = this.letter
 
-        fun state(): State = State.CORRECT
+        fun state(): State = this.state
 
         enum class State { HIDDEN, CLOSE, INCORRECT, CORRECT }
     }
