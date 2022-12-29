@@ -7,4 +7,4 @@ interface GameAnswerGateway
     fun get(): GameAnswer
 }
 
-class GameAnswerNotFoundRepositoryException(message: String): Exception(message)
+class GameAnswerNotFoundRepositoryException(message: String? = null): Exception(message)
