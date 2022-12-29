@@ -4,6 +4,6 @@ import org.koin.core.component.KoinComponent
 
 class GameUseCase: KoinComponent
 {
-    class GetGameAnswerFailedException(message: String): Exception(message)
-    class GuessWordFailedException(message: String): Exception(message)
+    class GetGameAnswerFailedException(message: String? = null): Exception(message)
+    class GuessWordFailedException(message: String? = null): Exception(message)
 }
