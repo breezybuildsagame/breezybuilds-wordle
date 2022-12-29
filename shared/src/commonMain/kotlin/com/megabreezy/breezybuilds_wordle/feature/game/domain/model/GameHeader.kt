@@ -14,6 +14,11 @@ class GameHeader(
         private var onClick: () -> Unit = { }
     )
     {
+        override fun equals(other: Any?): Boolean = other is Option
+            && this.iconResourceId() == other.iconResourceId()
+
+        override fun hashCode(): Int = iconResourceId?.hashCode() ?: (1..1000).random()
+
         fun click() = onClick()
 
         fun iconResourceId(): String? = this.iconResourceId
