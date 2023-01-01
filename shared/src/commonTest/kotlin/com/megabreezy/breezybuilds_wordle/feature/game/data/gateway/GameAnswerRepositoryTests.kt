@@ -37,26 +37,26 @@ class GameAnswerRepositoryTests
     fun tearDown() = stopKoin()
 
     @Test
-    fun `when get method is invoked - local data manageable get method is invoked`()
+    fun `when create method is invoked - local data manageable get method is invoked`()
     {
         // given
         val sut = GameAnswerRepository()
 
         // when
-        sut.get()
+        sut.create()
 
         // then
         assertNotNull(dataSource.wordToReturn)
     }
 
     @Test
-    fun `when local data manageable returns a word - expected GameAnswer is returned`()
+    fun `when creating answer and local data manageable returns a word - expected GameAnswer is returned`()
     {
         // given
         val sut = GameAnswerRepository()
 
         // when
-        val actualWord = sut.get()
+        val actualWord = sut.create()
         val expectedWord = GameAnswer(word = dataSource.wordToReturn!!.word())
 
         // then
@@ -64,7 +64,7 @@ class GameAnswerRepositoryTests
     }
 
     @Test
-    fun `when local data manageable throws an exception - expected exception is thrown`()
+    fun `when creating answer and local data manageable throws an exception - expected exception is thrown`()
     {
         // given
         val expectedExceptionMessage = "Not found."
@@ -74,7 +74,7 @@ class GameAnswerRepositoryTests
         // when
         val actualException = assertFailsWith<GameAnswerNotFoundRepositoryException>
         {
-            sut.get()
+            sut.create()
         }
 
         // then

@@ -12,7 +12,7 @@ class GameAnswerRepository: GameAnswerGateway, KoinComponent
 {
     private val localDataSource: WordLocalDataManageable by inject()
 
-    override fun get(): GameAnswer
+    override fun create(): GameAnswer
     {
         try
         {
@@ -23,5 +23,10 @@ class GameAnswerRepository: GameAnswerGateway, KoinComponent
         {
             throw GameAnswerNotFoundRepositoryException(message = e.message)
         }
+    }
+
+    override fun get(): GameAnswer
+    {
+        TODO("whoops")
     }
 }

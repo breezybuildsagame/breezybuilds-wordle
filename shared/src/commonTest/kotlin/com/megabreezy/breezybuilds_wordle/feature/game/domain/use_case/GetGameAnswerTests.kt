@@ -75,7 +75,17 @@ class GetGameAnswerTests
     class MockRepository: GameAnswerGateway
     {
         var gameAnswerToReturn: GameAnswer? = null
+        var createShouldFail = false
         var getShouldFail = false
+
+        override fun create(): GameAnswer
+        {
+            if (createShouldFail) throw GameAnswerNotFoundRepositoryException("Not found.")
+
+            gameAnswerToReturn = GameAnswer(word = "AWESOME")
+
+            return gameAnswerToReturn!!
+        }
 
         override fun get(): GameAnswer
         {
