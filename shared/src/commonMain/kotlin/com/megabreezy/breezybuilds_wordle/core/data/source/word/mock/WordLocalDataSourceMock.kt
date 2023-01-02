@@ -11,7 +11,7 @@ class WordLocalDataSourceMock(
     private val getErrorMessage: String = "Failed to get Word."
 ): WordLocalDataManageable
 {
-    override fun get(): Word
+    override fun get(excludingWords: List<Word>): Word
     {
         wordToReturn?.let { return it }
 

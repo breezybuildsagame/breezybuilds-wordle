@@ -3,6 +3,7 @@ package com.megabreezy.breezybuilds_wordle.feature.game.data.gateway
 import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerLocalDataManageable
 import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerNotFoundLocalDataException
 import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerPutFailedLocalDataException
+import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerUpdateFailedLocalDataException
 import com.megabreezy.breezybuilds_wordle.core.data.source.word.WordLocalDataManageable
 import com.megabreezy.breezybuilds_wordle.core.data.source.word.WordNotFoundLocalDataException
 import com.megabreezy.breezybuilds_wordle.core.data.source.word.mock.WordLocalDataSourceMock
@@ -44,7 +45,7 @@ class GameAnswerRepositoryTests
     fun tearDown() = stopKoin()
 
     @Test
-    fun `when create method is invoked - word local data source get method is invoked`()
+    fun `when create method is invoked - answer local data source get method is invoked`()
     {
         // given
         val sut = GameAnswerRepository()
@@ -53,7 +54,73 @@ class GameAnswerRepositoryTests
         sut.create()
 
         // then
+        assertNotNull(answerDataSource.getCurrentAnswerToReturn)
+    }
+
+    @Test
+    fun `when create method is invoked - word local data source get method is invoked - passing in expected parameter`()
+    {
+        // given
+        val sut = GameAnswerRepository()
+        val previousAnswers = listOf(
+            Answer(word = Word(word = "MOCKS")),
+            Answer(word = Word(word = "SOCKS")),
+            Answer(word = Word(word = "ROCKS"))
+        )
+        answerDataSource.getPreviousAnswersToReturn = previousAnswers
+
+        // when
+        sut.create()
+        val expectedExcludingWords = listOf(
+            Word(word = "MOCKS"),
+            Word(word = "SOCKS"),
+            Word(word = "ROCKS"),
+            answerDataSource.getCurrentAnswerToReturn!!.word()
+        )
+        val actualExcludingWordsParameter = wordDataSource.excludingWords
+
+        // then
         assertNotNull(wordDataSource.wordToReturn)
+        assertEquals(expectedExcludingWords, actualExcludingWordsParameter)
+    }
+
+    @Test
+    fun `when create method is invoked and answer data source returns a current answer - answer local data source update method is invoked - passing in expected updated answer`()
+    {
+        // given
+        val sut = GameAnswerRepository()
+
+        // when
+        sut.create()
+        val expectedUpdatedAnswer = Answer(word = answerDataSource.getCurrentAnswerToReturn!!.word(), isCurrent = false)
+
+        // then
+        assertEquals(expectedUpdatedAnswer, answerDataSource.updatedAnswerToReturn)
+    }
+
+    @Test
+    fun `when create method is invoked and answer local data source throws an exception - word local data source get method is invoked- passing in expected parameter`()
+    {
+        // given
+        val sut = GameAnswerRepository()
+        val previousAnswers = listOf(
+            Answer(word = Word(word = "MOCKS")),
+            Answer(word = Word(word = "SOCKS"))
+        )
+        answerDataSource.getCurrentAnswerShouldFail = true
+        answerDataSource.getPreviousAnswersToReturn = previousAnswers
+
+        // when
+        sut.create()
+        val expectedExcludingWords = listOf(
+            Word(word = "MOCKS"),
+            Word(word = "SOCKS"),
+        )
+        val actualExcludingWordsParameter = wordDataSource.excludingWords
+
+        // then
+        assertNotNull(wordDataSource.wordToReturn)
+        assertEquals(expectedExcludingWords, actualExcludingWordsParameter)
     }
 
     @Test
@@ -126,7 +193,7 @@ class GameAnswerRepositoryTests
 
         // when
         sut.get()
-        val actualGameAnswer = GameAnswer(word = answerDataSource.putNewAnswerToReturn!!.word().word())
+        val actualGameAnswer = GameAnswer(word = answerDataSource.getCurrentAnswerToReturn!!.word().word())
 
         // then
         assertEquals(expectedGameAnswer, actualGameAnswer)
@@ -151,14 +218,16 @@ class GameAnswerRepositoryTests
 
     class MockWordLocalDataSource: WordLocalDataManageable
     {
+        var excludingWords: List<Word> = listOf()
         var getShouldFail = false
         var wordToReturn: Word? = null
 
-        override fun get(): Word
+        override fun get(excludingWords: List<Word>): Word
         {
             if (getShouldFail) throw WordNotFoundLocalDataException(message = "Not found.")
 
             wordToReturn = Word(WordLocalDataSourceMock.mockWords.first())
+            this.excludingWords = excludingWords
 
             return wordToReturn!!
         }
@@ -173,6 +242,9 @@ class GameAnswerRepositoryTests
 
         var putNewAnswerToReturn: Answer? = null
         var putNewAnswerShouldFail: Boolean = false
+
+        var updatedAnswerToReturn: Answer? = null
+        var updateAnswerShouldFail: Boolean = false
 
         override fun getCurrent(): Answer
         {
@@ -196,7 +268,11 @@ class GameAnswerRepositoryTests
 
         override fun update(existingAnswer: Answer): Answer
         {
-            TODO("Not yet implemented")
+            if (updateAnswerShouldFail) throw AnswerUpdateFailedLocalDataException(message = "Existing Answer not updated.")
+
+            updatedAnswerToReturn = existingAnswer
+
+            return updatedAnswerToReturn!!
         }
     }
 }
