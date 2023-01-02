@@ -4,6 +4,7 @@ import com.megabreezy.breezybuilds_wordle.feature.game.data.gateway.GameAnswerRe
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.GameNavigationHandleable
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.GameNavigationHandler
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerGateway
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
 import org.koin.core.module.Module
 
@@ -11,6 +12,8 @@ class GameKoinModule
 {
     fun module(): Module = org.koin.dsl.module()
     {
+        single { GameBoard() }
+
         single { GameKeyboard() }
 
         single<GameNavigationHandleable> { GameNavigationHandler() }
