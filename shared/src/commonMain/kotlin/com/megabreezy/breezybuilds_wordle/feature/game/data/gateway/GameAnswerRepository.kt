@@ -2,6 +2,7 @@ package com.megabreezy.breezybuilds_wordle.feature.game.data.gateway
 
 import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerLocalDataManageable
 import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerNotFoundLocalDataException
+import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerUpdateFailedLocalDataException
 import com.megabreezy.breezybuilds_wordle.core.data.source.word.WordLocalDataManageable
 import com.megabreezy.breezybuilds_wordle.core.data.source.word.WordNotFoundLocalDataException
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Answer
@@ -20,34 +21,36 @@ class GameAnswerRepository: GameAnswerGateway, KoinComponent
     override fun create(): GameAnswer
     {
         val excludedWords = mutableListOf<Word>()
+        answerLocalDataSource.getPrevious().forEach { excludedWords.add(Word(word = it.word().toString())) }
+
+        val mostRecentAnswer: Answer? = try { answerLocalDataSource.getCurrent() } catch(e: Throwable) { null }
 
         try
         {
-            val mostRecentAnswer = answerLocalDataSource.getCurrent()
-            answerLocalDataSource.getPrevious().forEach { excludedWords.add(Word(word = it.word().toString())) }
-            excludedWords.add(Word(word = mostRecentAnswer.word().toString()))
-
-            val word = wordLocalDataSource.get(excludingWords = excludedWords)
-
-            answerLocalDataSource.put(newAnswer = Answer(word = word, isCurrent = true))
-            mostRecentAnswer.setIsCurrent(newIsCurrent = false)
-            answerLocalDataSource.update(existingAnswer = mostRecentAnswer)
-
-            return GameAnswer(word = word.toString())
-        }
-        catch(e: AnswerNotFoundLocalDataException)
-        {
-            answerLocalDataSource.getPrevious().forEach { excludedWords.add(Word(word = it.word().toString())) }
+            mostRecentAnswer?.let { excludedWords.add(Word(word = it.word().toString())) }
 
             val word = wordLocalDataSource.get(excludingWords = excludedWords)
 
             answerLocalDataSource.put(newAnswer = Answer(word = word, isCurrent = true))
 
+            mostRecentAnswer?.let()
+            { previousAnswer ->
+                previousAnswer.setIsCurrent(newIsCurrent = false)
+                answerLocalDataSource.update(existingAnswer = previousAnswer)
+            }
+
             return GameAnswer(word = word.toString())
         }
-        catch(e: WordNotFoundLocalDataException)
+        catch(e: Throwable)
         {
-            throw GameAnswerNotFoundRepositoryException(message = e.message)
+            when(e)
+            {
+                is AnswerUpdateFailedLocalDataException, is WordNotFoundLocalDataException ->
+                {
+                    throw GameAnswerNotFoundRepositoryException(message = e.message)
+                }
+                else -> throw Exception("Uncaught error: ${e.message}")
+            }
         }
     }
 

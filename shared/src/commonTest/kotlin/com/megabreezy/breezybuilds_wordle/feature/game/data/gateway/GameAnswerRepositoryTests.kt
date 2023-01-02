@@ -99,6 +99,20 @@ class GameAnswerRepositoryTests
     }
 
     @Test
+    fun `when create method is invoked and answer data source throws update exception - expected exception is thrown`()
+    {
+        // given
+        val expectedExceptionMessage = "Existing Answer not updated."
+        val sut = GameAnswerRepository()
+        answerDataSource.updateAnswerShouldFail = true
+
+        // when
+        val actualException = assertFailsWith<GameAnswerNotFoundRepositoryException> { sut.create() }
+
+        assertEquals(expectedExceptionMessage, actualException.message)
+    }
+
+    @Test
     fun `when create method is invoked and answer local data source throws an exception - word local data source get method is invoked- passing in expected parameter`()
     {
         // given
