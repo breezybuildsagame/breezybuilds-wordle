@@ -1,4 +1,4 @@
-package com.megabreezy.breezybuilds_wordle.core.data.source.word.answer
+package com.megabreezy.breezybuilds_wordle.core.data.source.answer
 
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Answer
 
@@ -6,7 +6,7 @@ interface AnswerLocalDataManageable
 {
     fun getCurrent(): Answer
     fun getPrevious(): List<Answer>
-    fun save(): Answer
+    fun save(newAnswer: Answer): Answer
     fun update(existingAnswer: Answer): Answer
 }
 
