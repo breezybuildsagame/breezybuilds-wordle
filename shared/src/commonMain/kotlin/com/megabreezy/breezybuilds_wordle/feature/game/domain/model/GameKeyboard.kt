@@ -2,7 +2,7 @@ package com.megabreezy.breezybuilds_wordle.feature.game.domain.model
 
 class GameKeyboard
 {
-    fun rows(): List<List<Key>> = listOf(
+    private val rows: List<List<Key>> = listOf(
         listOf(
             Key(letter = 'q'), Key(letter = 'w'), Key(letter = 'e'), Key(letter = 'r'), Key(letter = 't'),
             Key(letter = 'y'), Key(letter = 'u'), Key(letter = 'i'), Key(letter = 'o'), Key(letter = 'p')
@@ -18,6 +18,8 @@ class GameKeyboard
             Key(letter = 'n'), Key(letter = 'm'), Key(letters = "BACKSPACE", resourceId = "game_image_backspace")
         )
     )
+
+    fun rows(): List<List<Key>> = this.rows
 
     data class Key(
         private var backgroundColor: BackgroundColor = BackgroundColor.DEFAULT,
