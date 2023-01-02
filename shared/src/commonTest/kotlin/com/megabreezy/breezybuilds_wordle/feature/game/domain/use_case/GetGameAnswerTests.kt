@@ -22,7 +22,7 @@ class GetGameAnswerTests
         startKoin()
         {
             modules(
-                CoreKoinModule().module(),
+                CoreKoinModule().mockModule(),
                 GameKoinModule().module(),
                 module { single<GameAnswerGateway> { repository } }
             )

@@ -2,7 +2,7 @@ package com.megabreezy.breezybuilds_wordle.core.data.source.answer.mock
 
 import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerLocalDataManageable
 import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerNotFoundLocalDataException
-import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerSaveFailedLocalDataException
+import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerPutFailedLocalDataException
 import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerUpdateFailedLocalDataException
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Answer
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Word
@@ -26,9 +26,9 @@ class AnswerLocalDataSourceMock(
 
     override fun getPrevious(): List<Answer> = previousAnswersToReturn
 
-    override fun save(newAnswer: Answer): Answer
+    override fun put(newAnswer: Answer): Answer
     {
-        saveErrorMessage?.let { throw AnswerSaveFailedLocalDataException(message = it) }
+        saveErrorMessage?.let { throw AnswerPutFailedLocalDataException(message = it) }
 
         return newAnswer
     }

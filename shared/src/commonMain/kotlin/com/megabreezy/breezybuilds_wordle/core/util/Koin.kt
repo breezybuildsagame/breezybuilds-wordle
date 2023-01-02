@@ -14,7 +14,7 @@ fun initKoin(
 {
     appDeclaration()
 
-    modules(CoreKoinModule().module())
+    modules(CoreKoinModule().mockModule())
 
     KoinPlatformManager.setApp(newApp = this)
 }

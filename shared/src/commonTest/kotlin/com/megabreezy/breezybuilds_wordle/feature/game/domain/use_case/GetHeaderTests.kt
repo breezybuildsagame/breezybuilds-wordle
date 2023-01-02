@@ -21,7 +21,7 @@ class GetHeaderTests
         startKoin()
         {
             modules(
-                CoreKoinModule().module(),
+                CoreKoinModule().mockModule(),
                 GameKoinModule().module(),
                 module { single<GameNavigationHandleable> { navigator } }
             )
