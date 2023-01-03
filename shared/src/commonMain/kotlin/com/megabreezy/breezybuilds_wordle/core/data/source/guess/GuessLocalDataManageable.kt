@@ -5,7 +5,7 @@ import com.megabreezy.breezybuilds_wordle.core.domain.model.Guess
 interface GuessLocalDataManageable
 {
     fun getAll(): List<Guess>
-    fun save(): Guess
+    fun save(newGuess: String): Guess
     fun clear()
 }
 
