@@ -6,6 +6,7 @@ interface GameGuessGateway
 {
     fun create(): GameGuess
     fun getAll(): List<GameGuess>
+    fun clear()
 }
 
-class GameGuessCreateFailedRepositoryException(message: String): Exception(message)
+class GameGuessCreateFailedRepositoryException(message: String?): Exception(message)

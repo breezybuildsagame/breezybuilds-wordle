@@ -2,9 +2,15 @@ package com.megabreezy.breezybuilds_wordle.feature.game.domain.model
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class GameBoardTests
 {
+    val mockRows = listOf(
+        listOf(GameBoard.Tile(letter = 't'), GameBoard.Tile(letter = 'e'), GameBoard.Tile(letter = 's'), GameBoard.Tile(letter = 't')),
+        listOf(GameBoard.Tile(letter = 't')),
+    )
+
     @Test
     fun `when Tile is initialized with letter - letter method returns expected char value`()
     {
@@ -63,10 +69,7 @@ class GameBoardTests
     fun `when initialized with list of Tile entities - rows method returns expected list`()
     {
         // given
-        val expectedRows = listOf(
-            listOf(GameBoard.Tile(letter = 't'), GameBoard.Tile(letter = 'e'), GameBoard.Tile(letter = 's'), GameBoard.Tile(letter = 't')),
-            listOf(GameBoard.Tile(letter = 't')),
-        )
+        val expectedRows = mockRows
 
         // when
         val sut = GameBoard(rows = expectedRows)
@@ -90,5 +93,67 @@ class GameBoardTests
 
         // then
         assertEquals(expectedRows, sut.rows())
+    }
+
+    @Test
+    fun `when activeRow method invoked on new instance - first row is returned`()
+    {
+        // given
+        val expectedActiveRow = mockRows.first()
+        val sut = GameBoard(rows = mockRows)
+
+        // when
+        val actualActiveRow = sut.activeRow()
+
+        // then
+        assertEquals(expectedActiveRow, actualActiveRow)
+    }
+
+    @Test
+    fun `when activeRow method invoked on instance that has had rows added later - first row is returned`()
+    {
+        // given
+        val expectedActiveRow = mockRows.first()
+        val sut = GameBoard()
+        sut.setRows(newRows = mockRows)
+
+        // when
+        val actualActiveRow = sut.activeRow()
+
+        // then
+        assertEquals(expectedActiveRow, actualActiveRow)
+    }
+
+    @Test
+    fun `when setNewActiveRow invoked on fresh instance - second row is returned`()
+    {
+        // given
+        val expectedActiveRow = mockRows.last()
+        val sut = GameBoard(rows = mockRows)
+
+        // when
+        sut.setNewActiveRow()
+        val actualActiveRow = sut.activeRow()
+
+        // then
+        assertEquals(expectedActiveRow, actualActiveRow)
+    }
+
+    @Test
+    fun `when setNewActiveRow invoked on instance with last row as active row - expected exception is thrown`()
+    {
+        // given
+        val expectedExceptionMessage = "No more rows left to activate."
+        val sut = GameBoard(rows = mockRows)
+        sut.setNewActiveRow()
+
+        // when
+        val actualException = assertFailsWith<GameBoard.SetNewActiveRowFailedException>()
+        {
+            sut.setNewActiveRow()
+        }
+
+        // then
+        assertEquals(expectedExceptionMessage, actualException.message)
     }
 }
