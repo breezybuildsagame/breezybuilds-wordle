@@ -2,8 +2,10 @@ package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
 import com.megabreezy.breezybuilds_wordle.core.util.Scenario
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.Announcement
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
+import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneHandleable
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -13,9 +15,16 @@ import kotlin.test.*
 
 class SetUpGameEventsTests: KoinComponent
 {
+    private lateinit var sceneHandler: MockSceneHandler
+
+    private val gameBoard: GameBoard by inject()
+    private val keyboard: GameKeyboard by inject()
+
     @BeforeTest
     fun setUp()
     {
+        sceneHandler = MockSceneHandler()
+
         startKoin()
         {
             modules(
@@ -73,40 +82,56 @@ class SetUpGameEventsTests: KoinComponent
     fun `when use case is invoked - Announcement message method returns null value`()
     {
         // given
+        val announcement: Announcement by inject()
+        announcement.setMessage(newMessage = "My Urgent Message!")
 
         // when
+        GameUseCase().setUpGameEvents()
 
         // then
+        assertNull(announcement.message())
     }
 
     @Test
     fun `when use case is invoked and letter Key is clicked - GameBoard Tile is updated to expected letter`()
     {
         // given
+        val expectedLetter = 'B'
 
         // when
+        GameUseCase().setUpGameEvents()
+        for (row in keyboard.rows()) { for (key in row) { if (key.letter() == expectedLetter) key.click() } }
 
         // then
+        assertEquals(expectedLetter, gameBoard.rows().first().first().letter())
     }
 
     @Test
     fun `when use case is invoked and letter Key is clicked - handler onRevealNextTile method is invoked`()
     {
-        // given
-
         // when
+        GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
+        for (row in keyboard.rows()) { for (key in row) { if (key.letter() == 'Z') key.click() } }
 
         // then
+        assertTrue(sceneHandler.onRevealNextTileDidInvoke)
     }
 
     @Test
     fun `when use case is invoked and letter Key is clicked and GameBoard activeRow is unchanged - handler onRevealNextTile method is not invoked`()
     {
         // given
+        GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
+        val cRow = keyboard.rows().firstOrNull { it.firstOrNull { key -> key.letter() == 'C' } != null }
+        val cKey = cRow?.first { it.letter() == 'C' }
+        for (row in gameBoard.rows()) { for (tile in row) { cKey?.click() } }
+        sceneHandler.onRevealNextTileDidInvoke = false
 
         // when
+        cKey?.click()
 
         // then
+        assertFalse(sceneHandler.onRevealNextTileDidInvoke)
     }
 
     @Test
@@ -115,6 +140,7 @@ class SetUpGameEventsTests: KoinComponent
         // given
 
         // when
+        GameUseCase().setUpGameEvents()
 
         // then
     }
@@ -125,6 +151,7 @@ class SetUpGameEventsTests: KoinComponent
         // given
 
         // when
+        GameUseCase().setUpGameEvents()
 
         // then
     }
@@ -135,6 +162,7 @@ class SetUpGameEventsTests: KoinComponent
         // given
 
         // when
+        GameUseCase().setUpGameEvents()
 
         // then
     }
@@ -145,6 +173,7 @@ class SetUpGameEventsTests: KoinComponent
         // given
 
         // when
+        GameUseCase().setUpGameEvents()
 
         // then
     }
@@ -155,6 +184,7 @@ class SetUpGameEventsTests: KoinComponent
         // given
 
         // when
+        GameUseCase().setUpGameEvents()
 
         // then
     }
@@ -165,6 +195,7 @@ class SetUpGameEventsTests: KoinComponent
         // given
 
         // when
+        GameUseCase().setUpGameEvents()
 
         // then
     }
@@ -175,6 +206,7 @@ class SetUpGameEventsTests: KoinComponent
         // given
 
         // when
+        GameUseCase().setUpGameEvents()
 
         // then
     }
@@ -185,6 +217,7 @@ class SetUpGameEventsTests: KoinComponent
         // given
 
         // when
+        GameUseCase().setUpGameEvents()
 
         // then
     }
@@ -195,6 +228,7 @@ class SetUpGameEventsTests: KoinComponent
         // given
 
         // when
+        GameUseCase().setUpGameEvents()
 
         // then
     }
@@ -205,6 +239,7 @@ class SetUpGameEventsTests: KoinComponent
         // given
 
         // when
+        GameUseCase().setUpGameEvents()
 
         // then
     }
@@ -215,6 +250,7 @@ class SetUpGameEventsTests: KoinComponent
         // given
 
         // when
+        GameUseCase().setUpGameEvents()
 
         // then
     }
@@ -225,6 +261,7 @@ class SetUpGameEventsTests: KoinComponent
         // given
 
         // when
+        GameUseCase().setUpGameEvents()
 
         // then
     }
@@ -235,7 +272,25 @@ class SetUpGameEventsTests: KoinComponent
         // given
 
         // when
+        GameUseCase().setUpGameEvents()
 
         // then
+    }
+
+    class MockSceneHandler: GameSceneHandleable
+    {
+        var onGameOverDidInvoke = false
+        var onGameStartedDidInvoke = false
+        var onGuessingWordDidInvoke = false
+        var onRevealNextTileDidInvoke = false
+        var onRoundCompletedDidInvoke = false
+        var onStartingGameDidInvoke = false
+
+        override fun onGameOver() { onGameOverDidInvoke = true }
+        override fun onGameStarted() { onGameStartedDidInvoke = true }
+        override fun onGuessingWord() { onGuessingWordDidInvoke = true }
+        override fun onRevealNextTile() { onRevealNextTileDidInvoke = true }
+        override fun onRoundCompleted() { onRoundCompletedDidInvoke = true }
+        override fun onStartingGame() { onStartingGameDidInvoke = true }
     }
 }
