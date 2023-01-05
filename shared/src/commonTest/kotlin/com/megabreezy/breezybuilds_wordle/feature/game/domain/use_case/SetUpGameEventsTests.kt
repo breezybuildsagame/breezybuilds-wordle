@@ -1,16 +1,15 @@
 package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
+import com.megabreezy.breezybuilds_wordle.core.util.Scenario
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
+import kotlin.test.*
 
 class SetUpGameEventsTests: KoinComponent
 {
@@ -20,7 +19,7 @@ class SetUpGameEventsTests: KoinComponent
         startKoin()
         {
             modules(
-                CoreKoinModule().mockModule(),
+                CoreKoinModule(scenarios = listOf(Scenario.WORD_FOUND, Scenario.ANSWER_SAVED)).mockModule(),
                 GameKoinModule().module()
             )
         }
@@ -47,10 +46,27 @@ class SetUpGameEventsTests: KoinComponent
     fun `when use case is invoked - GameBoard reset method is invoked`()
     {
         // given
+        val gameBoard = GameUseCase().getGameBoard()
+        for (tile in gameBoard.rows().first())
+        {
+            tile.setLetter(newLetter = 'T')
+            tile.setState(newState = GameBoard.Tile.State.INCORRECT)
+        }
+        gameBoard.setNewActiveRow()
 
         // when
+        GameUseCase().setUpGameEvents()
 
         // then
+        for (row in gameBoard.rows())
+        {
+            for (tile in row)
+            {
+                assertEquals(GameBoard.Tile.State.HIDDEN, tile.state())
+                assertNull(tile.letter())
+            }
+        }
+        assertEquals(gameBoard.rows().first(), gameBoard.activeRow())
     }
 
     @Test

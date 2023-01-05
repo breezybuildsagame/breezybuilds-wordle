@@ -6,6 +6,19 @@ class GameBoard(private var rows: List<List<Tile>> = listOf())
 
     fun activeRow(): List<Tile>? = activeRow?.let { rows[it] }
 
+    fun reset()
+    {
+        for (row in rows)
+        {
+            for (tile in row)
+            {
+                tile.setLetter(newLetter = null)
+                tile.setState(newState = Tile.State.HIDDEN)
+                activeRow = if (rows.isNotEmpty()) 0 else null
+            }
+        }
+    }
+
     fun setNewActiveRow()
     {
         activeRow?.let { if (it >= rows.lastIndex) throw SetNewActiveRowFailedException("No more rows left to activate.") }
@@ -29,7 +42,7 @@ class GameBoard(private var rows: List<List<Tile>> = listOf())
     {
         fun letter() = this.letter
 
-        fun setLetter(newLetter: Char) { this.letter = newLetter }
+        fun setLetter(newLetter: Char?) { this.letter = newLetter }
 
         fun state(): State = this.state
 
