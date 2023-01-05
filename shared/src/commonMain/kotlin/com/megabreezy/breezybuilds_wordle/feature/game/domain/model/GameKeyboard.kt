@@ -19,6 +19,19 @@ class GameKeyboard
         )
     )
 
+    fun reset()
+    {
+        for (row in rows)
+        {
+            for (key in row)
+            {
+                key.setBackgroundColor(newBackgroundColor = Key.BackgroundColor.DEFAULT)
+                key.setIsEnabled(newIsEnabled = true)
+                key.setOnClick {  }
+            }
+        }
+    }
+
     fun rows(): List<List<Key>> = this.rows
 
     data class Key(
@@ -36,9 +49,9 @@ class GameKeyboard
 
         fun isEnabled() = isEnabled
 
-        fun letter(): Char? = letter
+        fun letter(): Char? = letter?.uppercaseChar()
 
-        fun letters() = if (letters.isNullOrEmpty()) letter.toString() else letters
+        fun letters() = if (letters.isNullOrEmpty()) letter().toString() else letters.uppercase()
 
         fun resourceId(): String? = resourceId
 

@@ -14,10 +14,24 @@ class GameKeyboardTests
         val expectedCharValue = 'A'
 
         // when
-        val sut = GameKeyboard.Key(letter = expectedCharValue)
+        val sut = GameKeyboard.Key(letter = expectedCharValue.lowercaseChar())
 
         // then
         assertEquals(expectedCharValue, sut.letter())
+        assertEquals(expectedCharValue.toString(), sut.letters())
+    }
+
+    @Test
+    fun `when Key is initialized with letters string - letters method returns expected string value`()
+    {
+        // given
+        val expectedString = "TEST"
+
+        // when
+        val sut = GameKeyboard.Key(letters = "test")
+
+        // then
+        assertEquals(expectedString, sut.letters())
     }
 
     @Test
@@ -134,5 +148,69 @@ class GameKeyboardTests
         
         // then
         assertEquals(expectedRows, sut.rows())
+    }
+
+    @Test
+    fun `When reset method is invoked - all keys background colors set to DEFAULT`()
+    {
+        // given
+        val sut = GameKeyboard()
+
+        for (row in sut.rows())
+        {
+            for (key in row)
+            {
+                key.setBackgroundColor(newBackgroundColor = GameKeyboard.Key.BackgroundColor.NOT_FOUND)
+            }
+        }
+
+        // when
+        sut.reset()
+
+        // then
+        for (row in sut.rows())
+        {
+            for (key in row)
+            {
+                assertEquals(GameKeyboard.Key.BackgroundColor.DEFAULT, key.backgroundColor())
+            }
+        }
+    }
+
+    @Test
+    fun `When reset method is invoked - all keys are enabled`()
+    {
+        // given
+        val sut = GameKeyboard()
+        for (row in sut.rows()) { for (key in row) { key.setIsEnabled(newIsEnabled = false) } }
+
+        // when
+        sut.reset()
+
+        // then
+        for (row in sut.rows())
+        {
+            for (key in row)
+            {
+                assertTrue(key.isEnabled())
+            }
+        }
+    }
+
+    @Test
+    fun `When reset method is invoked - onClick events are cleared`()
+    {
+        // given
+        var onClickDidInvoke = false
+        val sut = GameKeyboard()
+        for (row in sut.rows()) { for (key in row) { key.setOnClick { onClickDidInvoke = true } } }
+
+        // when
+        sut.reset()
+
+        for (row in sut.rows()) { for (key in row) { key.click() } }
+
+        // then
+        assertFalse(onClickDidInvoke)
     }
 }

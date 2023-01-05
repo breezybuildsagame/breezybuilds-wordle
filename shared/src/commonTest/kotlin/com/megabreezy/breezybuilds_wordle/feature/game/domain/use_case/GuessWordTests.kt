@@ -16,8 +16,8 @@ import kotlin.test.*
 
 class GuessWordTests
 {
-    lateinit var answerRepository: MockGameAnswerRepository
-    lateinit var guessRepository: MockGameGuessRepository
+    private lateinit var answerRepository: MockGameAnswerRepository
+    private lateinit var guessRepository: MockGameGuessRepository
 
     @BeforeTest
     fun setUp()
