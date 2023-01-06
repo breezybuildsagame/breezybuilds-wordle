@@ -135,13 +135,11 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
-        val cRow = keyboard.rows().firstOrNull { it.firstOrNull { key -> key.letter() == 'C' } != null }
-        val cKey = cRow?.first { it.letter() == 'C' }
-        for (row in gameBoard.rows()) { for (tile in row) { cKey?.click() } }
+        for (row in gameBoard.rows()) { for (tile in row) { getKey(letters = "C")?.click() } }
         sceneHandler.onRevealNextTileDidInvoke = false
 
         // when
-        cKey?.click()
+        getKey(letters = "C")?.click()
 
         // then
         assertFalse(sceneHandler.onRevealNextTileDidInvoke)
@@ -152,15 +150,11 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
-        val cRow = keyboard.rows().firstOrNull { it.firstOrNull { key -> key.letter() == 'C' } != null }
-        val cKey = cRow?.first { it.letter() == 'C' }
-        val backSpaceRow = keyboard.rows().firstOrNull { it.firstOrNull { key -> key.letters() == "BACKSPACE"} != null }
-        val backSpaceKey = backSpaceRow?.first { it.letters() == "BACKSPACE" }
-        cKey?.click()
+        getKey(letters = "C")?.click()
         sceneHandler.onRevealNextTileDidInvoke = false
 
         // when
-        backSpaceKey?.click()
+        getKey(letters = "BACKSPACE")?.click()
 
         // then
         assertNull(gameBoard.activeRow()?.firstOrNull { tile -> tile.letter() != null })
@@ -172,11 +166,9 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
-        val backSpaceRow = keyboard.rows().firstOrNull { it.firstOrNull { key -> key.letters() == "BACKSPACE"} != null }
-        val backSpaceKey = backSpaceRow?.first { it.letters() == "BACKSPACE" }
 
         // when
-        backSpaceKey?.click()
+        getKey(letters = "BACKSPACE")?.click()
 
         // then
         assertNull(gameBoard.activeRow()?.firstOrNull { tile -> tile.letter() != null })
@@ -188,14 +180,10 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
-        val cRow = keyboard.rows().firstOrNull { it.firstOrNull { key -> key.letter() == 'C' } != null }
-        val cKey = cRow?.first { it.letter() == 'C' }
-        val enterRow = keyboard.rows().firstOrNull { it.firstOrNull { key -> key.letters() == "ENTER" } != null }
-        val enterKey = enterRow?.first { it.letters() == "ENTER" }
-        for (row in gameBoard.rows()) { for (tile in row) { cKey?.click() } }
+        for (row in gameBoard.rows()) { for (tile in row) { getKey(letters = "C")?.click() } }
 
         // when
-        try { enterKey?.click() } catch(_ : Throwable) { }
+        try { getKey(letters = "ENTER")?.click() } catch(_ : Throwable) { }
 
         // then
         assertNotNull(guessRepository.guessToReturn)
@@ -207,15 +195,11 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
-        val cRow = keyboard.rows().firstOrNull { it.firstOrNull { key -> key.letter() == 'C' } != null }
-        val cKey = cRow?.first { it.letter() == 'C' }
-        val enterRow = keyboard.rows().firstOrNull { it.firstOrNull { key -> key.letters() == "ENTER" } != null }
-        val enterKey = enterRow?.first { it.letters() == "ENTER" }
-        cKey?.click()
+        getKey(letters = "C")?.click()
         guessRepository.guessIsInvalid = true
 
         // when
-        enterKey?.click()
+        getKey(letters = "ENTER")?.click()
 
         // then
         assertNotNull(guessRepository.guessToReturn)
@@ -226,39 +210,26 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
-        val enterRow = keyboard.rows().firstOrNull { it.firstOrNull { key -> key.letters() == "ENTER" } != null }
-        val enterKey = enterRow?.first { it.letters() == "ENTER" }
-
-        val pRow = keyboard.rows().firstOrNull { it.firstOrNull { key -> key.letters() == "P" } != null }
-        val pKey = pRow?.first { it.letters() == "P" }
-        val lRow = keyboard.rows().firstOrNull { it.firstOrNull { key -> key.letters() == "L" } != null }
-        val lKey = lRow?.first { it.letters() == "L" }
-        val aRow = keyboard.rows().firstOrNull { it.firstOrNull { key -> key.letters() == "A" } != null }
-        val aKey = aRow?.first { it.letters() == "A" }
-        val yRow = keyboard.rows().firstOrNull { it.firstOrNull { key -> key.letters() == "Y" } != null }
-        val yKey = yRow?.first { it.letters() == "Y" }
-        val sRow = keyboard.rows().firstOrNull { it.firstOrNull { key -> key.letters() == "S" } != null }
-        val sKey = sRow?.first { it.letters() == "S" }
+        val keysInUse = listOf(
+            getKey(letters = "P"), getKey(letters = "L"), getKey(letters = "A"), getKey(letters = "Y"), getKey(letters = "S")
+        )
 
         // when
-        pKey?.click()
-        lKey?.click()
-        aKey?.click()
-        yKey?.click()
-        sKey?.click()
-        enterKey?.click()
+        for (key in keysInUse) key?.click()
+        getKey(letters = "ENTER")?.click()
 
         // then
-        assertEquals(GameKeyboard.Key.BackgroundColor.NOT_FOUND, pKey?.backgroundColor())
-        assertEquals(GameKeyboard.Key.BackgroundColor.NOT_FOUND, lKey?.backgroundColor())
-        assertEquals(GameKeyboard.Key.BackgroundColor.NOT_FOUND, aKey?.backgroundColor())
-        assertEquals(GameKeyboard.Key.BackgroundColor.NOT_FOUND, yKey?.backgroundColor())
-        assertNotEquals(GameKeyboard.Key.BackgroundColor.NOT_FOUND, sKey?.backgroundColor())
+        for (key in keysInUse)
+        {
+            if (key?.letters() == "S") assertNotEquals(GameKeyboard.Key.BackgroundColor.NOT_FOUND, key.backgroundColor())
+            else assertEquals(GameKeyboard.Key.BackgroundColor.NOT_FOUND, key?.backgroundColor())
+        }
+        
         for (row in keyboard.rows())
         {
             for (key in row)
             {
-                if (key != pKey && key != lKey && key != aKey && key != yKey && key != sKey && key.letter() != null)
+                if (!keysInUse.contains(key) && key.letter() != null)
                 {
                     assertEquals(GameKeyboard.Key.BackgroundColor.DEFAULT, key.backgroundColor())
                 }
@@ -369,6 +340,12 @@ class SetUpGameEventsTests: KoinComponent
         override fun onRevealNextTile() { onRevealNextTileDidInvoke = true }
         override fun onRoundCompleted() { onRoundCompletedDidInvoke = true }
         override fun onStartingGame() { onStartingGameDidInvoke = true }
+    }
+
+    private fun getKey(letters: String): GameKeyboard.Key?
+    {
+        val row = keyboard.rows().firstOrNull { it.firstOrNull { key -> key.letters() == letters } != null }
+        return row?.first { it.letters() == letters }
     }
 
     class MockGameGuessRepository: GameGuessGateway
