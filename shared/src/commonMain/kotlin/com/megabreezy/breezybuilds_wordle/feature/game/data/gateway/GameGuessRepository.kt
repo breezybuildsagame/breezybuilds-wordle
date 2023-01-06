@@ -34,7 +34,7 @@ class GameGuessRepository: GameGuessGateway, KoinComponent
             throw GameGuessCreateFailedRepositoryException(e.message)
         }
 
-        return GameGuess(word = "")
+        return GameGuess(word = currentGuess)
     }
 
     override fun getAll(): List<GameGuess>
