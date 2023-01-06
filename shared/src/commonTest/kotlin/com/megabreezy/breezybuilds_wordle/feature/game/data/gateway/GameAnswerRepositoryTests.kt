@@ -245,6 +245,8 @@ class GameAnswerRepositoryTests
 
             return wordToReturn!!
         }
+
+        override fun getAll(): List<Word> = listOf(wordToReturn!!)
     }
 
     class MockAnswerLocalDataSource: AnswerLocalDataManageable

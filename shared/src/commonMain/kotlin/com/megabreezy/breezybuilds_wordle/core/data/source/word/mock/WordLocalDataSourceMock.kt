@@ -8,6 +8,7 @@ import org.koin.core.module.Module
 
 class WordLocalDataSourceMock(
     private val wordToReturn: Word? = null,
+    private val wordsToReturn: List<Word> = listOf(),
     private val getErrorMessage: String = "Failed to get Word."
 ): WordLocalDataManageable
 {
@@ -18,20 +19,26 @@ class WordLocalDataSourceMock(
         throw WordNotFoundLocalDataException(message = getErrorMessage)
     }
 
+    override fun getAll(): List<Word> = wordsToReturn
+
     companion object
     {
         val mockWords = listOf(
             "ALPHA", "FIRST", "PLACE", "SHAPE", "FLOAT"
         )
+        val allWords = mutableListOf<Word>()
 
         fun injectDefinition(module: Module, scenarios: List<Scenario>)
         {
             val wordWasFound =  scenarios.firstOrNull { it == Scenario.WORD_FOUND } != null
 
+            if (wordWasFound) for (word in mockWords) allWords.add(Word(word = word))
+
             module.single<WordLocalDataManageable>()
             {
                 WordLocalDataSourceMock(
-                    wordToReturn = if (wordWasFound) Word(word = mockWords.random()) else null
+                    wordToReturn = if (wordWasFound) Word(word = mockWords.random()) else null,
+                    wordsToReturn = allWords
                 )
             }
         }

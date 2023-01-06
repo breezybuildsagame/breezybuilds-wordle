@@ -4,21 +4,25 @@ import com.megabreezy.breezybuilds_wordle.core.data.source.answer.mock.AnswerLoc
 import com.megabreezy.breezybuilds_wordle.core.data.source.guess.GuessClearFailedLocalDataException
 import com.megabreezy.breezybuilds_wordle.core.data.source.guess.GuessLocalDataManageable
 import com.megabreezy.breezybuilds_wordle.core.data.source.guess.GuessSaveFailedLocalDataException
+import com.megabreezy.breezybuilds_wordle.core.data.source.word.WordLocalDataManageable
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Guess
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Word
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
 import com.megabreezy.breezybuilds_wordle.core.util.Scenario
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessCreateFailedRepositoryException
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessNotFoundRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameGuess
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case.GameUseCase
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case.getGameBoard
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import kotlin.test.*
 
-class GameGuessRepositoryTests
+class GameGuessRepositoryTests: KoinComponent
 {
     private lateinit var guessLocalDataSource: MockGuessLocalDataSource
 
@@ -30,7 +34,7 @@ class GameGuessRepositoryTests
         startKoin()
         {
             modules(
-                CoreKoinModule(scenarios = listOf(Scenario.ANSWER_SAVED)).mockModule(),
+                CoreKoinModule(scenarios = listOf(Scenario.ANSWER_SAVED, Scenario.WORD_FOUND)).mockModule(),
                 GameKoinModule().module(),
                 module { single<GuessLocalDataManageable> { guessLocalDataSource } }
             )
@@ -44,11 +48,12 @@ class GameGuessRepositoryTests
     fun `when the create method is invoked - the guess local data source save method is invoked - passing in expected newGuess`()
     {
         // given
-        val expectedGuess = Guess(Word("FLAKE"))
         val gameBoard = GameUseCase().getGameBoard()
+        val wordLocalDataSource: WordLocalDataManageable by inject()
+        val expectedGuess = wordLocalDataSource.getAll().first()
         gameBoard.activeRow()?.forEachIndexed()
         { index, tile ->
-            tile.setLetter(newLetter = expectedGuess.word().toString()[index])
+            tile.setLetter(newLetter = expectedGuess.toString()[index])
         }
         val sut = GameGuessRepository()
 
@@ -56,19 +61,26 @@ class GameGuessRepositoryTests
         sut.create()
 
         // then
-        assertEquals(expectedGuess.word().toString(), guessLocalDataSource.newGuess)
+        assertEquals(expectedGuess.toString(), guessLocalDataSource.newGuess)
     }
 
     @Test
     fun `when attempting to create a GameGuess and data source throws an exception - expected exception is thrown`()
     {
         // given
+        val gameBoard = GameUseCase().getGameBoard()
+        val wordLocalDataSource: WordLocalDataManageable by inject()
+        val availableWords = wordLocalDataSource.getAll()
+        gameBoard.activeRow()?.forEachIndexed()
+        { index, tile ->
+            tile.setLetter(newLetter = availableWords.first().toString()[index])
+        }
         val sut = GameGuessRepository()
         val expectedErrorMessage = "Failed to save new Guess."
         guessLocalDataSource.saveShouldFail = true
 
         // when
-        val actualException = assertFailsWith<GameGuessCreateFailedRepositoryException>() { sut.create() }
+        val actualException = assertFailsWith<GameGuessCreateFailedRepositoryException> { sut.create() }
 
         // then
         assertEquals(expectedErrorMessage, actualException.message)
@@ -125,6 +137,25 @@ class GameGuessRepositoryTests
 
         // when
         val actualException = assertFailsWith<GameGuessCreateFailedRepositoryException> { sut.clear() }
+
+        // then
+        assertEquals(expectedExceptionMessage, actualException.message)
+    }
+
+    @Test
+    fun `When creating a guess and word not found - expected exception is thrown`()
+    {
+        // given
+        val gameBoard = GameUseCase().getGameBoard()
+        gameBoard.activeRow()?.forEachIndexed()
+        { index, tile ->
+            tile.setLetter(newLetter = "ZZZZZ"[index])
+        }
+        val expectedExceptionMessage = "Word not found in words list."
+        val sut = GameGuessRepository()
+
+        // when
+        val actualException = assertFailsWith<GameGuessNotFoundRepositoryException> { sut.create() }
 
         // then
         assertEquals(expectedExceptionMessage, actualException.message)

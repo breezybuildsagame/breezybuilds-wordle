@@ -10,3 +10,4 @@ interface GameGuessGateway
 }
 
 class GameGuessCreateFailedRepositoryException(message: String?): Exception(message)
+class GameGuessNotFoundRepositoryException(message: String?): Exception(message)
