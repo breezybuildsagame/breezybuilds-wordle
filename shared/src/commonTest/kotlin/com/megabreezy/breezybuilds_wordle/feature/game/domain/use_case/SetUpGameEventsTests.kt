@@ -2,10 +2,7 @@ package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
 import com.megabreezy.breezybuilds_wordle.core.util.Scenario
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerGateway
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotFoundRepositoryException
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessCreateFailedRepositoryException
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessGateway
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.*
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.*
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneHandleable
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
@@ -288,66 +285,95 @@ class SetUpGameEventsTests: KoinComponent
     fun `when use case invoked and enter Key is clicked and GameGuess is not found in words list - expected announcement is set`()
     {
         // given
+        guessRepository.guessNotFound = true
+        GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
+        val keysInUse = listOf(
+            getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
+        )
+        val expectedAnnouncementMessage = "Not found in words list."
 
         // when
-        GameUseCase().setUpGameEvents()
+        for (key in keysInUse) key?.click()
+        getKey(letters = "ENTER")?.click()
 
         // then
-    }
-
-    @Test
-    fun `when use case invoked and enter Key is clicked and GameGuess is incorrect - expected announcement is set`()
-    {
-        // given
-
-        // when
-        GameUseCase().setUpGameEvents()
-
-        // then
+        assertEquals(expectedAnnouncementMessage, announcement.message())
     }
 
     @Test
     fun `when use case invoked and enter Key is clicked and GameGuess is incorrect - GameBoard setNewActiveRow method is invoked`()
     {
         // given
+        GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
+        val initialActiveGameBoardRow = gameBoard.activeRow()
+        val keysInUse = listOf(
+            getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
+        )
 
         // when
-        GameUseCase().setUpGameEvents()
+        for (key in keysInUse) key?.click()
+        getKey(letters = "ENTER")?.click()
 
         // then
+        assertNotEquals(initialActiveGameBoardRow, gameBoard.activeRow())
     }
 
     @Test
     fun `when use case invoked and enter Key is clicked and GameGuess is incorrect - handler onRoundCompleted method is invoked`()
     {
         // given
+        GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
+        val keysInUse = listOf(
+            getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
+        )
 
         // when
-        GameUseCase().setUpGameEvents()
+        for (key in keysInUse) key?.click()
+        getKey(letters = "ENTER")?.click()
 
         // then
+        assertTrue(sceneHandler.onRoundCompletedDidInvoke)
     }
 
     @Test
     fun `when GameBoard setNewActiveRow throws an exception - expected announcement is set`()
     {
         // given
+        GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
+        val keysInUse = listOf(
+            getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
+        )
+        val expectedAnnouncementMessage = "Game Over"
 
         // when
-        GameUseCase().setUpGameEvents()
+        for (round in gameBoard.rows())
+        {
+            for (key in keysInUse) key?.click()
+            getKey(letters = "ENTER")?.click()
+        }
 
         // then
+        assertEquals(expectedAnnouncementMessage, announcement.message())
     }
 
     @Test
     fun `when GameBoard setNewActiveRow throws an exception - handler onGameOver method is invoked`()
     {
         // given
+        GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
+        val keysInUse = listOf(
+            getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
+        )
 
         // when
-        GameUseCase().setUpGameEvents()
+        for (round in gameBoard.rows())
+        {
+            for (key in keysInUse) key?.click()
+            getKey(letters = "ENTER")?.click()
+        }
 
         // then
+        assertTrue(sceneHandler.onGameOverDidInvoke)
     }
 
     class MockSceneHandler: GameSceneHandleable
@@ -382,7 +408,7 @@ class SetUpGameEventsTests: KoinComponent
 
         override fun create(): GameGuess
         {
-            if (guessNotFound) throw GameGuessCreateFailedRepositoryException("Not found in words list.")
+            if (guessNotFound) throw GameGuessNotFoundRepositoryException("Not found in words list.")
 
             guessToReturn = if (guessIsInvalid) GameGuess(word = "T")
             else if (guessContainsMatchingLetters) GameGuess(word = "TREAT")
@@ -420,6 +446,6 @@ class SetUpGameEventsTests: KoinComponent
 
             return gameAnswer!!
         }
-            ?: create()
+        ?: create()
     }
 }

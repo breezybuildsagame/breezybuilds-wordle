@@ -2,6 +2,7 @@ package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessCreateFailedRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessGateway
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessNotFoundRepositoryException
 import org.koin.core.component.inject
 
 fun GameUseCase.guessWord()
@@ -27,6 +28,10 @@ fun GameUseCase.guessWord()
         }
     }
     catch (e: GameGuessCreateFailedRepositoryException)
+    {
+        throw GameUseCase.GuessWordFailedNotInWordsListException(message = e.message)
+    }
+    catch (e: GameGuessNotFoundRepositoryException)
     {
         throw GameUseCase.GuessWordFailedNotInWordsListException(message = e.message)
     }

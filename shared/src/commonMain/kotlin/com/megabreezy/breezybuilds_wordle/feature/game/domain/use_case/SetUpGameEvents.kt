@@ -1,5 +1,6 @@
 package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneHandleable
 
@@ -79,6 +80,21 @@ fun GameUseCase.setUpGameEvents(sceneHandler: GameSceneHandleable? = null)
                                 }
                             }
                         }
+
+                        try
+                        {
+                            getGameBoard().setNewActiveRow()
+                            sceneHandler?.onRoundCompleted()
+                        }
+                        catch (e: GameBoard.SetNewActiveRowFailedException)
+                        {
+                            getAnnouncement().setMessage(newMessage = "Game Over")
+                            sceneHandler?.onGameOver()
+                        }
+                    }
+                    catch (e: GameUseCase.GuessWordFailedNotInWordsListException)
+                    {
+                        getAnnouncement().setMessage(newMessage = e.message)
                     }
                 } else Unit
             }

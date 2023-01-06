@@ -13,8 +13,12 @@ fun GameUseCase.getGameBoard(): GameBoard
         val rows = mutableListOf<List<GameBoard.Tile>>()
         val tiles = mutableListOf<GameBoard.Tile>()
 
-        (1 .. answer.word().length).forEach { _ -> tiles.add(GameBoard.Tile()) }
-        (1 .. 6).forEach { _ -> rows.add(tiles.toList()) }
+        (1 .. 6).forEach()
+        { _ ->
+            tiles.clear()
+            (1 .. answer.word().length).forEach { _ -> tiles.add(GameBoard.Tile()) }
+            rows.add(tiles.toList())
+        }
 
         gameBoard.setRows(newRows = rows.toList())
     }
