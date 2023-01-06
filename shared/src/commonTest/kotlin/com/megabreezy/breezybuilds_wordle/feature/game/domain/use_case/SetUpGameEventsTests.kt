@@ -224,7 +224,7 @@ class SetUpGameEventsTests: KoinComponent
             if (key?.letters() == "S") assertNotEquals(GameKeyboard.Key.BackgroundColor.NOT_FOUND, key.backgroundColor())
             else assertEquals(GameKeyboard.Key.BackgroundColor.NOT_FOUND, key?.backgroundColor())
         }
-        
+
         for (row in keyboard.rows())
         {
             for (key in row)
@@ -241,22 +241,47 @@ class SetUpGameEventsTests: KoinComponent
     fun `when use case invoked and enter Key is clicked and GameGuess contains a close letter - GameKeyboard Key background colors are updated accordingly`()
     {
         // given
+        answerRepository.guessContainsCloseLetter = true
+        GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
+        val keysInUse = listOf(
+            getKey(letters = "P"), getKey(letters = "L"), getKey(letters = "A"), getKey(letters = "Y"), getKey(letters = "S")
+        )
 
         // when
-        GameUseCase().setUpGameEvents()
+        for (key in keysInUse) key?.click()
+        getKey(letters = "ENTER")?.click()
 
         // then
+        for (key in keysInUse)
+        {
+            if ("SPEAR".contains(key?.letters()?.first()!!)) assertEquals(GameKeyboard.Key.BackgroundColor.NEARBY, key.backgroundColor())
+            else assertNotEquals(GameKeyboard.Key.BackgroundColor.NEARBY, key.backgroundColor())
+        }
     }
 
     @Test
     fun `when use case invoked and enter Key is clicked and GameGuess contains a correct letter - GameKeyboard Key background colors are updated accordingly`()
     {
         // given
+        guessRepository.guessContainsMatchingLetters = true
+        GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
+        val keysInUse = listOf(
+            getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
+        )
 
         // when
-        GameUseCase().setUpGameEvents()
+        for (key in keysInUse) key?.click()
+        getKey(letters = "ENTER")?.click()
 
         // then
+        for (key in keysInUse)
+        {
+            if (key!!.letters() == "T")
+            {
+                assertEquals(GameKeyboard.Key.BackgroundColor.CORRECT, key.backgroundColor())
+            }
+            else assertNotEquals(GameKeyboard.Key.BackgroundColor.CORRECT, key.backgroundColor())
+        }
     }
 
     @Test
@@ -352,13 +377,16 @@ class SetUpGameEventsTests: KoinComponent
     {
         var guessIsInvalid = false
         var guessNotFound = false
+        var guessContainsMatchingLetters = false
         var guessToReturn: GameGuess? = null
 
         override fun create(): GameGuess
         {
             if (guessNotFound) throw GameGuessCreateFailedRepositoryException("Not found in words list.")
 
-            guessToReturn = if (guessIsInvalid) GameGuess(word = "T") else GameGuess(word = "PLAYS")
+            guessToReturn = if (guessIsInvalid) GameGuess(word = "T")
+            else if (guessContainsMatchingLetters) GameGuess(word = "TREAT")
+            else GameGuess(word = "PLAYS")
 
             return guessToReturn!!
         }
@@ -373,10 +401,13 @@ class SetUpGameEventsTests: KoinComponent
         var gameAnswer: GameAnswer? = null
         var getShouldFail = false
         var guessMatchesAnswer = false
+        var guessContainsCloseLetter = false
 
         override fun create(): GameAnswer
         {
-            createdGameAnswer = if (guessMatchesAnswer) GameAnswer(word = "PLAYS") else GameAnswer(word = "TESTS")
+            createdGameAnswer = if (guessMatchesAnswer) GameAnswer(word = "PLAYS")
+            else if (guessContainsCloseLetter) GameAnswer(word = "SPEAR")
+            else GameAnswer(word = "TESTS")
 
             return createdGameAnswer!!
         }

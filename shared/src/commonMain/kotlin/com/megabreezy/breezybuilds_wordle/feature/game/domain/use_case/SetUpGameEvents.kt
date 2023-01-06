@@ -53,12 +53,28 @@ fun GameUseCase.setUpGameEvents(sceneHandler: GameSceneHandleable? = null)
                             {
                                 for (currentKey in keyRow)
                                 {
+                                    if (currentKey.backgroundColor() == GameKeyboard.Key.BackgroundColor.CORRECT) continue
+
                                     if (
                                         currentKey.letter() == tile.letter()
-                                        && tile.letter() != getGameAnswer().word()[index]
+                                        && !getGameAnswer().word().contains(currentKey.letter()!!)
                                     )
                                     {
                                         currentKey.setBackgroundColor(newBackgroundColor = GameKeyboard.Key.BackgroundColor.NOT_FOUND)
+                                    }
+                                    else if
+                                    (
+                                        currentKey.letter() == tile.letter()
+                                        && getGameAnswer().word().contains(currentKey.letter()!!)
+                                        && currentKey.letter() !=  getGameAnswer().word()[index]
+                                    )
+                                    {
+                                        currentKey.setBackgroundColor(newBackgroundColor = GameKeyboard.Key.BackgroundColor.NEARBY)
+                                    }
+
+                                    if (currentKey.letter() == tile.letter() && tile.letter() == getGameAnswer().word()[index])
+                                    {
+                                        currentKey.setBackgroundColor(newBackgroundColor = GameKeyboard.Key.BackgroundColor.CORRECT)
                                     }
                                 }
                             }
