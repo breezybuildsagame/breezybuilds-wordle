@@ -2,6 +2,7 @@ package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerGateway
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotCreatedRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotFoundRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameAnswer
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
@@ -33,7 +34,7 @@ class GetGameAnswerTests
     fun tearDown() = stopKoin()
 
     @Test
-    fun `hen use case invoked - gateway get method is invoked`()
+    fun `when use case invoked - gateway get method is invoked`()
     {
         // when
         GameUseCase().getGameAnswer()
@@ -43,7 +44,7 @@ class GetGameAnswerTests
     }
 
     @Test
-    fun `hen use case invoked and gateway returns a GameAnswer - expected GameAnswer is returned`()
+    fun `when use case invoked and gateway returns a GameAnswer - expected GameAnswer is returned`()
     {
         // given
         val expectedGameAnswer = GameAnswer(word = "AWESOME")
@@ -56,11 +57,26 @@ class GetGameAnswerTests
     }
 
     @Test
-    fun `hen use case invoked and gateway throws and exception - expected exception is thrown`()
+    fun `When gateway get method throws an exception - gateway create method is invoked`()
+    {
+        // given
+        repository.getShouldFail = true
+        val expectedGameAnswer = GameAnswer(word = "AWESOME")
+
+        // when
+        val actualGameAnswer = GameUseCase().getGameAnswer()
+
+        // then
+        assertEquals(expectedGameAnswer, actualGameAnswer)
+    }
+
+    @Test
+    fun `when gateway create method throws an exception - expected exception is thrown`()
     {
         // given
         val expectedExceptionMessage = "Not found."
         repository.getShouldFail = true
+        repository.createShouldFail = true
 
         // when
         val actualException = assertFailsWith<GameUseCase.GetGameAnswerFailedException>()
@@ -80,7 +96,7 @@ class GetGameAnswerTests
 
         override fun create(): GameAnswer
         {
-            if (createShouldFail) throw GameAnswerNotFoundRepositoryException("Not found.")
+            if (createShouldFail) throw GameAnswerNotCreatedRepositoryException("Not found.")
 
             gameAnswerToReturn = GameAnswer(word = "AWESOME")
 

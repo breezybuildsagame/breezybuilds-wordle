@@ -8,6 +8,7 @@ import com.megabreezy.breezybuilds_wordle.core.data.source.word.WordNotFoundLoca
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Answer
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Word
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerGateway
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotCreatedRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotFoundRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameAnswer
 import org.koin.core.component.KoinComponent
@@ -47,7 +48,7 @@ class GameAnswerRepository: GameAnswerGateway, KoinComponent
             {
                 is AnswerUpdateFailedLocalDataException, is WordNotFoundLocalDataException ->
                 {
-                    throw GameAnswerNotFoundRepositoryException(message = e.message)
+                    throw GameAnswerNotCreatedRepositoryException(message = e.message)
                 }
                 else -> throw Exception("Uncaught error: ${e.message}")
             }

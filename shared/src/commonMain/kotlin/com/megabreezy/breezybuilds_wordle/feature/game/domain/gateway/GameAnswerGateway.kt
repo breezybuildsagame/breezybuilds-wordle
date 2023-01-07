@@ -9,3 +9,4 @@ interface GameAnswerGateway
 }
 
 class GameAnswerNotFoundRepositoryException(message: String? = null): Exception(message)
+class GameAnswerNotCreatedRepositoryException(message: String? = null): Exception(message)
