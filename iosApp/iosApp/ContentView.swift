@@ -1,16 +1,17 @@
 import SwiftUI
+import SwiftUIRouter
 import shared
 
-struct ContentView: View {
-	let greet = Greeting().greeting()
-
-	var body: some View {
-		Text(greet)
-	}
-}
-
-struct ContentView_Previews: PreviewProvider {
-	static var previews: some View {
-		ContentView()
+struct ContentView: View
+{
+	var body: some View
+    {
+        Router
+        {
+            Route
+            {
+                GameScene()
+            }
+        }
 	}
 }

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -13,6 +13,8 @@
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 		97938403D6D336375F950A15 /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17C0F794CA2046006F879E89 /* Pods_iosApp.framework */; };
 		9D6098572948B75C00F2D7C9 /* iosAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D6098562948B75C00F2D7C9 /* iosAppTests.swift */; };
+		9D8C9C292969BE0600761DA2 /* SwiftUIRouter in Frameworks */ = {isa = PBXBuildFile; productRef = 9D8C9C282969BE0600761DA2 /* SwiftUIRouter */; };
+		9D8C9C2E2969C15000761DA2 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C9C2D2969C15000761DA2 /* GameScene.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +39,7 @@
 		9903C30BBA4B2B467814F334 /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
 		9D6098542948B75C00F2D7C9 /* iosAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iosAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D6098562948B75C00F2D7C9 /* iosAppTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iosAppTests.swift; sourceTree = "<group>"; };
+		9D8C9C2D2969C15000761DA2 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +48,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				97938403D6D336375F950A15 /* Pods_iosApp.framework in Frameworks */,
+				9D8C9C292969BE0600761DA2 /* SwiftUIRouter in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,6 +93,7 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
+				9D8C9C2A2969C12500761DA2 /* feature_game */,
 				058557BA273AAA24004C7B11 /* Assets.xcassets */,
 				7555FF82242A565900829871 /* ContentView.swift */,
 				7555FF8C242A565B00829871 /* Info.plist */,
@@ -113,6 +118,22 @@
 				9D6098562948B75C00F2D7C9 /* iosAppTests.swift */,
 			);
 			path = iosAppTests;
+			sourceTree = "<group>";
+		};
+		9D8C9C2A2969C12500761DA2 /* feature_game */ = {
+			isa = PBXGroup;
+			children = (
+				9D8C9C2B2969C13100761DA2 /* presentation */,
+			);
+			path = feature_game;
+			sourceTree = "<group>";
+		};
+		9D8C9C2B2969C13100761DA2 /* presentation */ = {
+			isa = PBXGroup;
+			children = (
+				9D8C9C2D2969C15000761DA2 /* GameScene.swift */,
+			);
+			path = presentation;
 			sourceTree = "<group>";
 		};
 		E42FA48E285E7122F94E3B7A /* Frameworks */ = {
@@ -140,6 +161,9 @@
 			dependencies = (
 			);
 			name = iosApp;
+			packageProductDependencies = (
+				9D8C9C282969BE0600761DA2 /* SwiftUIRouter */,
+			);
 			productName = iosApp;
 			productReference = 7555FF7B242A565900829871 /* iosApp.app */;
 			productType = "com.apple.product-type.application";
@@ -190,6 +214,9 @@
 				Base,
 			);
 			mainGroup = 7555FF72242A565900829871;
+			packageReferences = (
+				9D8C9C272969BE0600761DA2 /* XCRemoteSwiftPackageReference "SwiftUIRouter" */,
+			);
 			productRefGroup = 7555FF7C242A565900829871 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -249,6 +276,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D8C9C2E2969C15000761DA2 /* GameScene.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 			);
@@ -503,6 +531,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9D8C9C272969BE0600761DA2 /* XCRemoteSwiftPackageReference "SwiftUIRouter" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/frzi/SwiftUIRouter.git";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9D8C9C282969BE0600761DA2 /* SwiftUIRouter */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9D8C9C272969BE0600761DA2 /* XCRemoteSwiftPackageReference "SwiftUIRouter" */;
+			productName = SwiftUIRouter;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 7555FF73242A565900829871 /* Project object */;
 }

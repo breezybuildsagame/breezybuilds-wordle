@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "swiftuirouter",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/frzi/SwiftUIRouter.git",
+      "state" : {
+        "revision" : "cd8c2bb32019082075456afa9521ec3ec7499ffa",
+        "version" : "1.3.2"
+      }
+    }
+  ],
+  "version" : 2
+}
