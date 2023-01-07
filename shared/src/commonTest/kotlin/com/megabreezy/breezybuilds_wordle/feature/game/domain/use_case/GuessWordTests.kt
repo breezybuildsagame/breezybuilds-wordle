@@ -2,10 +2,7 @@ package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
 import com.megabreezy.breezybuilds_wordle.core.util.Scenario
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerGateway
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotFoundRepositoryException
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessCreateFailedRepositoryException
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessGateway
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.*
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameAnswer
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameGuess
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
@@ -109,6 +106,7 @@ class GuessWordTests
         // given
         val expectedExceptionMessage = "Answer not found."
         answerRepository.getShouldFail = true
+        answerRepository.createShouldFail = true
 
         // when
         val actualException = assertFailsWith<GameUseCase.GuessWordFailedException>
@@ -173,11 +171,14 @@ class GuessWordTests
     {
         var createdGameAnswer: GameAnswer? = null
         var gameAnswer: GameAnswer? = null
+        var createShouldFail = false
         var getShouldFail = false
         var guessMatchesAnswer = false
 
         override fun create(): GameAnswer
         {
+            if (createShouldFail) throw GameAnswerNotCreatedRepositoryException(message = "Answer not found.")
+
             createdGameAnswer = if (guessMatchesAnswer) GameAnswer(word = "PLAYS") else GameAnswer(word = "TESTS")
 
             return createdGameAnswer!!

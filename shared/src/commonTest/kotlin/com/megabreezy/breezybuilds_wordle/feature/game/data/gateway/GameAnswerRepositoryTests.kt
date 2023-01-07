@@ -11,6 +11,7 @@ import com.megabreezy.breezybuilds_wordle.core.domain.model.Answer
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Word
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
 import com.megabreezy.breezybuilds_wordle.core.util.Scenario
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotCreatedRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotFoundRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameAnswer
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
@@ -107,7 +108,7 @@ class GameAnswerRepositoryTests
         answerDataSource.updateAnswerShouldFail = true
 
         // when
-        val actualException = assertFailsWith<GameAnswerNotFoundRepositoryException> { sut.create() }
+        val actualException = assertFailsWith<GameAnswerNotCreatedRepositoryException> { sut.create() }
 
         assertEquals(expectedExceptionMessage, actualException.message)
     }
@@ -176,7 +177,7 @@ class GameAnswerRepositoryTests
         wordDataSource.getShouldFail = true
 
         // when
-        val actualException = assertFailsWith<GameAnswerNotFoundRepositoryException>
+        val actualException = assertFailsWith<GameAnswerNotCreatedRepositoryException>
         {
             sut.create()
         }

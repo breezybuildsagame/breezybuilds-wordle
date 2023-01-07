@@ -1,5 +1,6 @@
 package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotCreatedRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessCreateFailedRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessGateway
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessNotFoundRepositoryException
@@ -26,6 +27,10 @@ fun GameUseCase.guessWord()
                 message = "Guess (${guess.word()}) does not match Answer (${answer.word()})."
             )
         }
+    }
+    catch (e: GameAnswerNotCreatedRepositoryException)
+    {
+        throw GameUseCase.GuessWordFailedException(message = e.message)
     }
     catch (e: GameGuessCreateFailedRepositoryException)
     {
