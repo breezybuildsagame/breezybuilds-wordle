@@ -4,4 +4,6 @@ data class Word(private val word: String)
 {
     fun letters() = word.toCharArray()
     fun word() = word
+
+    override fun toString(): String = this.word()
 }
