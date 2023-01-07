@@ -12,6 +12,9 @@ struct GameScene: View
 {
     var body: some View
     {
-        Text("Hello, Game Scene!")
+        ZStack
+        {
+            Text("Hello, Game Scene!")
+        }
     }
 }
