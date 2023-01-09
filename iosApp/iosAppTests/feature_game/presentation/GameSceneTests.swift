@@ -10,6 +10,8 @@ import XCTest
 import ViewInspector
 @testable import iosApp
 
+extension GameScene: Inspectable { }
+
 final class GameSceneTests: XCTestCase
 {
     func testViewInspectorWorks()

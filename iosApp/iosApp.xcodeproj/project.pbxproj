@@ -16,6 +16,12 @@
 		9D8C9C2E2969C15000761DA2 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C9C2D2969C15000761DA2 /* GameScene.swift */; };
 		9D8C9C382969C42200761DA2 /* ViewInspector in Frameworks */ = {isa = PBXBuildFile; productRef = 9D8C9C372969C42200761DA2 /* ViewInspector */; };
 		9D8C9C3C2969C46C00761DA2 /* GameSceneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C9C3B2969C46C00761DA2 /* GameSceneTests.swift */; };
+		9DC3B686296C352300D90945 /* Sizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B685296C352300D90945 /* Sizer.swift */; };
+		9DC3B68B296C370200D90945 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B68A296C370200D90945 /* AppDelegate.swift */; };
+		9DC3B691296C384B00D90945 /* SceneDimensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B690296C384B00D90945 /* SceneDimensionsTests.swift */; };
+		9DC3B693296C393400D90945 /* SceneDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B692296C393400D90945 /* SceneDimensions.swift */; };
+		9DC3B696296C3BBD00D90945 /* XCTestCase+SceneDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B695296C3BBD00D90945 /* XCTestCase+SceneDimensions.swift */; };
+		9DC3B69A296C425400D90945 /* ContentViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B699296C425400D90945 /* ContentViewTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,6 +47,12 @@
 		9D6098542948B75C00F2D7C9 /* iosAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iosAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D8C9C2D2969C15000761DA2 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		9D8C9C3B2969C46C00761DA2 /* GameSceneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneTests.swift; sourceTree = "<group>"; };
+		9DC3B685296C352300D90945 /* Sizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sizer.swift; sourceTree = "<group>"; };
+		9DC3B68A296C370200D90945 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		9DC3B690296C384B00D90945 /* SceneDimensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDimensionsTests.swift; sourceTree = "<group>"; };
+		9DC3B692296C393400D90945 /* SceneDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDimensions.swift; sourceTree = "<group>"; };
+		9DC3B695296C3BBD00D90945 /* XCTestCase+SceneDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+SceneDimensions.swift"; sourceTree = "<group>"; };
+		9DC3B699296C425400D90945 /* ContentViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,11 +107,12 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
-				9D8C9C2A2969C12500761DA2 /* feature_game */,
-				058557BA273AAA24004C7B11 /* Assets.xcassets */,
-				7555FF82242A565900829871 /* ContentView.swift */,
-				7555FF8C242A565B00829871 /* Info.plist */,
 				2152FB032600AC8F00CF470E /* iOSApp.swift */,
+				7555FF8C242A565B00829871 /* Info.plist */,
+				9DC3B687296C368F00D90945 /* assets */,
+				9DC3B689296C36F100D90945 /* config */,
+				9DC3B683296C350B00D90945 /* core */,
+				9D8C9C2A2969C12500761DA2 /* feature_game */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
 			);
 			path = iosApp;
@@ -117,6 +130,8 @@
 		9D6098552948B75C00F2D7C9 /* iosAppTests */ = {
 			isa = PBXGroup;
 			children = (
+				9DC3B694296C3B7600D90945 /* extension */,
+				9DC3B68C296C382900D90945 /* core */,
 				9D8C9C392969C44F00761DA2 /* feature_game */,
 			);
 			path = iosAppTests;
@@ -150,6 +165,89 @@
 			isa = PBXGroup;
 			children = (
 				9D8C9C3B2969C46C00761DA2 /* GameSceneTests.swift */,
+			);
+			path = presentation;
+			sourceTree = "<group>";
+		};
+		9DC3B683296C350B00D90945 /* core */ = {
+			isa = PBXGroup;
+			children = (
+				9DC3B697296C422200D90945 /* presentation */,
+				9DC3B684296C351700D90945 /* util */,
+			);
+			path = core;
+			sourceTree = "<group>";
+		};
+		9DC3B684296C351700D90945 /* util */ = {
+			isa = PBXGroup;
+			children = (
+				9DC3B685296C352300D90945 /* Sizer.swift */,
+				9DC3B692296C393400D90945 /* SceneDimensions.swift */,
+			);
+			path = util;
+			sourceTree = "<group>";
+		};
+		9DC3B687296C368F00D90945 /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				9DC3B688296C36A600D90945 /* fonts */,
+				058557BA273AAA24004C7B11 /* Assets.xcassets */,
+			);
+			path = assets;
+			sourceTree = "<group>";
+		};
+		9DC3B688296C36A600D90945 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
+		9DC3B689296C36F100D90945 /* config */ = {
+			isa = PBXGroup;
+			children = (
+				9DC3B68A296C370200D90945 /* AppDelegate.swift */,
+			);
+			path = config;
+			sourceTree = "<group>";
+		};
+		9DC3B68C296C382900D90945 /* core */ = {
+			isa = PBXGroup;
+			children = (
+				9DC3B698296C423200D90945 /* presentation */,
+				9DC3B68D296C382E00D90945 /* util */,
+			);
+			path = core;
+			sourceTree = "<group>";
+		};
+		9DC3B68D296C382E00D90945 /* util */ = {
+			isa = PBXGroup;
+			children = (
+				9DC3B690296C384B00D90945 /* SceneDimensionsTests.swift */,
+			);
+			path = util;
+			sourceTree = "<group>";
+		};
+		9DC3B694296C3B7600D90945 /* extension */ = {
+			isa = PBXGroup;
+			children = (
+				9DC3B695296C3BBD00D90945 /* XCTestCase+SceneDimensions.swift */,
+			);
+			path = extension;
+			sourceTree = "<group>";
+		};
+		9DC3B697296C422200D90945 /* presentation */ = {
+			isa = PBXGroup;
+			children = (
+				7555FF82242A565900829871 /* ContentView.swift */,
+			);
+			path = presentation;
+			sourceTree = "<group>";
+		};
+		9DC3B698296C423200D90945 /* presentation */ = {
+			isa = PBXGroup;
+			children = (
+				9DC3B699296C425400D90945 /* ContentViewTests.swift */,
 			);
 			path = presentation;
 			sourceTree = "<group>";
@@ -301,6 +399,9 @@
 				9D8C9C2E2969C15000761DA2 /* GameScene.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
+				9DC3B693296C393400D90945 /* SceneDimensions.swift in Sources */,
+				9DC3B68B296C370200D90945 /* AppDelegate.swift in Sources */,
+				9DC3B686296C352300D90945 /* Sizer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,7 +409,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9DC3B696296C3BBD00D90945 /* XCTestCase+SceneDimensions.swift in Sources */,
 				9D8C9C3C2969C46C00761DA2 /* GameSceneTests.swift in Sources */,
+				9DC3B69A296C425400D90945 /* ContentViewTests.swift in Sources */,
+				9DC3B691296C384B00D90945 /* SceneDimensionsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -449,6 +553,7 @@
 				DEVELOPMENT_TEAM = A46J4WF27R;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -470,6 +575,7 @@
 				DEVELOPMENT_TEAM = A46J4WF27R;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.word-games";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -567,8 +673,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/nalexn/ViewInspector";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.9.3;
+				kind = exactVersion;
+				version = 0.9.3;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
