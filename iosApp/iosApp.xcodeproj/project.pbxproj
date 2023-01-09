@@ -25,6 +25,9 @@
 		9DC3B69D296C506000D90945 /* Color+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B69C296C506000D90945 /* Color+UI.swift */; };
 		9DC3B6A0296C52C600D90945 /* ColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B69F296C52C600D90945 /* ColorTests.swift */; };
 		9DC3B6A2296C545300D90945 /* UIColor+RGBA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B6A1296C545300D90945 /* UIColor+RGBA.swift */; };
+		9DC3B6A6296C558300D90945 /* GameSceneHeaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B6A5296C558300D90945 /* GameSceneHeaderTests.swift */; };
+		9DC3B6A8296C565600D90945 /* GameSceneHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B6A7296C565600D90945 /* GameSceneHeader.swift */; };
+		9DC3B6AC296C59F400D90945 /* View+Frame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B6AB296C59F400D90945 /* View+Frame.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +62,9 @@
 		9DC3B69C296C506000D90945 /* Color+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+UI.swift"; sourceTree = "<group>"; };
 		9DC3B69F296C52C600D90945 /* ColorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTests.swift; sourceTree = "<group>"; };
 		9DC3B6A1296C545300D90945 /* UIColor+RGBA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+RGBA.swift"; sourceTree = "<group>"; };
+		9DC3B6A5296C558300D90945 /* GameSceneHeaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneHeaderTests.swift; sourceTree = "<group>"; };
+		9DC3B6A7296C565600D90945 /* GameSceneHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneHeader.swift; sourceTree = "<group>"; };
+		9DC3B6AB296C59F400D90945 /* View+Frame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Frame.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +160,7 @@
 		9D8C9C2B2969C13100761DA2 /* presentation */ = {
 			isa = PBXGroup;
 			children = (
+				9DC3B6A3296C556200D90945 /* component */,
 				9D8C9C2D2969C15000761DA2 /* GameScene.swift */,
 			);
 			path = presentation;
@@ -255,6 +262,7 @@
 		9DC3B698296C423200D90945 /* presentation */ = {
 			isa = PBXGroup;
 			children = (
+				9DC3B6A4296C556900D90945 /* component */,
 				9DC3B699296C425400D90945 /* ContentViewTests.swift */,
 			);
 			path = presentation;
@@ -263,6 +271,7 @@
 		9DC3B69B296C504E00D90945 /* ui */ = {
 			isa = PBXGroup;
 			children = (
+				9DC3B6A9296C59D900D90945 /* view */,
 				9DC3B69C296C506000D90945 /* Color+UI.swift */,
 				9DC3B6A1296C545300D90945 /* UIColor+RGBA.swift */,
 			);
@@ -275,6 +284,38 @@
 				9DC3B69F296C52C600D90945 /* ColorTests.swift */,
 			);
 			path = ui;
+			sourceTree = "<group>";
+		};
+		9DC3B6A3296C556200D90945 /* component */ = {
+			isa = PBXGroup;
+			children = (
+				9DC3B6A7296C565600D90945 /* GameSceneHeader.swift */,
+			);
+			path = component;
+			sourceTree = "<group>";
+		};
+		9DC3B6A4296C556900D90945 /* component */ = {
+			isa = PBXGroup;
+			children = (
+				9DC3B6A5296C558300D90945 /* GameSceneHeaderTests.swift */,
+			);
+			path = component;
+			sourceTree = "<group>";
+		};
+		9DC3B6A9296C59D900D90945 /* view */ = {
+			isa = PBXGroup;
+			children = (
+				9DC3B6AA296C59DD00D90945 /* extension */,
+			);
+			path = view;
+			sourceTree = "<group>";
+		};
+		9DC3B6AA296C59DD00D90945 /* extension */ = {
+			isa = PBXGroup;
+			children = (
+				9DC3B6AB296C59F400D90945 /* View+Frame.swift */,
+			);
+			path = extension;
 			sourceTree = "<group>";
 		};
 		E42FA48E285E7122F94E3B7A /* Frameworks */ = {
@@ -421,6 +462,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9DC3B6AC296C59F400D90945 /* View+Frame.swift in Sources */,
 				9D8C9C2E2969C15000761DA2 /* GameScene.swift in Sources */,
 				9DC3B6A2296C545300D90945 /* UIColor+RGBA.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
@@ -428,6 +470,7 @@
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				9DC3B693296C393400D90945 /* SceneDimensions.swift in Sources */,
 				9DC3B68B296C370200D90945 /* AppDelegate.swift in Sources */,
+				9DC3B6A8296C565600D90945 /* GameSceneHeader.swift in Sources */,
 				9DC3B686296C352300D90945 /* Sizer.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -441,6 +484,7 @@
 				9DC3B6A0296C52C600D90945 /* ColorTests.swift in Sources */,
 				9DC3B69A296C425400D90945 /* ContentViewTests.swift in Sources */,
 				9DC3B691296C384B00D90945 /* SceneDimensionsTests.swift in Sources */,
+				9DC3B6A6296C558300D90945 /* GameSceneHeaderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
