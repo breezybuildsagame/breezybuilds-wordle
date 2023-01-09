@@ -17,7 +17,7 @@ final class ContentViewTests: XCTestCase
     func test_when_view_appears__sizer_utility_color_is_clear_and_the_furthest_back_element() throws
     {
         // given
-        let expectedSizerViewColor = Color.clear
+        let expectedSizerViewColor = Color.ui.primary
         let sut = ContentView()
         let navigator = Navigator(initialPath: "")
 

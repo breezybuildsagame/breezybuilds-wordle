@@ -32,7 +32,7 @@ struct ContentView: View
 	}
     
     private func SizerView() -> some View {
-        Color.clear
+        Color.ui.primary
             .modifier(SizeModifier())
             .onPreferenceChange(SizePreferenceKey.self) { sizer.content = $0 }
             .edgesIgnoringSafeArea(.all)

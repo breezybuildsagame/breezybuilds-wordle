@@ -22,6 +22,9 @@
 		9DC3B693296C393400D90945 /* SceneDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B692296C393400D90945 /* SceneDimensions.swift */; };
 		9DC3B696296C3BBD00D90945 /* XCTestCase+SceneDimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B695296C3BBD00D90945 /* XCTestCase+SceneDimensions.swift */; };
 		9DC3B69A296C425400D90945 /* ContentViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B699296C425400D90945 /* ContentViewTests.swift */; };
+		9DC3B69D296C506000D90945 /* Color+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B69C296C506000D90945 /* Color+UI.swift */; };
+		9DC3B6A0296C52C600D90945 /* ColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B69F296C52C600D90945 /* ColorTests.swift */; };
+		9DC3B6A2296C545300D90945 /* UIColor+RGBA.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B6A1296C545300D90945 /* UIColor+RGBA.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +56,9 @@
 		9DC3B692296C393400D90945 /* SceneDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDimensions.swift; sourceTree = "<group>"; };
 		9DC3B695296C3BBD00D90945 /* XCTestCase+SceneDimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+SceneDimensions.swift"; sourceTree = "<group>"; };
 		9DC3B699296C425400D90945 /* ContentViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewTests.swift; sourceTree = "<group>"; };
+		9DC3B69C296C506000D90945 /* Color+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+UI.swift"; sourceTree = "<group>"; };
+		9DC3B69F296C52C600D90945 /* ColorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTests.swift; sourceTree = "<group>"; };
+		9DC3B6A1296C545300D90945 /* UIColor+RGBA.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+RGBA.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -172,6 +178,7 @@
 		9DC3B683296C350B00D90945 /* core */ = {
 			isa = PBXGroup;
 			children = (
+				9DC3B69B296C504E00D90945 /* ui */,
 				9DC3B697296C422200D90945 /* presentation */,
 				9DC3B684296C351700D90945 /* util */,
 			);
@@ -214,6 +221,7 @@
 		9DC3B68C296C382900D90945 /* core */ = {
 			isa = PBXGroup;
 			children = (
+				9DC3B69E296C52B100D90945 /* ui */,
 				9DC3B698296C423200D90945 /* presentation */,
 				9DC3B68D296C382E00D90945 /* util */,
 			);
@@ -250,6 +258,23 @@
 				9DC3B699296C425400D90945 /* ContentViewTests.swift */,
 			);
 			path = presentation;
+			sourceTree = "<group>";
+		};
+		9DC3B69B296C504E00D90945 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				9DC3B69C296C506000D90945 /* Color+UI.swift */,
+				9DC3B6A1296C545300D90945 /* UIColor+RGBA.swift */,
+			);
+			path = ui;
+			sourceTree = "<group>";
+		};
+		9DC3B69E296C52B100D90945 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				9DC3B69F296C52C600D90945 /* ColorTests.swift */,
+			);
+			path = ui;
 			sourceTree = "<group>";
 		};
 		E42FA48E285E7122F94E3B7A /* Frameworks */ = {
@@ -397,7 +422,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				9D8C9C2E2969C15000761DA2 /* GameScene.swift in Sources */,
+				9DC3B6A2296C545300D90945 /* UIColor+RGBA.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
+				9DC3B69D296C506000D90945 /* Color+UI.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				9DC3B693296C393400D90945 /* SceneDimensions.swift in Sources */,
 				9DC3B68B296C370200D90945 /* AppDelegate.swift in Sources */,
@@ -411,6 +438,7 @@
 			files = (
 				9DC3B696296C3BBD00D90945 /* XCTestCase+SceneDimensions.swift in Sources */,
 				9D8C9C3C2969C46C00761DA2 /* GameSceneTests.swift in Sources */,
+				9DC3B6A0296C52C600D90945 /* ColorTests.swift in Sources */,
 				9DC3B69A296C425400D90945 /* ContentViewTests.swift in Sources */,
 				9DC3B691296C384B00D90945 /* SceneDimensionsTests.swift in Sources */,
 			);
