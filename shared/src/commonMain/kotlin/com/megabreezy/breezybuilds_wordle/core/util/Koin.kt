@@ -1,5 +1,6 @@
 package com.megabreezy.breezybuilds_wordle.core.util
 
+import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
@@ -14,7 +15,10 @@ fun initKoin(
 {
     appDeclaration()
 
-    modules(CoreKoinModule().mockModule())
+    modules(
+        CoreKoinModule(scenarios = scenarios).mockModule(),
+        GameKoinModule().module()
+    )
 
     KoinPlatformManager.setApp(newApp = this)
 }

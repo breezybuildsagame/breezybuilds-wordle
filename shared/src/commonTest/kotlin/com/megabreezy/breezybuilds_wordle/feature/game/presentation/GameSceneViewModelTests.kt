@@ -40,17 +40,20 @@ class GameSceneViewModelTests: KoinComponent
     fun tearDown() = stopKoin()
 
     @Test
-    fun `when setup method is invoked on an instance - the setUpGameEvents use case is invoked`()
+    fun `when setup method is invoked on an instance with a handler - the setUpGameEvents use case is invoked`()
     {
         // given
         answerLocalDataSource.getAnswerShouldFail = true
+        val handler = MockSceneHandler()
         val sut = GameSceneViewModel()
 
         // when
-        sut.setUp()
+        sut.setUp(handler = handler)
 
         // then
         assertNotNull(answerLocalDataSource.answerToPut)
+        assertTrue(handler.onStartingGameDidInvoke)
+        assertTrue(handler.onGameStartedDidInvoke)
     }
 
     @Test
@@ -111,6 +114,24 @@ class GameSceneViewModelTests: KoinComponent
 
         // then
         assertEquals(expectedAnnouncement, actualAnnouncement)
+    }
+
+    class MockSceneHandler: GameSceneHandleable
+    {
+        var onGameStartedDidInvoke = false
+        var onStartingGameDidInvoke = false
+
+        override fun onGameOver() { }
+
+        override fun onGameStarted() { onGameStartedDidInvoke = true }
+
+        override fun onGuessingWord() { }
+
+        override fun onRevealNextTile() { }
+
+        override fun onRoundCompleted() { }
+
+        override fun onStartingGame() { onStartingGameDidInvoke = true }
     }
 
     class MockAnswerLocalDataSource: AnswerLocalDataManageable

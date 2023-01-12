@@ -12,6 +12,8 @@
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
 		7555FF83242A565900829871 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7555FF82242A565900829871 /* ContentView.swift */; };
 		97938403D6D336375F950A15 /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17C0F794CA2046006F879E89 /* Pods_iosApp.framework */; };
+		9D3DBD49296F9A0A00FA8FDE /* GameSceneHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3DBD48296F9A0A00FA8FDE /* GameSceneHandlerTests.swift */; };
+		9D3DBD4B296F9B2400FA8FDE /* GameSceneHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3DBD4A296F9B2400FA8FDE /* GameSceneHandler.swift */; };
 		9D8C9C292969BE0600761DA2 /* SwiftUIRouter in Frameworks */ = {isa = PBXBuildFile; productRef = 9D8C9C282969BE0600761DA2 /* SwiftUIRouter */; };
 		9D8C9C2E2969C15000761DA2 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C9C2D2969C15000761DA2 /* GameScene.swift */; };
 		9D8C9C382969C42200761DA2 /* ViewInspector in Frameworks */ = {isa = PBXBuildFile; productRef = 9D8C9C372969C42200761DA2 /* ViewInspector */; };
@@ -62,6 +64,8 @@
 		9D3DBD45296F98D100FA8FDE /* Roboto-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-LightItalic.ttf"; sourceTree = "<group>"; };
 		9D3DBD46296F98D100FA8FDE /* Roboto-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		9D3DBD47296F98D100FA8FDE /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
+		9D3DBD48296F9A0A00FA8FDE /* GameSceneHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneHandlerTests.swift; sourceTree = "<group>"; };
+		9D3DBD4A296F9B2400FA8FDE /* GameSceneHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneHandler.swift; sourceTree = "<group>"; };
 		9D6098542948B75C00F2D7C9 /* iosAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iosAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D8C9C2D2969C15000761DA2 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		9D8C9C3B2969C46C00761DA2 /* GameSceneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneTests.swift; sourceTree = "<group>"; };
@@ -174,6 +178,7 @@
 			children = (
 				9DC3B6A3296C556200D90945 /* component */,
 				9D8C9C2D2969C15000761DA2 /* GameScene.swift */,
+				9D3DBD4A296F9B2400FA8FDE /* GameSceneHandler.swift */,
 			);
 			path = presentation;
 			sourceTree = "<group>";
@@ -288,6 +293,7 @@
 			children = (
 				9DC3B6A4296C556900D90945 /* component */,
 				9DC3B699296C425400D90945 /* ContentViewTests.swift */,
+				9D3DBD48296F9A0A00FA8FDE /* GameSceneHandlerTests.swift */,
 			);
 			path = presentation;
 			sourceTree = "<group>";
@@ -491,6 +497,7 @@
 				9DC3B6A2296C545300D90945 /* UIColor+RGBA.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				9DC3B69D296C506000D90945 /* Color+UI.swift in Sources */,
+				9D3DBD4B296F9B2400FA8FDE /* GameSceneHandler.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				9DC3B693296C393400D90945 /* SceneDimensions.swift in Sources */,
 				9DC3B68B296C370200D90945 /* AppDelegate.swift in Sources */,
@@ -503,6 +510,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D3DBD49296F9A0A00FA8FDE /* GameSceneHandlerTests.swift in Sources */,
 				9DC3B696296C3BBD00D90945 /* XCTestCase+SceneDimensions.swift in Sources */,
 				9D8C9C3C2969C46C00761DA2 /* GameSceneTests.swift in Sources */,
 				9DC3B6A0296C52C600D90945 /* ColorTests.swift in Sources */,

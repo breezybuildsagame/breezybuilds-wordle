@@ -8,7 +8,12 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case.*
 
 class GameSceneViewModel
 {
-    fun setUp() { GameUseCase().setUpGameEvents() }
+    fun setUp(handler: GameSceneHandleable? = null)
+    {
+        handler?.onStartingGame()
+        GameUseCase().setUpGameEvents(sceneHandler = handler)
+        handler?.onGameStarted()
+    }
 
     fun getAnnouncement(): Announcement = GameUseCase().getAnnouncement()
 
