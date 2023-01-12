@@ -10,11 +10,24 @@ import SwiftUI
 
 struct GameScene: View
 {
+    @ObservedObject private var handler = GameSceneHandler.shared
+    
     var body: some View
     {
         ZStack
         {
-            Text("Hello, Game Scene!")
+            switch(handler.activeView)
+            {
+                case .GAME:
+                    VStack
+                    {
+                        handler.gameHeader()
+                        Spacer()
+                    }
+                default:
+                    EmptyView()
+            }
         }
+        .onAppear { handler.setUp() }
     }
 }

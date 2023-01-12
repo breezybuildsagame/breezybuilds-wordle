@@ -9,16 +9,20 @@
 import Foundation
 import shared
 
-class GameSceneHandler
+class GameSceneHandler: ObservableObject
 {
+    static let shared = GameSceneHandler()
+    
     private let viewModel = GameSceneViewModel()
     
-    var activeView: ViewType = .EMPTY
+    @Published var activeView: ViewType = .EMPTY
     
     func setUp()
     {
-        viewModel.setUp(handler: self)
+        if activeView == .EMPTY { viewModel.setUp(handler: self) }
     }
+    
+    func gameHeader() -> GameSceneHeader { GameSceneHeader(title: "Test") }
     
     enum ViewType { case EMPTY, GAME }
 }

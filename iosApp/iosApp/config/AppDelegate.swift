@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import shared
 
 class AppDelegate: NSObject, UIApplicationDelegate
 {
@@ -15,6 +16,8 @@ class AppDelegate: NSObject, UIApplicationDelegate
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool
     {
+        KoinPlatformManager.shared.start(scenarios: [Scenario.wordFound, Scenario.answerSaved])
+        
         return true
     }
 }
