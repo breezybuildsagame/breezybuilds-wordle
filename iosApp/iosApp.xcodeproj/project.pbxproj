@@ -26,6 +26,8 @@
 		9D756F9829703B3E005C7705 /* Roboto-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9D3DBD42296F98D100FA8FDE /* Roboto-Italic.ttf */; };
 		9D756F9929703B3E005C7705 /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9D3DBD45296F98D100FA8FDE /* Roboto-LightItalic.ttf */; };
 		9D756F9A29703B3E005C7705 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9D3DBD3C296F98D100FA8FDE /* Roboto-Medium.ttf */; };
+		9D756F9C297043EB005C7705 /* GameSceneBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D756F9B297043EB005C7705 /* GameSceneBoardTests.swift */; };
+		9D756F9E2970460A005C7705 /* GameSceneBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D756F9D2970460A005C7705 /* GameSceneBoard.swift */; };
 		9D8C9C292969BE0600761DA2 /* SwiftUIRouter in Frameworks */ = {isa = PBXBuildFile; productRef = 9D8C9C282969BE0600761DA2 /* SwiftUIRouter */; };
 		9D8C9C2E2969C15000761DA2 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C9C2D2969C15000761DA2 /* GameScene.swift */; };
 		9D8C9C382969C42200761DA2 /* ViewInspector in Frameworks */ = {isa = PBXBuildFile; productRef = 9D8C9C372969C42200761DA2 /* ViewInspector */; };
@@ -79,6 +81,8 @@
 		9D3DBD48296F9A0A00FA8FDE /* GameSceneHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneHandlerTests.swift; sourceTree = "<group>"; };
 		9D3DBD4A296F9B2400FA8FDE /* GameSceneHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneHandler.swift; sourceTree = "<group>"; };
 		9D6098542948B75C00F2D7C9 /* iosAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iosAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9D756F9B297043EB005C7705 /* GameSceneBoardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneBoardTests.swift; sourceTree = "<group>"; };
+		9D756F9D2970460A005C7705 /* GameSceneBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneBoard.swift; sourceTree = "<group>"; };
 		9D8C9C2D2969C15000761DA2 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		9D8C9C3B2969C46C00761DA2 /* GameSceneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneTests.swift; sourceTree = "<group>"; };
 		9DC3B685296C352300D90945 /* Sizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sizer.swift; sourceTree = "<group>"; };
@@ -332,6 +336,7 @@
 			isa = PBXGroup;
 			children = (
 				9DC3B6A7296C565600D90945 /* GameSceneHeader.swift */,
+				9D756F9D2970460A005C7705 /* GameSceneBoard.swift */,
 			);
 			path = component;
 			sourceTree = "<group>";
@@ -340,6 +345,7 @@
 			isa = PBXGroup;
 			children = (
 				9DC3B6A5296C558300D90945 /* GameSceneHeaderTests.swift */,
+				9D756F9B297043EB005C7705 /* GameSceneBoardTests.swift */,
 			);
 			path = component;
 			sourceTree = "<group>";
@@ -523,6 +529,7 @@
 				9DC3B69D296C506000D90945 /* Color+UI.swift in Sources */,
 				9D3DBD4B296F9B2400FA8FDE /* GameSceneHandler.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
+				9D756F9E2970460A005C7705 /* GameSceneBoard.swift in Sources */,
 				9DC3B693296C393400D90945 /* SceneDimensions.swift in Sources */,
 				9DC3B68B296C370200D90945 /* AppDelegate.swift in Sources */,
 				9DC3B6A8296C565600D90945 /* GameSceneHeader.swift in Sources */,
@@ -538,6 +545,7 @@
 				9DC3B696296C3BBD00D90945 /* XCTestCase+SceneDimensions.swift in Sources */,
 				9D8C9C3C2969C46C00761DA2 /* GameSceneTests.swift in Sources */,
 				9DC3B6A0296C52C600D90945 /* ColorTests.swift in Sources */,
+				9D756F9C297043EB005C7705 /* GameSceneBoardTests.swift in Sources */,
 				9DC3B69A296C425400D90945 /* ContentViewTests.swift in Sources */,
 				9DC3B691296C384B00D90945 /* SceneDimensionsTests.swift in Sources */,
 				9DC3B6A6296C558300D90945 /* GameSceneHeaderTests.swift in Sources */,
