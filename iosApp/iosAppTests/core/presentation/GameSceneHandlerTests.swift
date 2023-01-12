@@ -7,8 +7,10 @@
 //
 
 import XCTest
+import ViewInspector
 @testable import iosApp
 @testable import shared
+import SwiftUI
 
 final class GameSceneHandlerTests: XCTestCase
 {
@@ -48,5 +50,20 @@ final class GameSceneHandlerTests: XCTestCase
         
         // then
         XCTAssertEqual(expectedActiveView, sut.activeView)
+    }
+    
+    func test_when_gameHeader_view_appears__title_matches_expected_title()
+    {
+        // given
+        let expectedTitle = GameSceneViewModel().getHeader().title()
+        let sut = GameSceneHandler()
+        let actualHeader = sut.gameHeader()
+        
+        // when
+        defer { ViewHosting.expel() }
+        ViewHosting.host(view: actualHeader.environmentObject(SceneDimensions()))
+        
+        // then
+        XCTAssertEqual(expectedTitle,try actualHeader.inspect().find(text: expectedTitle).string())
     }
 }

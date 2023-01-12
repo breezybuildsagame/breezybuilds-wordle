@@ -22,7 +22,10 @@ class GameSceneHandler: ObservableObject
         if activeView == .EMPTY { viewModel.setUp(handler: self) }
     }
     
-    func gameHeader() -> GameSceneHeader { GameSceneHeader(title: "Test") }
+    func gameHeader() -> GameSceneHeader
+    {
+        GameSceneHeader(title: viewModel.getHeader().title())
+    }
     
     enum ViewType { case EMPTY, GAME }
 }
@@ -33,7 +36,6 @@ extension GameSceneHandler: GameSceneHandleable
     
     func onGameStarted()
     {
-        print("game started!")
         activeView = ViewType.GAME
     }
     
