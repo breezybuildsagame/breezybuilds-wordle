@@ -33,7 +33,7 @@ struct GameSceneHeader: View
                 if let title = title
                 {
                     Text(title)
-                        .font(Font.system(size: sceneDimensions.height * (40.0 / idealFrameHeight())))
+                        .font(Font.custom("Roboto-Black", size: sceneDimensions.height * (40.0 / idealFrameHeight())))
                         .foregroundColor(Color.ui.onPrimary)
                 }
             }

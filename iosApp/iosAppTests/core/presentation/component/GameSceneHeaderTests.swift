@@ -187,5 +187,6 @@ final class GameSceneHeaderTests: XCTestCase
         // then
         XCTAssertEqual(expectedFontSize, try textAttributes.font().size())
         XCTAssertEqual(expectedFontColor, try textAttributes.foregroundColor())
+        XCTAssertEqual("Roboto-Black", try textAttributes.font().name())
     }
 }
