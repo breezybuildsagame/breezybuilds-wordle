@@ -17,5 +17,12 @@ extension Color
     {
         let primary = Color("color.primary")
         let onPrimary = Color("color.on_primary")
+        let secondary = Color("color.secondary")
+        let onSecondary = Color("color.on_secondary")
+        let tertiary = Color("color.tertiary")
+        let onTertiary = Color("color.on_tertiary")
+        let surface = Color("color.surface")
+        let onSurface = Color("color.on_surface")
+        let error = Color("color.error")
     }
 }

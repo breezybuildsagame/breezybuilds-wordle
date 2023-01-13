@@ -23,19 +23,38 @@ extension GameSceneBoard
     {
         @EnvironmentObject private var sceneDimensions: SceneDimensions
         
+        var letter: String? = nil
+        
         var state: GameBoard.TileState = .hidden
         
         var body: some View
         {
-            ZStack
+            let backgroundColor: Color = {
+                switch(state)
+                {
+                    case .incorrect: return Color.ui.error
+                    default: return Color.clear
+                }
+            }()
+            
+            return ZStack
             {
-                Text("Holla")
+                if let letter = letter
+                {
+                    Text(letter)
+                        .font(Font.custom("Roboto-Bold", size: sceneDimensions.height * (35.0 / idealFrameHeight())))
+                        .foregroundColor(.ui.onPrimary)
+                }
             }
             .frame(
                 width: sceneDimensions.height * (61.0 / idealFrameHeight()),
                 height: sceneDimensions.height * (61.0 / idealFrameHeight())
             )
-            .border(Color.black, width: sceneDimensions.height * (2.0 / idealFrameHeight()))
+            .background(backgroundColor)
+            .border(
+                Color.black,
+                width: sceneDimensions.height * (state != .hidden ? 0.0 : 2.0 / idealFrameHeight())
+            )
         }
     }
 }
