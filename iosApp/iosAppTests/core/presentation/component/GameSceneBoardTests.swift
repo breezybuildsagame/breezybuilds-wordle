@@ -125,7 +125,7 @@ final class GameSceneBoardTests: XCTestCase
             [GameBoard.Tile(letter: "G", state: .incorrect), GameBoard.Tile(letter: "O", state: .close),
                 GameBoard.Tile(letter: "O", state: .hidden), GameBoard.Tile(letter: "D", state: .correct)],
             [GameBoard.Tile(letter: "H", state: .hidden), GameBoard.Tile(letter: "O", state: .hidden),
-                GameBoard.Tile(letter: "O", state: .hidden), GameBoard.Tile(letter: "D", state: .hidden)]
+                GameBoard.Tile(letter: "O", state: .hidden), GameBoard.Tile(letter: nil, state: .hidden)]
         ]
         let sut = GameSceneBoard(rows: rows)
         let sceneDimensions = SceneDimensions()
@@ -148,12 +148,12 @@ final class GameSceneBoardTests: XCTestCase
         for i in 0..<firstRow.count
         {
             XCTAssertNoThrow(try firstRow.view(GameSceneBoard.Tile.self, i))
-            XCTAssertEqual(String(describing: rows[0][i].letter()), try firstRow.view(GameSceneBoard.Tile.self, i).actualView().letter)
+            XCTAssertEqual(rows[0][i].letter() as? String, try firstRow.view(GameSceneBoard.Tile.self, i).actualView().letter)
         }
         for i in 0..<secondRow.count
         {
             XCTAssertNoThrow(try firstRow.view(GameSceneBoard.Tile.self, i))
-            XCTAssertEqual(String(describing: rows[0][i].letter()), try firstRow.view(GameSceneBoard.Tile.self, i).actualView().letter)
+            XCTAssertEqual(rows[1][i].letter() as? String, try secondRow.view(GameSceneBoard.Tile.self, i).actualView().letter)
         }
     }
 }

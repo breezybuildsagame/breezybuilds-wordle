@@ -25,7 +25,7 @@ struct GameSceneBoard: View
                 {
                     ForEach(0..<row.count, id: \.self)
                     { tileIndex in
-                        GameSceneBoard.Tile(letter: String(describing: row[tileIndex].letter()))
+                        GameSceneBoard.Tile(letter: row[tileIndex].letter() as? String)
                     }
                 }
             }
