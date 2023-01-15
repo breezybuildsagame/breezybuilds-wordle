@@ -11,9 +11,25 @@ import shared
 
 struct GameSceneBoard: View
 {
+    @EnvironmentObject private var sceneDimensions: SceneDimensions
+    
+    var rows: [[GameBoard.Tile]] = []
+    
     var body: some View
     {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(spacing: sceneDimensions.height * (10.0 / idealFrameHeight()))
+        {
+            ForEach(rows, id: \.self)
+            { row in
+                HStack(spacing: sceneDimensions.width * (7.0 / idealFrameWidth()))
+                {
+                    ForEach(0..<row.count, id: \.self)
+                    { tileIndex in
+                        GameSceneBoard.Tile(letter: String(describing: row[tileIndex].letter()))
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -32,6 +48,8 @@ extension GameSceneBoard
             let backgroundColor: Color = {
                 switch(state)
                 {
+                    case .close: return Color.ui.tertiary
+                    case .correct: return Color.ui.secondary
                     case .incorrect: return Color.ui.error
                     default: return Color.clear
                 }
