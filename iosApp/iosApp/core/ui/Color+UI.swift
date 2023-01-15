@@ -15,6 +15,8 @@ extension Color
     
     struct UI
     {
+        let background = Color("color.background")
+        let onBackground = Color("color.on_background")
         let primary = Color("color.primary")
         let onPrimary = Color("color.on_primary")
         let secondary = Color("color.secondary")
