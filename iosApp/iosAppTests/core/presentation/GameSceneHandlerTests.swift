@@ -66,4 +66,19 @@ final class GameSceneHandlerTests: XCTestCase
         // then
         XCTAssertEqual(expectedTitle,try actualHeader.inspect().find(text: expectedTitle).string())
     }
+    
+    func test_when_gameBoard_view_appears__rows_match_expected_value()
+    {
+        // given
+        let expectedRowCount = GameSceneViewModel().getGameBoard().rows().count
+        let sut = GameSceneHandler()
+        let actualBoard = sut.gameBoard()
+        
+        // when
+        defer { ViewHosting.expel() }
+        ViewHosting.host(view: actualBoard.environmentObject(SceneDimensions()))
+        
+        // then
+        XCTAssertEqual(expectedRowCount, try actualBoard.inspect().vStack().forEach(0).count)
+    }
 }

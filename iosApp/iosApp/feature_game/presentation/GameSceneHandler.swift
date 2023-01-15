@@ -27,6 +27,11 @@ class GameSceneHandler: ObservableObject
         GameSceneHeader(title: viewModel.getHeader().title())
     }
     
+    func gameBoard() -> GameSceneBoard
+    {
+        GameSceneBoard(rows: viewModel.getGameBoard().rows())
+    }
+    
     enum ViewType { case EMPTY, GAME }
 }
 

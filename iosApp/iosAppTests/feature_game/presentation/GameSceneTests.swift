@@ -20,7 +20,6 @@ final class GameSceneTests: XCTestCase
     func test_when_view_appears__handler_setUp_is_invoked()
     {
         // given
-        let expectedViewType = GameSceneHeader.self
         let sut = GameScene()
         
         // when
@@ -28,7 +27,9 @@ final class GameSceneTests: XCTestCase
         ViewHosting.host(view: sut.environmentObject(SceneDimensions()))
         
         // then
-        XCTAssertNoThrow(try sut.inspect().zStack().vStack(0).view(expectedViewType, 0))
+        XCTAssertNoThrow(try sut.inspect().zStack().vStack(0).view(GameSceneHeader.self, 0))
         XCTAssertNoThrow(try sut.inspect().zStack().vStack(0).spacer(1))
+        XCTAssertNoThrow(try sut.inspect().zStack().vStack(0).view(GameSceneBoard.self, 2))
+        XCTAssertNoThrow(try sut.inspect().zStack().vStack(0).spacer(3))
     }
 }

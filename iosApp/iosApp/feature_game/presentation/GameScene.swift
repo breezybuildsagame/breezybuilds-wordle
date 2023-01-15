@@ -23,6 +23,8 @@ struct GameScene: View
                     {
                         handler.gameHeader()
                         Spacer()
+                        handler.gameBoard()
+                        Spacer()
                     }
                 default:
                     EmptyView()
