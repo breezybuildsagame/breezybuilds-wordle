@@ -11,15 +11,31 @@ import shared
 
 struct GameSceneKeyboard: View
 {
+    @EnvironmentObject private var sceneDimensions: SceneDimensions
+    
+    var rows: [[GameSceneKeyboard.Key]] = []
+    
     var body: some View
     {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack
+        {
+            VStack(spacing: sceneDimensions.height * (6.0 / idealFrameHeight()))
+            {
+                ForEach(rows, id: \.self)
+                { row in
+                    HStack(spacing: sceneDimensions.width * (4.0 / idealFrameWidth()))
+                    {
+                        ForEach(row, id: \.self) { keyView in keyView }
+                    }
+                }
+            }
+        }
     }
 }
 
 extension GameSceneKeyboard
 {
-    struct Key: View
+    struct Key: View, Hashable, Equatable
     {
         @EnvironmentObject private var sceneDimensions: SceneDimensions
         
@@ -30,6 +46,15 @@ extension GameSceneKeyboard
         var resourceId: String? = nil
         
         var onTap: () -> () = { }
+        
+        static func == (lhs: GameSceneKeyboard.Key, rhs: GameSceneKeyboard.Key) -> Bool
+        {
+            return lhs.letters == rhs.letters && lhs.resourceId == rhs.resourceId && rhs.backgroundColor == lhs.backgroundColor
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine("\(letters ?? "")-\(String(describing: resourceId))")
+        }
         
         var body: some View
         {

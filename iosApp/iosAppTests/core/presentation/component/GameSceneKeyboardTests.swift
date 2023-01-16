@@ -133,7 +133,7 @@ final class GameSceneKeyboardTests: XCTestCase
         // then
         XCTAssertEqual(.ui.error, try sut.inspect().button().labelView().zStack().color(0).value())
     }
-        
+    
     func test_when_nearby_Key_view_appears__color_matches_design_requirements()
     {
         // given
@@ -175,5 +175,39 @@ final class GameSceneKeyboardTests: XCTestCase
         
         // then
         XCTAssertTrue(tappedDidInvoke)
+    }
+    
+    func test_when_view_appears_with_rows__view_matches_design_requirements() throws
+    {
+        // given
+        let expectedRowViews = [
+            [GameSceneKeyboard.Key(letters: "T"), GameSceneKeyboard.Key(letters: "E")],
+            [GameSceneKeyboard.Key(letters: "S"), GameSceneKeyboard.Key(letters: "T")]
+        ]
+        let expectedKeyHorizontalSpacing = mockFrame().width * (4.0 / idealFrame().width)
+        let expectedKeyRowVerticalSpacing = mockFrame().height * (6.0 / idealFrame().height)
+        let sut = GameSceneKeyboard(rows: expectedRowViews)
+        
+        // when
+        defer { ViewHosting.expel() }
+        ViewHosting.host(view: sut.environmentObject(dimensions))
+        dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
+        
+        // then
+        XCTAssertEqual(expectedKeyRowVerticalSpacing, try sut.inspect().zStack().vStack(0).spacing())
+        for index in (0..<expectedRowViews.count)
+        {
+            let keyRow = try sut.inspect().zStack().vStack(0).forEach(0).hStack(index)
+            
+            XCTAssertEqual(expectedKeyHorizontalSpacing, try keyRow.spacing())
+            XCTAssertNoThrow(try sut.inspect().zStack().vStack(0).forEach(0).hStack(index))
+            for (viewIndex, view) in expectedRowViews[index].enumerated()
+            {
+                XCTAssertEqual(
+                    view,
+                    try keyRow.forEach(0).view(GameSceneKeyboard.Key.self, viewIndex).actualView()
+                )
+            }
+        }
     }
 }
