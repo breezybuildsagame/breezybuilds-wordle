@@ -70,7 +70,7 @@ extension GameSceneBoard
             )
             .background(backgroundColor)
             .border(
-                Color.black,
+                Color.ui.error,
                 width: sceneDimensions.height * (state != .hidden ? 0.0 : 2.0 / idealFrameHeight())
             )
         }
