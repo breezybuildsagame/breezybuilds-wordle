@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import SwiftUI
 import ViewInspector
 @testable import iosApp
 @testable import shared
@@ -42,9 +43,67 @@ final class GameSceneKeyboardTests: XCTestCase
         dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
         
         // then
-        XCTAssertEqual(expectedCornerRadius, try sut.inspect().zStack().cornerRadius())
-        XCTAssertEqual(expectedFrameWidth, try sut.inspect().zStack().fixedWidth())
-        XCTAssertEqual(expectedFrameHeight, try sut.inspect().zStack().fixedHeight())
+        XCTAssertEqual(expectedCornerRadius, try sut.inspect().button().labelView().zStack().cornerRadius())
+        XCTAssertEqual(expectedFrameWidth, try sut.inspect().button().labelView().zStack().fixedWidth())
+        XCTAssertEqual(expectedFrameHeight, try sut.inspect().button().labelView().zStack().fixedHeight())
+    }
+    
+    func test_when_key_appears_with_letter__expected_text_is_displayed() throws
+    {
+        // given
+        let sut = GameSceneKeyboard.Key(letters: "K")
+        let expectedFontSize = mockFrame().height * (13.0 / idealFrame().height)
+        
+        // when
+        defer { ViewHosting.expel() }
+        ViewHosting.host(view: sut.environmentObject(dimensions))
+        dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
+        let textViewAttributes = try sut.inspect().find(text: "K").attributes()
+        
+        // then
+        XCTAssertEqual(.ui.onBackground, try textViewAttributes.foregroundColor())
+        XCTAssertEqual("Roboto-ExtraBold", try textViewAttributes.font().name())
+        XCTAssertEqual(expectedFontSize, try textViewAttributes.font().size())
+    }
+    
+    func test_when_enter_key_appears__shape_matches_design_requirements()
+    {
+        // given
+        let expectedFrameWidth = mockFrame().width * (52.0 / idealFrame().width)
+        let expectedFrameHeight = mockFrame().height * (56.0 / idealFrame().height)
+        let sut = GameSceneKeyboard.Key(letters: "ENTER")
+        
+        // when
+        defer { ViewHosting.expel() }
+        ViewHosting.host(view: sut.environmentObject(dimensions))
+        dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
+        
+        // then
+        XCTAssertEqual(expectedFrameWidth, try sut.inspect().button().labelView().zStack().fixedWidth())
+        XCTAssertEqual(expectedFrameHeight, try sut.inspect().button().labelView().zStack().fixedHeight())
+    }
+    
+    func test_when_backspace_key_appears__shape_matches_design_requirements()
+    {
+        // given
+        let expectedFrameWidth = mockFrame().width * (52.0 / idealFrame().width)
+        let expectedFrameHeight = mockFrame().height * (56.0 / idealFrame().height)
+        let expectedImageSize = mockFrame().width * (23.0 / idealFrame().width)
+        let sut = GameSceneKeyboard.Key(resourceId: "game_image_backspace")
+        let expectedView = Image("game_image_backspace").resizable()
+        
+        // when
+        defer { ViewHosting.expel() }
+        ViewHosting.host(view: sut.environmentObject(dimensions))
+        dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
+        
+        // then
+        XCTAssertEqual(expectedFrameWidth, try sut.inspect().button().labelView().zStack().fixedWidth())
+        XCTAssertEqual(expectedFrameHeight, try sut.inspect().button().labelView().zStack().fixedHeight())
+        XCTAssertEqual(expectedView.self, try sut.inspect().button().labelView().zStack().image(1).actualImage())
+        XCTAssertTrue(try sut.inspect().button().labelView().zStack().image(1).isScaledToFit())
+        XCTAssertEqual(expectedImageSize, try sut.inspect().button().labelView().zStack().image(1).fixedWidth())
+        XCTAssertEqual(expectedImageSize, try sut.inspect().button().labelView().zStack().image(1).fixedHeight())
     }
     
     func test_when_default_Key_view_appears__color_matches_design_requirements()
@@ -58,7 +117,7 @@ final class GameSceneKeyboardTests: XCTestCase
         dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
         
         // then
-        XCTAssertEqual(.ui.background, try sut.inspect().zStack().color(0).value())
+        XCTAssertEqual(.ui.background, try sut.inspect().button().labelView().zStack().color(0).value())
     }
     
     func test_when_not_found_Key_view_appears__color_matches_design_requirements()
@@ -72,7 +131,7 @@ final class GameSceneKeyboardTests: XCTestCase
         dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
         
         // then
-        XCTAssertEqual(.ui.error, try sut.inspect().zStack().color(0).value())
+        XCTAssertEqual(.ui.error, try sut.inspect().button().labelView().zStack().color(0).value())
     }
         
     func test_when_nearby_Key_view_appears__color_matches_design_requirements()
@@ -86,7 +145,7 @@ final class GameSceneKeyboardTests: XCTestCase
         dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
         
         // then
-        XCTAssertEqual(.ui.tertiary, try sut.inspect().zStack().color(0).value())
+        XCTAssertEqual(.ui.tertiary, try sut.inspect().button().labelView().zStack().color(0).value())
     }
     
     func test_when_correct_Key_view_appears__color_matches_design_requirements()
@@ -100,6 +159,21 @@ final class GameSceneKeyboardTests: XCTestCase
         dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
         
         // then
-        XCTAssertEqual(.ui.secondary, try sut.inspect().zStack().color(0).value())
+        XCTAssertEqual(.ui.secondary, try sut.inspect().button().labelView().zStack().color(0).value())
+    }
+    
+    func test_when_view_appears_and_is_tapped__expected_function_is_invoked() throws
+    {
+        // given
+        var tappedDidInvoke = false
+        let sut = GameSceneKeyboard.Key() { tappedDidInvoke = true }
+        
+        // when
+        defer { ViewHosting.expel() }
+        ViewHosting.host(view: sut.environmentObject(dimensions))
+        try sut.inspect().button().tap()
+        
+        // then
+        XCTAssertTrue(tappedDidInvoke)
     }
 }
