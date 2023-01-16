@@ -32,6 +32,28 @@ class GameSceneHandler: ObservableObject
         GameSceneBoard(rows: viewModel.getGameBoard().rows())
     }
     
+    func gameKeyboard() -> GameSceneKeyboard
+    {
+        var keyRows: [[GameSceneKeyboard.Key]] = []
+        
+        for (rowIndex, row) in viewModel.getGameKeyboard().rows().enumerated()
+        {
+            keyRows.append([])
+            for key in row
+            {
+                keyRows[rowIndex].append(
+                    GameSceneKeyboard.Key(
+                        backgroundColor: key.backgroundColor(),
+                        letters: key.letters(),
+                        resourceId: key.resourceId()
+                    )
+                )
+            }
+        }
+        
+        return GameSceneKeyboard(rows: keyRows)
+    }
+    
     enum ViewType { case EMPTY, GAME }
 }
 

@@ -81,4 +81,19 @@ final class GameSceneHandlerTests: XCTestCase
         // then
         XCTAssertEqual(expectedRowCount, try actualBoard.inspect().vStack().forEach(0).count)
     }
+    
+    func test_when_gameKeyboard_view_appears__rows_match_expected_value()
+    {
+        // given
+        let expectedRowCount = GameSceneViewModel().getGameKeyboard().rows().count
+        let sut = GameSceneHandler()
+        let actualKeyboard = sut.gameKeyboard()
+        
+        // when
+        defer { ViewHosting.expel() }
+        ViewHosting.host(view: actualKeyboard.environmentObject(SceneDimensions()))
+        
+        // then
+        XCTAssertEqual(expectedRowCount, try actualKeyboard.inspect().zStack().vStack(0).forEach(0).count)
+    }
 }

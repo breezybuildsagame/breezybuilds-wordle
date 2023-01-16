@@ -62,7 +62,7 @@ final class GameSceneKeyboardTests: XCTestCase
         
         // then
         XCTAssertEqual(.ui.onBackground, try textViewAttributes.foregroundColor())
-        XCTAssertEqual("Roboto-ExtraBold", try textViewAttributes.font().name())
+        XCTAssertEqual("Roboto-Bold", try textViewAttributes.font().name())
         XCTAssertEqual(expectedFontSize, try textViewAttributes.font().size())
     }
     

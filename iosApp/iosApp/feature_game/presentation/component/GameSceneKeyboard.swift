@@ -77,16 +77,7 @@ extension GameSceneKeyboard
                 {
                     backgroundColorView
                     
-                    if let letters = letters
-                    {
-                        Text(letters)
-                            .font(
-                                Font.custom("Roboto-ExtraBold",
-                                size: sceneDimensions.height * (13.0 / idealFrameHeight()))
-                            )
-                            .foregroundColor(.ui.onBackground)
-                    }
-                    else if let resourceId = resourceId
+                    if let resourceId = resourceId
                     {
                         Image(resourceId)
                             .resizable()
@@ -95,6 +86,15 @@ extension GameSceneKeyboard
                                 width: sceneDimensions.width * (23.0 / idealFrameWidth()),
                                 height: sceneDimensions.width * (23.0 / idealFrameWidth())
                             )
+                    }
+                    else if let letters = letters
+                    {
+                        Text(letters)
+                            .font(
+                                Font.custom("Roboto-Bold",
+                                size: sceneDimensions.height * (13.0 / idealFrameHeight()))
+                            )
+                            .foregroundColor(.ui.onBackground)
                     }
                 }
                 .frame(

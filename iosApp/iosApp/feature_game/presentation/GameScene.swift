@@ -25,6 +25,7 @@ struct GameScene: View
                         Spacer()
                         handler.gameBoard()
                         Spacer()
+                        handler.gameKeyboard()
                     }
                 default:
                     EmptyView()

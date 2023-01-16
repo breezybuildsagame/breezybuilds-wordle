@@ -31,5 +31,6 @@ final class GameSceneTests: XCTestCase
         XCTAssertNoThrow(try sut.inspect().zStack().vStack(0).spacer(1))
         XCTAssertNoThrow(try sut.inspect().zStack().vStack(0).view(GameSceneBoard.self, 2))
         XCTAssertNoThrow(try sut.inspect().zStack().vStack(0).spacer(3))
+        XCTAssertNoThrow(try sut.inspect().zStack().vStack(0).view(GameSceneKeyboard.self, 4))
     }
 }
