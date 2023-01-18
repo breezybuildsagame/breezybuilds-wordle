@@ -47,8 +47,8 @@ final class ColorTests: XCTestCase {
         return [
             TestColor(
                 name: "color.primary",
-                lightR: 23, lightG: 23, lightB: 23, lightA: 1,
-                darkR: 23, darkG: 23, darkB: 23, darkA: 1
+                lightR: 32, lightG: 32, lightB: 32, lightA: 1,
+                darkR: 32, darkG: 32, darkB: 32, darkA: 1
             ),
             TestColor(
                 name: "color.on_primary",
