@@ -54,6 +54,15 @@ class GameSceneHandler: ObservableObject
         return GameSceneKeyboard(rows: keyRows)
     }
     
+    func gameAnnouncement() -> GameSceneAnnouncement?
+    {
+        if let message = viewModel.getAnnouncement().message()
+        {
+            return GameSceneAnnouncement(text: message)
+        }
+        else { return nil }
+    }
+    
     enum ViewType { case EMPTY, GAME }
 }
 

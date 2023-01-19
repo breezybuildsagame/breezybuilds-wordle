@@ -96,4 +96,34 @@ final class GameSceneHandlerTests: XCTestCase
         // then
         XCTAssertEqual(expectedRowCount, try actualKeyboard.inspect().zStack().vStack(0).forEach(0).count)
     }
+    
+    func test_when_gameAnnouncement_view_appears__text_matches_expected_value()
+    {
+        // given
+        let expectedTextValue = "My Middle Layer Announcement"
+        let actualAnnouncement = GameSceneViewModel().getAnnouncement()
+        let sut = GameSceneHandler()
+        actualAnnouncement.setMessage(newMessage: expectedTextValue)
+        let actualAnnouncementView = sut.gameAnnouncement()
+        
+        // when
+        defer { ViewHosting.expel() }
+        ViewHosting.host(view: actualAnnouncementView.environmentObject(SceneDimensions()))
+        
+        // then
+        XCTAssertEqual(expectedTextValue, try actualAnnouncementView.inspect().text().string())
+    }
+    
+    func test_when_gameAnnouncement_contains_no_announcement__view_is_not_returned()
+    {
+        // given
+        let actualAnnouncement = GameSceneViewModel().getAnnouncement()
+        actualAnnouncement.setMessage(newMessage: nil)
+        
+        // when
+        let actualAnnouncementView = GameSceneHandler().gameAnnouncement()
+        
+        // then
+        XCTAssertNil(actualAnnouncementView)
+    }
 }
