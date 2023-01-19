@@ -13,9 +13,12 @@ class GameSceneHandler: ObservableObject
 {
     static let shared = GameSceneHandler()
     
+    @Published var activeView: ViewType = .EMPTY
+    
+    private (set) var gameKeyboardIsEnabled = false
+    
     private let viewModel = GameSceneViewModel()
     
-    @Published var activeView: ViewType = .EMPTY
     
     func setUp()
     {
@@ -45,7 +48,8 @@ class GameSceneHandler: ObservableObject
                     GameSceneKeyboard.Key(
                         backgroundColor: key.backgroundColor(),
                         letters: key.letters(),
-                        resourceId: key.resourceId()
+                        resourceId: key.resourceId(),
+                        onTap: { if self.gameKeyboardIsEnabled { key.click() } }
                     )
                 )
             }
@@ -68,18 +72,21 @@ class GameSceneHandler: ObservableObject
 
 extension GameSceneHandler: GameSceneHandleable
 {
-    func onGameOver() { }
+    func onGameOver() { publishGameView() }
     
-    func onGameStarted()
+    func onGameStarted() { publishGameView(keyboardIsEnabled: true) }
+    
+    func onGuessingWord() { publishGameView() }
+    
+    func onRevealNextTile() { publishGameView(keyboardIsEnabled: true) }
+    
+    func onRoundCompleted() { publishGameView(keyboardIsEnabled: true) }
+    
+    func onStartingGame() { publishGameView() }
+    
+    private func publishGameView(keyboardIsEnabled: Bool = false)
     {
+        gameKeyboardIsEnabled = keyboardIsEnabled
         activeView = ViewType.GAME
     }
-    
-    func onGuessingWord() { }
-    
-    func onRevealNextTile() { }
-    
-    func onRoundCompleted() { }
-    
-    func onStartingGame() { }
 }
