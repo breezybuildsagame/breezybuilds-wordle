@@ -200,9 +200,9 @@
 		9D8C9C2B2969C13100761DA2 /* presentation */ = {
 			isa = PBXGroup;
 			children = (
-				9DC3B6A3296C556200D90945 /* component */,
 				9D8C9C2D2969C15000761DA2 /* GameScene.swift */,
 				9D3DBD4A296F9B2400FA8FDE /* GameSceneHandler.swift */,
+				9DC3B6A3296C556200D90945 /* component */,
 			);
 			path = presentation;
 			sourceTree = "<group>";
@@ -218,7 +218,9 @@
 		9D8C9C3A2969C45700761DA2 /* presentation */ = {
 			isa = PBXGroup;
 			children = (
+				9D3DBD48296F9A0A00FA8FDE /* GameSceneHandlerTests.swift */,
 				9D8C9C3B2969C46C00761DA2 /* GameSceneTests.swift */,
+				9DC3B6A4296C556900D90945 /* component */,
 			);
 			path = presentation;
 			sourceTree = "<group>";
@@ -315,9 +317,7 @@
 		9DC3B698296C423200D90945 /* presentation */ = {
 			isa = PBXGroup;
 			children = (
-				9DC3B6A4296C556900D90945 /* component */,
 				9DC3B699296C425400D90945 /* ContentViewTests.swift */,
-				9D3DBD48296F9A0A00FA8FDE /* GameSceneHandlerTests.swift */,
 			);
 			path = presentation;
 			sourceTree = "<group>";

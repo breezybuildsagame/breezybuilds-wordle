@@ -33,7 +33,7 @@ final class GameSceneAnnouncementTests: XCTestCase
         let expectedPadding = mockFrame().height * (26.0 / idealFrame().height)
         let expectedFontSize = mockFrame().height * (20.0 / idealFrame().height)
         let expectedShadowRadius = mockFrame().height * (4.0 / idealFrame().height)
-        let expectedCornerRadius = mockFrame().height * (4.0 / idealFrame().height)
+        let expectedCornerRadius = mockFrame().height * (8.0 / idealFrame().height)
         let sut = GameSceneAnnouncement(text: "Test")
         let dimensions = SceneDimensions()
         
@@ -46,11 +46,11 @@ final class GameSceneAnnouncementTests: XCTestCase
         XCTAssertEqual(expectedPadding, try sut.inspect().text().padding(.all))
         XCTAssertEqual(Color.ui.primary, try sut.inspect().text().attributes().foregroundColor())
         XCTAssertEqual(Color.ui.onPrimary, try sut.inspect().text().background().color().value())
+        XCTAssertEqual(expectedCornerRadius, try sut.inspect().text().background().cornerRadius())
         XCTAssertEqual("Roboto-Bold", try sut.inspect().text().attributes().font().name())
         XCTAssertEqual(expectedFontSize, try sut.inspect().text().attributes().font().size())
-        XCTAssertEqual(Color(red: 0, green: 0, blue: 0, opacity: 0.25), try sut.inspect().text().shadow().color)
-        XCTAssertEqual(expectedShadowRadius, try sut.inspect().text().shadow().radius)
-        XCTAssertEqual(expectedShadowRadius, try sut.inspect().text().shadow().offset.height)
-        XCTAssertEqual(expectedCornerRadius, try sut.inspect().text().cornerRadius())
+        XCTAssertEqual(Color(red: 0, green: 0, blue: 0, opacity: 1), try sut.inspect().text().background().shadow().color)
+        XCTAssertEqual(expectedShadowRadius, try sut.inspect().text().background().shadow().radius)
+        XCTAssertEqual(expectedShadowRadius, try sut.inspect().text().background().shadow().offset.height)
     }
 }

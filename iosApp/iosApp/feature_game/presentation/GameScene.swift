@@ -10,6 +10,8 @@ import SwiftUI
 
 struct GameScene: View
 {
+    @EnvironmentObject private var sceneDimensions: SceneDimensions
+    
     @ObservedObject private var handler = GameSceneHandler.shared
     
     var body: some View
@@ -19,13 +21,26 @@ struct GameScene: View
             switch(handler.activeView)
             {
                 case .GAME:
-                    VStack
+                    ZStack
                     {
-                        handler.gameHeader()
-                        Spacer()
-                        handler.gameBoard()
-                        Spacer()
-                        handler.gameKeyboard()
+                        VStack
+                        {
+                            handler.gameHeader()
+                            Spacer()
+                            handler.gameBoard()
+                            Spacer()
+                            handler.gameKeyboard()
+                        }
+                        if let announcement = handler.gameAnnouncement()
+                        {
+                            VStack
+                            {
+                                Spacer()
+                                    .frame(height: sceneDimensions.height * (200 / idealFrameHeight()))
+                                announcement
+                                Spacer()
+                            }
+                        }
                     }
                 default:
                     EmptyView()

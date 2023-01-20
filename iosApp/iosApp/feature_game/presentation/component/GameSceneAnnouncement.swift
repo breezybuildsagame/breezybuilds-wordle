@@ -22,8 +22,10 @@ struct GameSceneAnnouncement: View
             .font(Font.custom("Roboto-Bold", size: sceneDimensions.height * (20.0 / idealFrameHeight())))
             .padding(.all, sceneDimensions.height * (26.0 / idealFrameHeight()))
             .foregroundColor(Color.ui.primary)
-            .cornerRadius(sceneDimensions.height * (4.0 / idealFrameHeight()))
-            .background(Color.ui.onPrimary)
-            .shadow(color: Color(red: 0, green: 0, blue: 0, opacity: 0.25), radius: shadowOffset, y: shadowOffset)
+            .background(
+                Color.ui.onPrimary
+                    .cornerRadius(sceneDimensions.height * (8.0 / idealFrameHeight()))
+                    .shadow(color: Color(red: 0, green: 0, blue: 0, opacity: 1), radius: shadowOffset, y: shadowOffset)
+            )
     }
 }
