@@ -94,6 +94,7 @@ fun GameUseCase.setUpGameEvents(sceneHandler: GameSceneHandleable? = null)
                     }
                     catch (e: GameUseCase.GuessWordFailedNotInWordsListException)
                     {
+                        println(e)
                         getAnnouncement().setMessage(newMessage = e.message)
                     }
                 } else Unit
