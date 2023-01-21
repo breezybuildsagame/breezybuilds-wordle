@@ -91,6 +91,8 @@ extension GameSceneBoard
         
         var tiles: [GameSceneBoard.Tile] = []
         
+        var id = UUID()
+        
         var body: some View
         {
             HStack(spacing: sceneDimensions.width * (7.0 / idealFrameWidth()))
@@ -108,8 +110,9 @@ extension GameSceneBoard
         
         static func == (lhs: GameSceneBoard.Row, rhs: GameSceneBoard.Row) -> Bool {
             lhs.tiles == rhs.tiles
+            && lhs.id == rhs.id
         }
         
-        func hash(into hasher: inout Hasher) { hasher.combine("\(tiles)_\(UUID())") }
+        func hash(into hasher: inout Hasher) { hasher.combine(id) }
     }
 }

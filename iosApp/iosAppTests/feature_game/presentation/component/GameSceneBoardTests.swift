@@ -145,7 +145,6 @@ final class GameSceneBoardTests: XCTestCase
         let firstRow = try sut.inspect().vStack().forEach(0).view(GameSceneBoard.Row.self, 0)
         let secondRow = try sut.inspect().vStack().forEach(0).view(GameSceneBoard.Row.self, 1)
         
-        
         // then
         XCTAssertEqual(expectedVStackSpacing, try sut.inspect().vStack(0).spacing())
         for i in 0..<firstRow.count
