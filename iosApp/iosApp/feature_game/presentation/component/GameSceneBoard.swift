@@ -13,22 +13,13 @@ struct GameSceneBoard: View
 {
     @EnvironmentObject private var sceneDimensions: SceneDimensions
     
-    var rows: [[GameBoard.Tile]] = []
+    var rows: [Row]
     
     var body: some View
     {
         VStack(spacing: sceneDimensions.height * (10.0 / idealFrameHeight()))
         {
-            ForEach(rows, id: \.self)
-            { row in
-                HStack(spacing: sceneDimensions.width * (7.0 / idealFrameWidth()))
-                {
-                    ForEach(0..<row.count, id: \.self)
-                    { tileIndex in
-                        GameSceneBoard.Tile(letter: row[tileIndex].letter() as? String)
-                    }
-                }
-            }
+            ForEach(rows, id: \.self) { row in row }
         }
     }
 }
@@ -94,7 +85,7 @@ extension GameSceneBoard
 
 extension GameSceneBoard
 {
-    struct Row: View
+    struct Row: View, Hashable, Equatable
     {
         @EnvironmentObject private var sceneDimensions: SceneDimensions
         
@@ -114,5 +105,11 @@ extension GameSceneBoard
                 }
             }
         }
+        
+        static func == (lhs: GameSceneBoard.Row, rhs: GameSceneBoard.Row) -> Bool {
+            lhs.tiles == rhs.tiles
+        }
+        
+        func hash(into hasher: inout Hasher) { hasher.combine("\(tiles)_\(UUID())") }
     }
 }

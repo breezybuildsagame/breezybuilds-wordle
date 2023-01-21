@@ -19,11 +19,7 @@ class GameSceneHandler: ObservableObject
     
     private let viewModel = GameSceneViewModel()
     
-    
-    func setUp()
-    {
-        if activeView == .EMPTY { viewModel.setUp(handler: self) }
-    }
+    func setUp() { if activeView == .EMPTY { viewModel.setUp(handler: self) } }
     
     func gameHeader() -> GameSceneHeader
     {
@@ -32,7 +28,18 @@ class GameSceneHandler: ObservableObject
     
     func gameBoard() -> GameSceneBoard
     {
-        GameSceneBoard(rows: viewModel.getGameBoard().rows())
+        var rowViews = [GameSceneBoard.Row]()
+        for row in viewModel.getGameBoard().rows()
+        {
+            var rowTiles = [GameSceneBoard.Tile]()
+            for tile in row
+            {
+                rowTiles.append(GameSceneBoard.Tile(letter: tile.letter() as? String, state: tile.state()))
+            }
+            rowViews.append(GameSceneBoard.Row(tiles: rowTiles))
+        }
+        
+        return GameSceneBoard(rows: rowViews)
     }
     
     func gameKeyboard() -> GameSceneKeyboard

@@ -116,16 +116,24 @@ final class GameSceneBoardTests: XCTestCase
         XCTAssertEqual(.ui.secondary, try sut.inspect().zStack().background().color().value())
     }
     
-    func test_when_view_appears_with_rows__view_matches_design_requirements() throws
+    func test_when_view_appears_with_Rows__view_matches_design_requirements() throws
     {
         // given
-        let expectedHStackSpacing = mockFrame().width * (7.0 / idealFrame().width)
         let expectedVStackSpacing = mockFrame().height * (10.0 / idealFrame().height)
-        let rows: [[GameBoard.Tile]] = [
-            [GameBoard.Tile(letter: "G", state: .incorrect), GameBoard.Tile(letter: "O", state: .close),
-                GameBoard.Tile(letter: "O", state: .hidden), GameBoard.Tile(letter: "D", state: .correct)],
-            [GameBoard.Tile(letter: "H", state: .hidden), GameBoard.Tile(letter: "O", state: .hidden),
-                GameBoard.Tile(letter: "O", state: .hidden), GameBoard.Tile(letter: nil, state: .hidden)]
+        let rows: [GameSceneBoard.Row] = [GameSceneBoard.Row(tiles: [
+                GameSceneBoard.Tile(letter: "G", state: .correct),
+                GameSceneBoard.Tile(letter: "O", state: .close),
+                GameSceneBoard.Tile(letter: "O", state: .incorrect),
+                GameSceneBoard.Tile(letter: "D", state: .incorrect),
+                GameSceneBoard.Tile(letter: "Y", state: .incorrect)
+            ]),
+            GameSceneBoard.Row(tiles: [
+                GameSceneBoard.Tile(letter: "H", state: .correct),
+                GameSceneBoard.Tile(letter: "O", state: .close),
+                GameSceneBoard.Tile(letter: "O", state: .incorrect),
+                GameSceneBoard.Tile(letter: "D", state: .incorrect),
+                GameSceneBoard.Tile(letter: "", state: .hidden)
+            ])
         ]
         let sut = GameSceneBoard(rows: rows)
         let sceneDimensions = SceneDimensions()
@@ -134,30 +142,29 @@ final class GameSceneBoardTests: XCTestCase
         defer { ViewHosting.expel() }
         ViewHosting.host(view: sut.environmentObject(sceneDimensions))
         sceneDimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
-        let firstRow = try sut.inspect().vStack().forEach(0).hStack(0).forEach(0)
-        let secondRow = try sut.inspect().vStack().forEach(0).hStack(1).forEach(0)
+        let firstRow = try sut.inspect().vStack().forEach(0).view(GameSceneBoard.Row.self, 0)
+        let secondRow = try sut.inspect().vStack().forEach(0).view(GameSceneBoard.Row.self, 1)
         
         
         // then
-        XCTAssertNoThrow(try sut.inspect().vStack(0))
-        XCTAssertNoThrow(try sut.inspect().vStack().forEach(0).hStack(0))
-        XCTAssertNoThrow(try sut.inspect().vStack().forEach(0).hStack(1))
         XCTAssertEqual(expectedVStackSpacing, try sut.inspect().vStack(0).spacing())
-        XCTAssertEqual(expectedHStackSpacing, try sut.inspect().vStack().forEach(0).hStack(0).spacing())
-        XCTAssertEqual(expectedHStackSpacing, try sut.inspect().vStack().forEach(0).hStack(1).spacing())
         for i in 0..<firstRow.count
         {
-            XCTAssertNoThrow(try firstRow.view(GameSceneBoard.Tile.self, i))
-            XCTAssertEqual(rows[0][i].letter() as? String, try firstRow.view(GameSceneBoard.Tile.self, i).actualView().letter)
+            XCTAssertEqual(
+                rows[0].tiles[i].letter,
+                try firstRow.hStack().forEach(0).view(GameSceneBoard.Tile.self, i).actualView().letter
+            )
         }
         for i in 0..<secondRow.count
         {
-            XCTAssertNoThrow(try firstRow.view(GameSceneBoard.Tile.self, i))
-            XCTAssertEqual(rows[1][i].letter() as? String, try secondRow.view(GameSceneBoard.Tile.self, i).actualView().letter)
+            XCTAssertEqual(
+                rows[1].tiles[i].letter,
+                try secondRow.hStack().forEach(0).view(GameSceneBoard.Tile.self, i).actualView().letter
+            )
         }
     }
     
-    func test_when_view_appears_with_tiles__expected_views_are_displayed()
+    func test_when_Row_appears_with_tiles__expected_views_are_displayed()
     {
         // given
         let expectedTileHorizontalSpacing = mockFrame().width * (7.0 / idealFrame().width)
