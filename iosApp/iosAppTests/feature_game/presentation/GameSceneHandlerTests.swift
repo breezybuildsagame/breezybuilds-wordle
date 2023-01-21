@@ -239,6 +239,27 @@ final class GameSceneHandlerTests: XCTestCase
         XCTAssertNoThrow(try mockView.inspect().find(text: "Guessing word, hold your ponies!"))
     }
     
+    func test_when_onGuessFailed_invoked__active_view_is_published_to_GAME()
+    {
+        // given
+        let actualAnnouncement = GameSceneViewModel().getAnnouncement()
+        let sut = GameSceneHandler()
+        let expectation = XCTestExpectation(description: "Waiting for onGuessingWord to publish.")
+        let mockView = MockView(handler: sut, expectation: expectation)
+        defer { ViewHosting.expel() }
+        ViewHosting.host(view: mockView)
+        
+        // when
+        actualAnnouncement.setMessage(newMessage: "Not in words list!")
+        sut.onGuessFailed()
+        
+        // then
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertEqual(.GAME, sut.activeView)
+        XCTAssertTrue(sut.gameKeyboardIsEnabled)
+        XCTAssertNoThrow(try mockView.inspect().find(text: "Not in words list!"))
+    }
+    
     func test_when_gameKeyboard_is_enabled_and_key_clicked__expected_function_is_invoked() throws
     {
         // given

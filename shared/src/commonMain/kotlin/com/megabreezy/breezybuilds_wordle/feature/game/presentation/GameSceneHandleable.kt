@@ -5,6 +5,7 @@ interface GameSceneHandleable
     fun onGameOver()
     fun onGameStarted()
     fun onGuessingWord()
+    fun onGuessFailed()
     fun onRevealNextTile()
     fun onRoundCompleted()
     fun onStartingGame()

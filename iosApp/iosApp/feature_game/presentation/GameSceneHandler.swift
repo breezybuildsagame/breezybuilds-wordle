@@ -85,6 +85,8 @@ extension GameSceneHandler: GameSceneHandleable
     
     func onGuessingWord() { publishGameView() }
     
+    func onGuessFailed() { publishGameView(keyboardIsEnabled: true) }
+    
     func onRevealNextTile() { publishGameView(keyboardIsEnabled: true) }
     
     func onRoundCompleted() { publishGameView(keyboardIsEnabled: true) }
