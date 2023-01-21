@@ -34,7 +34,7 @@ class GameSceneHandler: ObservableObject
             var rowTiles = [GameSceneBoard.Tile]()
             for tile in row
             {
-                rowTiles.append(GameSceneBoard.Tile(letter: tile.letter() as? String, state: tile.state()))
+                rowTiles.append(GameSceneBoard.Tile(letter: String(describing: tile), state: tile.state()))
             }
             rowViews.append(GameSceneBoard.Row(tiles: rowTiles))
         }

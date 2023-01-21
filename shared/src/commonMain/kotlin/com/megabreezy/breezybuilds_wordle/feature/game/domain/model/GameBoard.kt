@@ -49,6 +49,8 @@ class GameBoard(private var rows: List<List<Tile>> = listOf())
         fun setState(newState: State) { this.state = newState }
 
         enum class State { HIDDEN, CLOSE, INCORRECT, CORRECT }
+
+        override fun toString(): String = "${this.letter() ?: ""}"
     }
 
     class SetNewActiveRowFailedException(message: String?): Exception(message)
