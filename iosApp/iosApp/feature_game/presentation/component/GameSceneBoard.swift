@@ -35,11 +35,15 @@ struct GameSceneBoard: View
 
 extension GameSceneBoard
 {
-    struct Tile: View
+    struct Tile: View, Equatable, Hashable
     {
         @EnvironmentObject private var sceneDimensions: SceneDimensions
         
         var letter: String? = nil
+        
+        var rowIndex: Int? = nil
+        
+        var tileIndex: Int? = nil
         
         var state: GameBoard.TileState = .hidden
         
@@ -73,6 +77,42 @@ extension GameSceneBoard
                 Color.ui.error,
                 width: sceneDimensions.height * (state != .hidden ? 0.0 : 2.0 / idealFrameHeight())
             )
+        }
+        
+        static func == (lhs: GameSceneBoard.Tile, rhs: GameSceneBoard.Tile) -> Bool {
+            lhs.letter == rhs.letter
+            && lhs.rowIndex == rhs.rowIndex
+            && lhs.tileIndex == rhs.tileIndex
+            && lhs.state == rhs.state
+        }
+        
+        func hash(into hasher: inout Hasher) {
+            hasher.combine("\(String(describing: self.letter))_\(UUID())")
+        }
+    }
+}
+
+extension GameSceneBoard
+{
+    struct Row: View
+    {
+        @EnvironmentObject private var sceneDimensions: SceneDimensions
+        
+        var tiles: [GameSceneBoard.Tile] = []
+        
+        var body: some View
+        {
+            HStack(spacing: sceneDimensions.width * (7.0 / idealFrameWidth()))
+            {
+                ForEach(0..<tiles.count, id: \.self)
+                { tileIndex in
+                    GameSceneBoard.Tile(
+                        letter: tiles[tileIndex].letter,
+                        tileIndex: tileIndex,
+                        state: tiles[tileIndex].state
+                    )
+                }
+            }
         }
     }
 }

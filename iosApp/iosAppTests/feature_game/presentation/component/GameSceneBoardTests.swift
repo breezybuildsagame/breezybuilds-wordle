@@ -156,4 +156,31 @@ final class GameSceneBoardTests: XCTestCase
             XCTAssertEqual(rows[1][i].letter() as? String, try secondRow.view(GameSceneBoard.Tile.self, i).actualView().letter)
         }
     }
+    
+    func test_when_view_appears_with_tiles__expected_views_are_displayed()
+    {
+        // given
+        let expectedTileHorizontalSpacing = mockFrame().width * (7.0 / idealFrame().width)
+        let expectedTiles = [
+            GameSceneBoard.Tile(letter: "T", state: .correct),
+            GameSceneBoard.Tile(letter: "E", state: .close),
+            GameSceneBoard.Tile(letter: "S", state: .incorrect),
+            GameSceneBoard.Tile(letter: "T", state: .hidden),
+            GameSceneBoard.Tile(letter: nil, state: .hidden)
+        ]
+        let sut = GameSceneBoard.Row(tiles: expectedTiles)
+        let dimensions = SceneDimensions()
+        
+        // when
+        defer { ViewHosting.expel() }
+        ViewHosting.host(view: sut.environmentObject(dimensions))
+        dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
+        
+        // then
+        XCTAssertEqual(expectedTileHorizontalSpacing, try sut.inspect().hStack().spacing())
+        for (index, _) in expectedTiles.enumerated()
+        {
+            XCTAssertEqual(expectedTiles[index].letter, try sut.inspect().hStack().forEach(0).view(GameSceneBoard.Tile.self, index).actualView().letter)
+        }
+    }
 }
