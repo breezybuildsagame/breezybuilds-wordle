@@ -12,6 +12,8 @@ class GameSceneViewModel
     {
         handler?.onStartingGame()
         GameUseCase().setUpGameEvents(sceneHandler = handler)
+        println("game started")
+        println("the answer for this game: ${GameUseCase().getGameAnswer()}")
         handler?.onGameStarted()
     }
 
