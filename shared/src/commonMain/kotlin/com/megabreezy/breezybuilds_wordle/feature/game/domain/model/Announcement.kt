@@ -1,8 +1,8 @@
 package com.megabreezy.breezybuilds_wordle.feature.game.domain.model
 
-data class Announcement(private var message: String? = null)
+data class Announcement(private var message: String? = null): AnnouncementRepresentable
 {
-    fun message() = this.message
+    override fun message() = this.message
 
-    fun setMessage(newMessage: String?) { this.message = newMessage }
+    override fun setMessage(newMessage: String?) { this.message = newMessage }
 }

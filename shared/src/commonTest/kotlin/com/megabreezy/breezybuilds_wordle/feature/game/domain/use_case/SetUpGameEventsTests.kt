@@ -19,8 +19,8 @@ class SetUpGameEventsTests: KoinComponent
     private lateinit var answerRepository: MockGameAnswerRepository
     private lateinit var guessRepository: MockGameGuessRepository
     private lateinit var sceneHandler: MockSceneHandler
+    private lateinit var announcement: MockAnnouncement
 
-    private val announcement: Announcement by inject()
     private val gameBoard: GameBoard by inject()
     private val keyboard: GameKeyboard by inject()
 
@@ -30,6 +30,7 @@ class SetUpGameEventsTests: KoinComponent
         answerRepository = MockGameAnswerRepository()
         guessRepository = MockGameGuessRepository()
         sceneHandler = MockSceneHandler()
+        announcement = MockAnnouncement()
 
         startKoin()
         {
@@ -40,6 +41,7 @@ class SetUpGameEventsTests: KoinComponent
                 {
                     single<GameAnswerGateway> { answerRepository }
                     single<GameGuessGateway> { guessRepository }
+                    single<AnnouncementRepresentable> { announcement }
                 }
             )
         }
@@ -93,7 +95,7 @@ class SetUpGameEventsTests: KoinComponent
     fun `when use case is invoked - Announcement message method returns null value`()
     {
         // given
-        val announcement: Announcement by inject()
+        val announcement: AnnouncementRepresentable by inject()
         announcement.setMessage(newMessage = "My Urgent Message!")
 
         // when
@@ -283,11 +285,11 @@ class SetUpGameEventsTests: KoinComponent
     }
 
     @Test
-    fun `when use case invoked and enter Key is clicked and GameGuess is not found in words list - expected announcement is set`()
+    fun `when use case invoked and enter Key is clicked and GameGuess is not found in words list - expected announcement is shown and subsequently hidden`()
     {
         // given
         guessRepository.guessNotFound = true
-        GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
+        GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L)
         val keysInUse = listOf(
             getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
         )
@@ -298,7 +300,10 @@ class SetUpGameEventsTests: KoinComponent
         runBlocking { getKey(letters = "ENTER")?.click() }
 
         // then
-        assertEquals(expectedAnnouncementMessage, announcement.message())
+        assertEquals(expectedAnnouncementMessage, announcement.previouslySetMessages.first())
+        assertTrue(sceneHandler.onAnnouncementShouldShowDidInvoke)
+        assertTrue(sceneHandler.onAnnouncementShouldHideDidInvoke)
+        assertNull(announcement.message())
     }
 
     @Test
@@ -403,6 +408,19 @@ class SetUpGameEventsTests: KoinComponent
         assertTrue(sceneHandler.onGameOverDidInvoke)
     }
 
+    data class MockAnnouncement(private var message: String? = null): AnnouncementRepresentable
+    {
+        var previouslySetMessages: MutableList<String> = mutableListOf()
+
+        override fun message(): String? = this.message
+
+        override fun setMessage(newMessage: String?)
+        {
+            newMessage?.let { previouslySetMessages.add(newMessage) }
+            this.message = newMessage
+        }
+    }
+
     class MockSceneHandler: GameSceneHandleable
     {
         var onGameOverDidInvoke = false
@@ -411,9 +429,11 @@ class SetUpGameEventsTests: KoinComponent
         var onRevealNextTileDidInvoke = false
         var onRoundCompletedDidInvoke = false
         var onStartingGameDidInvoke = false
+        var onAnnouncementShouldShowDidInvoke = false
+        var onAnnouncementShouldHideDidInvoke = false
 
-        override fun onAnnouncementShouldShow() { }
-        override fun onAnnouncementShouldHide() { }
+        override fun onAnnouncementShouldShow() { onAnnouncementShouldShowDidInvoke = true }
+        override fun onAnnouncementShouldHide() { onAnnouncementShouldHideDidInvoke = true }
         override fun onGameOver() { onGameOverDidInvoke = true }
         override fun onGameStarted() { onGameStartedDidInvoke = true }
         override fun onGuessingWord() { onGuessingWordDidInvoke = true }

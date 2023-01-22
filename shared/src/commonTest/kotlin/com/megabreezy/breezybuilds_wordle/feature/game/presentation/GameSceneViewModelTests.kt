@@ -6,7 +6,7 @@ import com.megabreezy.breezybuilds_wordle.core.domain.model.Answer
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Word
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
 import com.megabreezy.breezybuilds_wordle.core.util.Scenario
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.Announcement
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.AnnouncementRepresentable
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
@@ -106,7 +106,7 @@ class GameSceneViewModelTests: KoinComponent
     fun `when the getAnnouncement method is invoked on an instance - the getAnnouncement use case is invoked`()
     {
         // given
-        val expectedAnnouncement: Announcement by inject()
+        val expectedAnnouncement: AnnouncementRepresentable by inject()
         val sut = GameSceneViewModel()
         expectedAnnouncement.setMessage(newMessage = "Testing a new announcement!")
 

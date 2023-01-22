@@ -3,8 +3,12 @@ package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneHandleable
+import kotlinx.coroutines.delay
 
-fun GameUseCase.setUpGameEvents(sceneHandler: GameSceneHandleable? = null)
+fun GameUseCase.setUpGameEvents(
+    sceneHandler: GameSceneHandleable? = null,
+    announcementDelay: Long = 1000L
+)
 {
     getGameBoard().reset()
     getGameKeyboard().reset()
@@ -102,7 +106,13 @@ fun GameUseCase.setUpGameEvents(sceneHandler: GameSceneHandleable? = null)
                     {
                         println(e)
                         getAnnouncement().setMessage(newMessage = e.message)
-                        //sceneHandler?.onGuessFailed()
+                        sceneHandler?.let()
+                        { handler ->
+                            handler.onAnnouncementShouldShow()
+                            delay(timeMillis = announcementDelay)
+                            getAnnouncement().setMessage(newMessage = null)
+                            handler.onAnnouncementShouldHide()
+                        }
                     }
                 } else Unit
             }

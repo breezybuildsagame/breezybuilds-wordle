@@ -1,9 +1,6 @@
 package com.megabreezy.breezybuilds_wordle.feature.game.presentation
 
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.Announcement
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameHeader
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.*
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case.*
 
 class GameSceneViewModel
@@ -17,7 +14,7 @@ class GameSceneViewModel
         handler?.onGameStarted()
     }
 
-    fun getAnnouncement(): Announcement = GameUseCase().getAnnouncement()
+    fun getAnnouncement(): AnnouncementRepresentable = GameUseCase().getAnnouncement()
 
     fun getHeader(): GameHeader = GameUseCase().getHeader()
 
