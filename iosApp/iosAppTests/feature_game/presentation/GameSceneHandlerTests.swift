@@ -239,7 +239,7 @@ final class GameSceneHandlerTests: XCTestCase
         XCTAssertNoThrow(try mockView.inspect().find(text: "Guessing word, hold your ponies!"))
     }
     
-    func test_when_onGuessFailed_invoked__active_view_is_published_to_GAME()
+    func test_when_onAnnouncementShouldShow_invoked__active_view_is_published_to_GAME()
     {
         // given
         let actualAnnouncement = GameSceneViewModel().getAnnouncement()
@@ -251,13 +251,35 @@ final class GameSceneHandlerTests: XCTestCase
         
         // when
         actualAnnouncement.setMessage(newMessage: "Not in words list!")
-        sut.onGuessFailed()
+        sut.onAnnouncementShouldShow()
         
         // then
         wait(for: [expectation], timeout: 1.0)
         XCTAssertEqual(.GAME, sut.activeView)
         XCTAssertTrue(sut.gameKeyboardIsEnabled)
         XCTAssertNoThrow(try mockView.inspect().find(text: "Not in words list!"))
+    }
+    
+    func test_when_onAnnouncementShouldHide_invoked__active_view_is_published_to_GAME()
+    {
+        // given
+        let actualAnnouncement = GameSceneViewModel().getAnnouncement()
+        actualAnnouncement.setMessage(newMessage: "This message should be hidden!")
+        let sut = GameSceneHandler()
+        let expectation = XCTestExpectation(description: "Waiting for onGuessingWord to publish.")
+        let mockView = MockView(handler: sut, expectation: expectation)
+        defer { ViewHosting.expel() }
+        ViewHosting.host(view: mockView)
+        
+        // when
+        actualAnnouncement.setMessage(newMessage: nil)
+        sut.onAnnouncementShouldHide()
+        
+        // then
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertEqual(.GAME, sut.activeView)
+        XCTAssertTrue(sut.gameKeyboardIsEnabled)
+        XCTAssertEqual("Default", try mockView.inspect().text().string())
     }
     
     func test_when_gameKeyboard_is_enabled_and_key_clicked__expected_function_is_invoked() throws
@@ -307,7 +329,7 @@ final class GameSceneHandlerTests: XCTestCase
         
         var body: some View
         {
-            Text(handler.gameAnnouncement()?.text ?? "")
+            Text(handler.gameAnnouncement()?.text ?? "Default")
                 .onReceive(handler.$activeView)
             { newActiveView in
                 if newActiveView != .EMPTY { expectation.fulfill() }

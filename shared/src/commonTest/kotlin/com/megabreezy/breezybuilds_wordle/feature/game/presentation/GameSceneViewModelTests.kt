@@ -122,9 +122,10 @@ class GameSceneViewModelTests: KoinComponent
         var onGameStartedDidInvoke = false
         var onStartingGameDidInvoke = false
 
+        override fun onAnnouncementShouldShow() { }
+        override fun onAnnouncementShouldHide() { }
         override fun onGameOver() { }
         override fun onGameStarted() { onGameStartedDidInvoke = true }
-        override fun onGuessFailed() { }
         override fun onGuessingWord() { }
         override fun onRevealNextTile() { }
         override fun onRoundCompleted() { }

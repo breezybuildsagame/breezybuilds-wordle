@@ -79,13 +79,15 @@ class GameSceneHandler: ObservableObject
 
 extension GameSceneHandler: GameSceneHandleable
 {
+    func onAnnouncementShouldHide() { publishGameView(keyboardIsEnabled: true) }
+    
+    func onAnnouncementShouldShow() { publishGameView(keyboardIsEnabled: true) }
+    
     func onGameOver() { publishGameView() }
     
     func onGameStarted() { publishGameView(keyboardIsEnabled: true) }
     
     func onGuessingWord() { publishGameView() }
-    
-    func onGuessFailed() { publishGameView(keyboardIsEnabled: true) }
     
     func onRevealNextTile() { publishGameView(keyboardIsEnabled: true) }
     

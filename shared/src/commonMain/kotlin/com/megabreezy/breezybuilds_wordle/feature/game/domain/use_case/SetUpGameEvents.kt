@@ -102,7 +102,7 @@ fun GameUseCase.setUpGameEvents(sceneHandler: GameSceneHandleable? = null)
                     {
                         println(e)
                         getAnnouncement().setMessage(newMessage = e.message)
-                        sceneHandler?.onGuessFailed()
+                        //sceneHandler?.onGuessFailed()
                     }
                 } else Unit
             }

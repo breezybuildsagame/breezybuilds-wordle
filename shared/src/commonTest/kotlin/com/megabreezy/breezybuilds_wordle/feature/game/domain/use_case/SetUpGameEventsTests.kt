@@ -298,7 +298,6 @@ class SetUpGameEventsTests: KoinComponent
         runBlocking { getKey(letters = "ENTER")?.click() }
 
         // then
-        assertTrue(sceneHandler.onGuessFailedDidInvoke)
         assertEquals(expectedAnnouncementMessage, announcement.message())
     }
 
@@ -412,12 +411,12 @@ class SetUpGameEventsTests: KoinComponent
         var onRevealNextTileDidInvoke = false
         var onRoundCompletedDidInvoke = false
         var onStartingGameDidInvoke = false
-        var onGuessFailedDidInvoke = false
 
+        override fun onAnnouncementShouldShow() { }
+        override fun onAnnouncementShouldHide() { }
         override fun onGameOver() { onGameOverDidInvoke = true }
         override fun onGameStarted() { onGameStartedDidInvoke = true }
         override fun onGuessingWord() { onGuessingWordDidInvoke = true }
-        override fun onGuessFailed() { onGuessFailedDidInvoke = true }
         override fun onRevealNextTile() { onRevealNextTileDidInvoke = true }
         override fun onRoundCompleted() { onRoundCompletedDidInvoke = true }
         override fun onStartingGame() { onStartingGameDidInvoke = true }
