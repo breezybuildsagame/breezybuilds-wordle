@@ -302,6 +302,32 @@ class SetUpGameEventsTests: KoinComponent
     }
 
     @Test
+    fun `when use case invoked and enter Key is clicked and GameGuess is incorrect - GameBoard activeRow tiles are updated with expected states`()
+    {
+        // given
+        answerRepository.guessContainsCloseLetter = true  // Answer: SPEAR
+        GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
+        val initialActiveGameBoardRow = gameBoard.activeRow()
+        val keysInUse = listOf(
+            getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
+        )
+        val expectedEndOfRoundTilesStates = listOf(
+            GameBoard.Tile.State.INCORRECT, GameBoard.Tile.State.CLOSE,
+            GameBoard.Tile.State.CORRECT, GameBoard.Tile.State.CORRECT, GameBoard.Tile.State.INCORRECT
+        )
+
+        // when
+        for (key in keysInUse) key?.click()
+        getKey(letters = "ENTER")?.click()
+
+        // then
+        initialActiveGameBoardRow?.forEachIndexed()
+        { index, tile ->
+            assertEquals(expectedEndOfRoundTilesStates[index], tile.state())
+        }
+    }
+
+    @Test
     fun `when use case invoked and enter Key is clicked and GameGuess is incorrect - GameBoard setNewActiveRow method is invoked`()
     {
         // given

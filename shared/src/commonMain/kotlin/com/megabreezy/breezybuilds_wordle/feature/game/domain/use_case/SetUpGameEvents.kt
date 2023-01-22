@@ -50,6 +50,12 @@ fun GameUseCase.setUpGameEvents(sceneHandler: GameSceneHandleable? = null)
                         println(e)
                         getGameBoard().activeRow()?.forEachIndexed()
                         { index, tile ->
+                            if (tile.letter() == getGameAnswer().word()[index])
+                                tile.setState(newState = GameBoard.Tile.State.CORRECT)
+                            else if (getGameAnswer().word().contains("${tile.letter()}"))
+                                tile.setState(newState = GameBoard.Tile.State.CLOSE)
+                            else tile.setState(newState = GameBoard.Tile.State.INCORRECT)
+
                             for (keyRow in getGameKeyboard().rows())
                             {
                                 for (currentKey in keyRow)
