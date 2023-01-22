@@ -6,6 +6,7 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.*
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.*
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneHandleable
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
@@ -110,7 +111,7 @@ class SetUpGameEventsTests: KoinComponent
 
         // when
         GameUseCase().setUpGameEvents()
-        for (row in keyboard.rows()) { for (key in row) { if (key.letter() == expectedLetter) key.click() } }
+        for (row in keyboard.rows()) { for (key in row) { if (key.letter() == expectedLetter) runBlocking { key.click() } } }
 
         // then
         assertEquals(expectedLetter, gameBoard.rows().first().first().letter())
@@ -121,7 +122,7 @@ class SetUpGameEventsTests: KoinComponent
     {
         // when
         GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
-        for (row in keyboard.rows()) { for (key in row) { if (key.letter() == 'Z') key.click() } }
+        for (row in keyboard.rows()) { for (key in row) { if (key.letter() == 'Z') runBlocking { key.click() } } }
 
         // then
         assertTrue(sceneHandler.onRevealNextTileDidInvoke)
@@ -132,11 +133,11 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
-        for (row in gameBoard.rows()) { for (tile in row) { getKey(letters = "C")?.click() } }
+        for (row in gameBoard.rows()) { for (tile in row) { runBlocking { getKey(letters = "C")?.click() } } }
         sceneHandler.onRevealNextTileDidInvoke = false
 
         // when
-        getKey(letters = "C")?.click()
+        runBlocking { getKey(letters = "C")?.click() }
 
         // then
         assertFalse(sceneHandler.onRevealNextTileDidInvoke)
@@ -147,11 +148,11 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
-        getKey(letters = "C")?.click()
+        runBlocking { getKey(letters = "C")?.click() }
         sceneHandler.onRevealNextTileDidInvoke = false
 
         // when
-        getKey(letters = "BACKSPACE")?.click()
+        runBlocking { getKey(letters = "BACKSPACE")?.click() }
 
         // then
         assertNull(gameBoard.activeRow()?.firstOrNull { tile -> tile.letter() != null })
@@ -165,7 +166,7 @@ class SetUpGameEventsTests: KoinComponent
         GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
 
         // when
-        getKey(letters = "BACKSPACE")?.click()
+        runBlocking { getKey(letters = "BACKSPACE")?.click() }
 
         // then
         assertNull(gameBoard.activeRow()?.firstOrNull { tile -> tile.letter() != null })
@@ -177,10 +178,10 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
-        for (row in gameBoard.rows()) { for (tile in row) { getKey(letters = "C")?.click() } }
+        for (row in gameBoard.rows()) { for (tile in row) { runBlocking { getKey(letters = "C")?.click() } } }
 
         // when
-        try { getKey(letters = "ENTER")?.click() } catch(_ : Throwable) { }
+        try { runBlocking { getKey(letters = "ENTER")?.click() } } catch(_ : Throwable) { }
 
         // then
         assertNotNull(guessRepository.guessToReturn)
@@ -192,11 +193,11 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
-        getKey(letters = "C")?.click()
+        runBlocking { getKey(letters = "C")?.click() }
         guessRepository.guessIsInvalid = true
 
         // when
-        getKey(letters = "ENTER")?.click()
+        runBlocking { getKey(letters = "ENTER")?.click() }
 
         // then
         assertTrue(true)
@@ -212,8 +213,8 @@ class SetUpGameEventsTests: KoinComponent
         )
 
         // when
-        for (key in keysInUse) key?.click()
-        getKey(letters = "ENTER")?.click()
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
 
         // then
         for (key in keysInUse)
@@ -245,8 +246,8 @@ class SetUpGameEventsTests: KoinComponent
         )
 
         // when
-        for (key in keysInUse) key?.click()
-        getKey(letters = "ENTER")?.click()
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
 
         // then
         for (key in keysInUse)
@@ -267,8 +268,8 @@ class SetUpGameEventsTests: KoinComponent
         )
 
         // when
-        for (key in keysInUse) key?.click()
-        getKey(letters = "ENTER")?.click()
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
 
         // then
         for (key in keysInUse)
@@ -293,8 +294,8 @@ class SetUpGameEventsTests: KoinComponent
         val expectedAnnouncementMessage = "Not found in words list."
 
         // when
-        for (key in keysInUse) key?.click()
-        getKey(letters = "ENTER")?.click()
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
 
         // then
         assertTrue(sceneHandler.onGuessFailedDidInvoke)
@@ -317,8 +318,8 @@ class SetUpGameEventsTests: KoinComponent
         )
 
         // when
-        for (key in keysInUse) key?.click()
-        getKey(letters = "ENTER")?.click()
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
 
         // then
         initialActiveGameBoardRow?.forEachIndexed()
@@ -338,8 +339,8 @@ class SetUpGameEventsTests: KoinComponent
         )
 
         // when
-        for (key in keysInUse) key?.click()
-        getKey(letters = "ENTER")?.click()
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
 
         // then
         assertNotEquals(initialActiveGameBoardRow, gameBoard.activeRow())
@@ -355,8 +356,8 @@ class SetUpGameEventsTests: KoinComponent
         )
 
         // when
-        for (key in keysInUse) key?.click()
-        getKey(letters = "ENTER")?.click()
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
 
         // then
         assertTrue(sceneHandler.onRoundCompletedDidInvoke)
@@ -375,8 +376,8 @@ class SetUpGameEventsTests: KoinComponent
         // when
         for (round in gameBoard.rows())
         {
-            for (key in keysInUse) key?.click()
-            getKey(letters = "ENTER")?.click()
+            for (key in keysInUse) runBlocking { key?.click() }
+            runBlocking { getKey(letters = "ENTER")?.click() }
         }
 
         // then
@@ -395,8 +396,8 @@ class SetUpGameEventsTests: KoinComponent
         // when
         for (round in gameBoard.rows())
         {
-            for (key in keysInUse) key?.click()
-            getKey(letters = "ENTER")?.click()
+            for (key in keysInUse) runBlocking { key?.click() }
+            runBlocking { getKey(letters = "ENTER")?.click() }
         }
 
         // then

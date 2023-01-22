@@ -1,5 +1,13 @@
 object Dependency
 {
+    // Multi-threaded operations
+    object Coroutines
+    {
+        const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Version.coroutinesVersion}"
+        const val common = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Version.coroutinesVersion}"
+        const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Version.coroutinesVersion}"
+    }
+
     // Dependency injection
     object Koin
     {

@@ -56,7 +56,7 @@ class GameSceneHandler: ObservableObject
                         backgroundColor: key.backgroundColor(),
                         letters: key.letters(),
                         resourceId: key.resourceId(),
-                        onTap: { if self.gameKeyboardIsEnabled { key.click() } }
+                        onTap: { if self.gameKeyboardIsEnabled { key.click() { _ in } } }
                     )
                 )
             }

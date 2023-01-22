@@ -10,6 +10,7 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.Announcement
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
@@ -95,7 +96,7 @@ class GameSceneViewModelTests: KoinComponent
         expectedKeyboard.rows().first().first().setOnClick { keyPressDidInvoke = true }
 
         // when
-        sut.getGameKeyboard().rows().first().first().click()
+        runBlocking { sut.getGameKeyboard().rows().first().first().click() }
 
         // then
         assertTrue(keyPressDidInvoke)

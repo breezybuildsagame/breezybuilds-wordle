@@ -1,5 +1,6 @@
 package com.megabreezy.breezybuilds_wordle.feature.game.domain.model
 
+import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -56,7 +57,7 @@ class GameKeyboardTests
 
         // when
         sut.setOnClick { onClickDidInvoke = true }
-        sut.click()
+        runBlocking { sut.click() }
 
         // then
         assertTrue(onClickDidInvoke)
@@ -208,7 +209,7 @@ class GameKeyboardTests
         // when
         sut.reset()
 
-        for (row in sut.rows()) { for (key in row) { key.click() } }
+        for (row in sut.rows()) { for (key in row) { runBlocking { key.click() } } }
 
         // then
         assertFalse(onClickDidInvoke)
