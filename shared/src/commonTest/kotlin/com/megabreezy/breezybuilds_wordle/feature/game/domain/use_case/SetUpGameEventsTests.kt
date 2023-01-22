@@ -408,6 +408,24 @@ class SetUpGameEventsTests: KoinComponent
         assertTrue(sceneHandler.onGameOverDidInvoke)
     }
 
+    @Test
+    fun `when use case invoked and enter Key is clicked and GameGuess is correct - expected announcement is set`()
+    {
+        answerRepository.guessMatchesAnswer = true
+        GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
+        val keysInUse = listOf(
+            getKey(letters = "P"), getKey(letters = "L"), getKey(letters = "A"), getKey(letters = "Y"), getKey(letters = "S")
+        )
+
+        // when
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
+
+        // then
+        assertEquals("Correct! Thanks for playing!", announcement.message())
+        assertTrue(sceneHandler.onGameOverDidInvoke)
+    }
+
     data class MockAnnouncement(private var message: String? = null): AnnouncementRepresentable
     {
         var previouslySetMessages: MutableList<String> = mutableListOf()

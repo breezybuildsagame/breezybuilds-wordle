@@ -44,6 +44,9 @@ fun GameUseCase.setUpGameEvents(
                     try
                     {
                         guessWord()
+
+                        getAnnouncement().setMessage(newMessage = "Correct! Thanks for playing!")
+                        sceneHandler?.onGameOver()
                     }
                     catch(e: GameUseCase.GuessWordInvalidGuessException)
                     {
