@@ -44,6 +44,7 @@ class GuessWordTests
     {
         // given
         answerRepository.guessMatchesAnswer = true
+        GameUseCase().getGameBoard().activeRow()?.forEach { it.setLetter(newLetter = 'T') }
 
         // when
         GameUseCase().guessWord()
@@ -59,6 +60,7 @@ class GuessWordTests
         val expectedExceptionMessage = "Invalid guess: T"
         guessRepository.guessIsInvalid = true
         GameUseCase().getGameBoard().activeRow()?.first()?.setLetter(newLetter = 'T')
+        GameUseCase().getGameBoard().activeRow()?.forEach { it.setLetter(newLetter = 'T') }
 
         // when
         val actualException = assertFailsWith<GameUseCase.GuessWordInvalidGuessException>()
@@ -76,6 +78,7 @@ class GuessWordTests
         // given
         val expectedExceptionMessage = "Not found in words list."
         guessRepository.guessNotFound = true
+        GameUseCase().getGameBoard().activeRow()?.forEach { it.setLetter(newLetter = 'T') }
 
         // when
         val actualException = assertFailsWith<GameUseCase.GuessWordFailedNotInWordsListException>()
@@ -92,6 +95,7 @@ class GuessWordTests
     {
         // given
         answerRepository.guessMatchesAnswer = true
+        GameUseCase().getGameBoard().activeRow()?.forEach { it.setLetter(newLetter = 'T') }
 
         // when
         GameUseCase().guessWord()
@@ -119,10 +123,29 @@ class GuessWordTests
     }
 
     @Test
+    fun `when GameAnswer is returned and GameGuess is invalid - expected exception is thrown`()
+    {
+        // given
+        val expectedExceptionMessage = "Invalid guess: T"
+        guessRepository.guessNotFound = true
+
+        // when
+        GameUseCase().getGameBoard().activeRow()?.first()?.setLetter(newLetter = 'T')
+        val actualException = assertFailsWith<GameUseCase.GuessWordInvalidGuessException>
+        {
+            GameUseCase().guessWord()
+        }
+
+        // then
+        assertEquals(expectedExceptionMessage, actualException.message)
+    }
+
+    @Test
     fun `when GameAnswer is returned and does not match GameGuess - expected exception is thrown`()
     {
         // given
         val expectedExceptionMessage = "Guess (PLAYS) does not match Answer (TESTS)."
+        GameUseCase().getGameBoard().activeRow()?.forEach { it.setLetter(newLetter = 'T') }
 
         // when
         val actualException = assertFailsWith<GameUseCase.GuessWordFailedMismatchException>()
@@ -139,6 +162,7 @@ class GuessWordTests
     {
         // given
         answerRepository.guessMatchesAnswer = true
+        GameUseCase().getGameBoard().activeRow()?.forEach { it.setLetter(newLetter = 'T') }
 
         // when
         GameUseCase().guessWord()

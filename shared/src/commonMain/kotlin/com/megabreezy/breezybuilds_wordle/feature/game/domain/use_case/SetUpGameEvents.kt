@@ -3,8 +3,12 @@ package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneHandleable
+import kotlinx.coroutines.delay
 
-fun GameUseCase.setUpGameEvents(sceneHandler: GameSceneHandleable? = null)
+fun GameUseCase.setUpGameEvents(
+    sceneHandler: GameSceneHandleable? = null,
+    announcementDelay: Long = 1000L
+)
 {
     getGameBoard().reset()
     getGameKeyboard().reset()
@@ -40,6 +44,9 @@ fun GameUseCase.setUpGameEvents(sceneHandler: GameSceneHandleable? = null)
                     try
                     {
                         guessWord()
+
+                        getAnnouncement().setMessage(newMessage = "Correct! Thanks for playing!")
+                        sceneHandler?.onGameOver()
                     }
                     catch(e: GameUseCase.GuessWordInvalidGuessException)
                     {
@@ -50,6 +57,12 @@ fun GameUseCase.setUpGameEvents(sceneHandler: GameSceneHandleable? = null)
                         println(e)
                         getGameBoard().activeRow()?.forEachIndexed()
                         { index, tile ->
+                            if (tile.letter() == getGameAnswer().word()[index])
+                                tile.setState(newState = GameBoard.Tile.State.CORRECT)
+                            else if (getGameAnswer().word().contains("${tile.letter()}"))
+                                tile.setState(newState = GameBoard.Tile.State.CLOSE)
+                            else tile.setState(newState = GameBoard.Tile.State.INCORRECT)
+
                             for (keyRow in getGameKeyboard().rows())
                             {
                                 for (currentKey in keyRow)
@@ -94,7 +107,15 @@ fun GameUseCase.setUpGameEvents(sceneHandler: GameSceneHandleable? = null)
                     }
                     catch (e: GameUseCase.GuessWordFailedNotInWordsListException)
                     {
+                        println(e)
                         getAnnouncement().setMessage(newMessage = e.message)
+                        sceneHandler?.let()
+                        { handler ->
+                            handler.onAnnouncementShouldShow()
+                            delay(timeMillis = announcementDelay)
+                            getAnnouncement().setMessage(newMessage = null)
+                            handler.onAnnouncementShouldHide()
+                        }
                     }
                 } else Unit
             }

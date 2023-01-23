@@ -40,12 +40,29 @@ class GameKeyboard
         private val letter: Char? = null,
         private val letters: String? = null,
         private val resourceId: String? = null,
-        private var onClick: () -> Unit = { }
+        private var onClick: suspend () -> Unit = { }
     )
     {
+        override fun equals(other: Any?): Boolean = other is Key
+            && this.backgroundColor() == other.backgroundColor()
+            && this.isEnabled() == other.isEnabled()
+            && this.letter() == other.letter()
+            && this.letters() == other.letters()
+            && this.resourceId() == other.resourceId()
+
+        override fun hashCode(): Int
+        {
+            var result = backgroundColor.hashCode()
+            result = 31 * result + isEnabled.hashCode()
+            result = 31 * result + (letter?.hashCode() ?: 0)
+            result = 31 * result + (letters?.hashCode() ?: 0)
+            result = 31 * result + (resourceId?.hashCode() ?: 0)
+            return result
+        }
+
         fun backgroundColor() = backgroundColor
 
-        fun click() = onClick()
+        suspend fun click() = onClick()
 
         fun isEnabled() = isEnabled
 
@@ -59,7 +76,7 @@ class GameKeyboard
 
         fun setIsEnabled(newIsEnabled: Boolean) { isEnabled = newIsEnabled }
 
-        fun setOnClick(newOnClick: () -> Unit)
+        fun setOnClick(newOnClick: suspend () -> Unit)
         {
             onClick = newOnClick
         }

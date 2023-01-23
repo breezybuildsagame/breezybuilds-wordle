@@ -4,6 +4,7 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswer
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessCreateFailedRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessGateway
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessNotFoundRepositoryException
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameAnswer
 import org.koin.core.component.inject
 
 fun GameUseCase.guessWord()
@@ -12,14 +13,24 @@ fun GameUseCase.guessWord()
 
     try
     {
+        val answer = GameUseCase().getGameAnswer()
+
+        if (GameUseCase().getGameBoard().activeRow()?.firstOrNull { it.letter() == null } != null)
+        {
+            var invalidGuess = ""
+            GameUseCase().getGameBoard().activeRow()?.forEach()
+            {
+                tile -> tile.letter()?.let { letter -> invalidGuess += letter }
+            }
+            throw GameUseCase.GuessWordInvalidGuessException("Invalid guess: $invalidGuess")
+        }
+
         val guess = guessRepository.create()
 
         if (guess.word().isEmpty() || guess.word().count() < (GameUseCase().getGameBoard().activeRow()?.count() ?: 0))
         {
             throw GameUseCase.GuessWordInvalidGuessException("Invalid guess: ${guess.word()}")
         }
-
-        val answer = GameUseCase().getGameAnswer()
 
         if (guess.word() != answer.word())
         {

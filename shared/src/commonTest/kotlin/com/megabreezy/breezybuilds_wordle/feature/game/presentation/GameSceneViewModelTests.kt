@@ -6,10 +6,11 @@ import com.megabreezy.breezybuilds_wordle.core.domain.model.Answer
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Word
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
 import com.megabreezy.breezybuilds_wordle.core.util.Scenario
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.Announcement
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.AnnouncementRepresentable
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
@@ -40,17 +41,20 @@ class GameSceneViewModelTests: KoinComponent
     fun tearDown() = stopKoin()
 
     @Test
-    fun `when setup method is invoked on an instance - the setUpGameEvents use case is invoked`()
+    fun `when setup method is invoked on an instance with a handler - the setUpGameEvents use case is invoked`()
     {
         // given
         answerLocalDataSource.getAnswerShouldFail = true
+        val handler = MockSceneHandler()
         val sut = GameSceneViewModel()
 
         // when
-        sut.setUp()
+        sut.setUp(handler = handler)
 
         // then
         assertNotNull(answerLocalDataSource.answerToPut)
+        assertTrue(handler.onStartingGameDidInvoke)
+        assertTrue(handler.onGameStartedDidInvoke)
     }
 
     @Test
@@ -92,7 +96,7 @@ class GameSceneViewModelTests: KoinComponent
         expectedKeyboard.rows().first().first().setOnClick { keyPressDidInvoke = true }
 
         // when
-        sut.getGameKeyboard().rows().first().first().click()
+        runBlocking { sut.getGameKeyboard().rows().first().first().click() }
 
         // then
         assertTrue(keyPressDidInvoke)
@@ -102,7 +106,7 @@ class GameSceneViewModelTests: KoinComponent
     fun `when the getAnnouncement method is invoked on an instance - the getAnnouncement use case is invoked`()
     {
         // given
-        val expectedAnnouncement: Announcement by inject()
+        val expectedAnnouncement: AnnouncementRepresentable by inject()
         val sut = GameSceneViewModel()
         expectedAnnouncement.setMessage(newMessage = "Testing a new announcement!")
 
@@ -111,6 +115,21 @@ class GameSceneViewModelTests: KoinComponent
 
         // then
         assertEquals(expectedAnnouncement, actualAnnouncement)
+    }
+
+    class MockSceneHandler: GameSceneHandleable
+    {
+        var onGameStartedDidInvoke = false
+        var onStartingGameDidInvoke = false
+
+        override fun onAnnouncementShouldShow() { }
+        override fun onAnnouncementShouldHide() { }
+        override fun onGameOver() { }
+        override fun onGameStarted() { onGameStartedDidInvoke = true }
+        override fun onGuessingWord() { }
+        override fun onRevealNextTile() { }
+        override fun onRoundCompleted() { }
+        override fun onStartingGame() { onStartingGameDidInvoke = true }
     }
 
     class MockAnswerLocalDataSource: AnswerLocalDataManageable

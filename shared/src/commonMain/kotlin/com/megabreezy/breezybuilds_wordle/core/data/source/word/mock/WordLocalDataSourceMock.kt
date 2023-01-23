@@ -24,7 +24,7 @@ class WordLocalDataSourceMock(
     companion object
     {
         val mockWords = listOf(
-            "ALPHA", "FIRST", "PLACE", "SHAPE", "FLOAT"
+            "ALPHA", "FIRST", "PLACE", "SHAPE", "FLOAT", "MIGHT", "STRAY", "SLEEP", "CLOUT"
         )
         val allWords = mutableListOf<Word>()
 

@@ -25,6 +25,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
+                implementation(Dependency.Coroutines.common)
                 implementation(Dependency.Koin.common)
                 implementation(Dependency.MokoResources.common)
             }
@@ -38,6 +39,7 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
+                implementation(Dependency.Coroutines.android)
                 implementation(Dependency.MokoResources.android)
             }
         }

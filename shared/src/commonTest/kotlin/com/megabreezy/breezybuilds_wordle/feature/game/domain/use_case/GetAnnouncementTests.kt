@@ -1,6 +1,7 @@
 package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.Announcement
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.AnnouncementRepresentable
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -23,7 +24,7 @@ class GetAnnouncementTests: KoinComponent
     fun `When use case is invoked - expected Announcement is returned`()
     {
         // given
-        val expectedAnnouncement: Announcement by inject()
+        val expectedAnnouncement: AnnouncementRepresentable by inject()
 
         // when
         val sut = GameUseCase().getAnnouncement()

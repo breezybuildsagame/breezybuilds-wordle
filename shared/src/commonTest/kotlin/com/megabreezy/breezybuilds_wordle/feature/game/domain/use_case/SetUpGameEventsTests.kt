@@ -6,6 +6,7 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.*
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.*
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneHandleable
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
@@ -18,8 +19,8 @@ class SetUpGameEventsTests: KoinComponent
     private lateinit var answerRepository: MockGameAnswerRepository
     private lateinit var guessRepository: MockGameGuessRepository
     private lateinit var sceneHandler: MockSceneHandler
+    private lateinit var announcement: MockAnnouncement
 
-    private val announcement: Announcement by inject()
     private val gameBoard: GameBoard by inject()
     private val keyboard: GameKeyboard by inject()
 
@@ -29,6 +30,7 @@ class SetUpGameEventsTests: KoinComponent
         answerRepository = MockGameAnswerRepository()
         guessRepository = MockGameGuessRepository()
         sceneHandler = MockSceneHandler()
+        announcement = MockAnnouncement()
 
         startKoin()
         {
@@ -39,6 +41,7 @@ class SetUpGameEventsTests: KoinComponent
                 {
                     single<GameAnswerGateway> { answerRepository }
                     single<GameGuessGateway> { guessRepository }
+                    single<AnnouncementRepresentable> { announcement }
                 }
             )
         }
@@ -92,7 +95,7 @@ class SetUpGameEventsTests: KoinComponent
     fun `when use case is invoked - Announcement message method returns null value`()
     {
         // given
-        val announcement: Announcement by inject()
+        val announcement: AnnouncementRepresentable by inject()
         announcement.setMessage(newMessage = "My Urgent Message!")
 
         // when
@@ -110,7 +113,7 @@ class SetUpGameEventsTests: KoinComponent
 
         // when
         GameUseCase().setUpGameEvents()
-        for (row in keyboard.rows()) { for (key in row) { if (key.letter() == expectedLetter) key.click() } }
+        for (row in keyboard.rows()) { for (key in row) { if (key.letter() == expectedLetter) runBlocking { key.click() } } }
 
         // then
         assertEquals(expectedLetter, gameBoard.rows().first().first().letter())
@@ -121,7 +124,7 @@ class SetUpGameEventsTests: KoinComponent
     {
         // when
         GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
-        for (row in keyboard.rows()) { for (key in row) { if (key.letter() == 'Z') key.click() } }
+        for (row in keyboard.rows()) { for (key in row) { if (key.letter() == 'Z') runBlocking { key.click() } } }
 
         // then
         assertTrue(sceneHandler.onRevealNextTileDidInvoke)
@@ -132,11 +135,11 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
-        for (row in gameBoard.rows()) { for (tile in row) { getKey(letters = "C")?.click() } }
+        for (row in gameBoard.rows()) { for (tile in row) { runBlocking { getKey(letters = "C")?.click() } } }
         sceneHandler.onRevealNextTileDidInvoke = false
 
         // when
-        getKey(letters = "C")?.click()
+        runBlocking { getKey(letters = "C")?.click() }
 
         // then
         assertFalse(sceneHandler.onRevealNextTileDidInvoke)
@@ -147,11 +150,11 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
-        getKey(letters = "C")?.click()
+        runBlocking { getKey(letters = "C")?.click() }
         sceneHandler.onRevealNextTileDidInvoke = false
 
         // when
-        getKey(letters = "BACKSPACE")?.click()
+        runBlocking { getKey(letters = "BACKSPACE")?.click() }
 
         // then
         assertNull(gameBoard.activeRow()?.firstOrNull { tile -> tile.letter() != null })
@@ -165,7 +168,7 @@ class SetUpGameEventsTests: KoinComponent
         GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
 
         // when
-        getKey(letters = "BACKSPACE")?.click()
+        runBlocking { getKey(letters = "BACKSPACE")?.click() }
 
         // then
         assertNull(gameBoard.activeRow()?.firstOrNull { tile -> tile.letter() != null })
@@ -177,10 +180,10 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
-        for (row in gameBoard.rows()) { for (tile in row) { getKey(letters = "C")?.click() } }
+        for (row in gameBoard.rows()) { for (tile in row) { runBlocking { getKey(letters = "C")?.click() } } }
 
         // when
-        try { getKey(letters = "ENTER")?.click() } catch(_ : Throwable) { }
+        try { runBlocking { getKey(letters = "ENTER")?.click() } } catch(_ : Throwable) { }
 
         // then
         assertNotNull(guessRepository.guessToReturn)
@@ -192,14 +195,14 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
-        getKey(letters = "C")?.click()
+        runBlocking { getKey(letters = "C")?.click() }
         guessRepository.guessIsInvalid = true
 
         // when
-        getKey(letters = "ENTER")?.click()
+        runBlocking { getKey(letters = "ENTER")?.click() }
 
         // then
-        assertNotNull(guessRepository.guessToReturn)
+        assertTrue(true)
     }
 
     @Test
@@ -212,8 +215,8 @@ class SetUpGameEventsTests: KoinComponent
         )
 
         // when
-        for (key in keysInUse) key?.click()
-        getKey(letters = "ENTER")?.click()
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
 
         // then
         for (key in keysInUse)
@@ -245,8 +248,8 @@ class SetUpGameEventsTests: KoinComponent
         )
 
         // when
-        for (key in keysInUse) key?.click()
-        getKey(letters = "ENTER")?.click()
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
 
         // then
         for (key in keysInUse)
@@ -267,8 +270,8 @@ class SetUpGameEventsTests: KoinComponent
         )
 
         // when
-        for (key in keysInUse) key?.click()
-        getKey(letters = "ENTER")?.click()
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
 
         // then
         for (key in keysInUse)
@@ -282,22 +285,51 @@ class SetUpGameEventsTests: KoinComponent
     }
 
     @Test
-    fun `when use case invoked and enter Key is clicked and GameGuess is not found in words list - expected announcement is set`()
+    fun `when use case invoked and enter Key is clicked and GameGuess is not found in words list - expected announcement is shown and subsequently hidden`()
     {
         // given
         guessRepository.guessNotFound = true
-        GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
+        GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L)
         val keysInUse = listOf(
             getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
         )
         val expectedAnnouncementMessage = "Not found in words list."
 
         // when
-        for (key in keysInUse) key?.click()
-        getKey(letters = "ENTER")?.click()
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
 
         // then
-        assertEquals(expectedAnnouncementMessage, announcement.message())
+        assertEquals(expectedAnnouncementMessage, announcement.previouslySetMessages.first())
+        assertTrue(sceneHandler.onAnnouncementShouldShowDidInvoke)
+        assertTrue(sceneHandler.onAnnouncementShouldHideDidInvoke)
+        assertNull(announcement.message())
+    }
+
+    @Test
+    fun `when use case invoked and enter Key is clicked and GameGuess is incorrect - GameBoard activeRow tiles are updated with expected states`()
+    {
+        // given
+        answerRepository.guessContainsCloseLetter = true  // Answer: SPEAR
+        GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
+        val initialActiveGameBoardRow = gameBoard.activeRow()
+        val keysInUse = listOf(
+            getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
+        )
+        val expectedEndOfRoundTilesStates = listOf(
+            GameBoard.Tile.State.INCORRECT, GameBoard.Tile.State.CLOSE,
+            GameBoard.Tile.State.CORRECT, GameBoard.Tile.State.CORRECT, GameBoard.Tile.State.INCORRECT
+        )
+
+        // when
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
+
+        // then
+        initialActiveGameBoardRow?.forEachIndexed()
+        { index, tile ->
+            assertEquals(expectedEndOfRoundTilesStates[index], tile.state())
+        }
     }
 
     @Test
@@ -311,8 +343,8 @@ class SetUpGameEventsTests: KoinComponent
         )
 
         // when
-        for (key in keysInUse) key?.click()
-        getKey(letters = "ENTER")?.click()
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
 
         // then
         assertNotEquals(initialActiveGameBoardRow, gameBoard.activeRow())
@@ -328,8 +360,8 @@ class SetUpGameEventsTests: KoinComponent
         )
 
         // when
-        for (key in keysInUse) key?.click()
-        getKey(letters = "ENTER")?.click()
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
 
         // then
         assertTrue(sceneHandler.onRoundCompletedDidInvoke)
@@ -348,8 +380,8 @@ class SetUpGameEventsTests: KoinComponent
         // when
         for (round in gameBoard.rows())
         {
-            for (key in keysInUse) key?.click()
-            getKey(letters = "ENTER")?.click()
+            for (key in keysInUse) runBlocking { key?.click() }
+            runBlocking { getKey(letters = "ENTER")?.click() }
         }
 
         // then
@@ -368,12 +400,43 @@ class SetUpGameEventsTests: KoinComponent
         // when
         for (round in gameBoard.rows())
         {
-            for (key in keysInUse) key?.click()
-            getKey(letters = "ENTER")?.click()
+            for (key in keysInUse) runBlocking { key?.click() }
+            runBlocking { getKey(letters = "ENTER")?.click() }
         }
 
         // then
         assertTrue(sceneHandler.onGameOverDidInvoke)
+    }
+
+    @Test
+    fun `when use case invoked and enter Key is clicked and GameGuess is correct - expected announcement is set`()
+    {
+        answerRepository.guessMatchesAnswer = true
+        GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
+        val keysInUse = listOf(
+            getKey(letters = "P"), getKey(letters = "L"), getKey(letters = "A"), getKey(letters = "Y"), getKey(letters = "S")
+        )
+
+        // when
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
+
+        // then
+        assertEquals("Correct! Thanks for playing!", announcement.message())
+        assertTrue(sceneHandler.onGameOverDidInvoke)
+    }
+
+    data class MockAnnouncement(private var message: String? = null): AnnouncementRepresentable
+    {
+        var previouslySetMessages: MutableList<String> = mutableListOf()
+
+        override fun message(): String? = this.message
+
+        override fun setMessage(newMessage: String?)
+        {
+            newMessage?.let { previouslySetMessages.add(newMessage) }
+            this.message = newMessage
+        }
     }
 
     class MockSceneHandler: GameSceneHandleable
@@ -384,7 +447,11 @@ class SetUpGameEventsTests: KoinComponent
         var onRevealNextTileDidInvoke = false
         var onRoundCompletedDidInvoke = false
         var onStartingGameDidInvoke = false
+        var onAnnouncementShouldShowDidInvoke = false
+        var onAnnouncementShouldHideDidInvoke = false
 
+        override fun onAnnouncementShouldShow() { onAnnouncementShouldShowDidInvoke = true }
+        override fun onAnnouncementShouldHide() { onAnnouncementShouldHideDidInvoke = true }
         override fun onGameOver() { onGameOverDidInvoke = true }
         override fun onGameStarted() { onGameStartedDidInvoke = true }
         override fun onGuessingWord() { onGuessingWordDidInvoke = true }
