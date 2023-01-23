@@ -3,6 +3,7 @@ package com.megabreezy.breezybuilds_wordle.android
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,7 +17,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
 import com.megabreezy.breezybuilds_wordle.Greeting
+import com.megabreezy.breezybuilds_wordle.android.core.navigation.Navigation
+import com.megabreezy.breezybuilds_wordle.core.util.Scenario
+import com.megabreezy.breezybuilds_wordle.core.util.initKoin
+import org.koin.core.context.GlobalContext.get
 
 @Composable
 fun MyApplicationTheme(
@@ -57,16 +63,30 @@ fun MyApplicationTheme(
     )
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        try { get() }
+        catch(e: Throwable) {
+            initKoin(
+                scenarios = listOf(
+                    Scenario.WORD_FOUND,
+                    Scenario.ANSWER_SAVED
+                )
+            )
+        }
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
             MyApplicationTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting(Greeting().greeting())
+                    Navigation()
                 }
             }
         }

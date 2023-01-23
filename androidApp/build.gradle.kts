@@ -33,10 +33,26 @@ android {
 
 dependencies {
     implementation(project(":shared"))
-    implementation("androidx.compose.ui:ui:1.2.1")
-    implementation("androidx.compose.ui:ui-tooling:1.2.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.2.1")
-    implementation("androidx.compose.foundation:foundation:1.2.1")
-    implementation("androidx.compose.material:material:1.2.1")
-    implementation("androidx.activity:activity-compose:1.5.1")
+    implementation("androidx.compose.ui:ui-tooling-preview:${Version.jetpackComposeVersion}")
+    implementation("androidx.compose.foundation:foundation:${Version.jetpackComposeVersion}")
+    implementation("androidx.compose.material:material:${Version.jetpackComposeVersion}")
+
+    implementation("androidx.activity:activity-compose:${Version.activityComposeVersion}")
+    implementation("androidx.compose.runtime:runtime:${Version.jetpackComposeVersion}")
+    implementation("androidx.compose.ui:ui:${Version.jetpackComposeVersion}")
+    implementation("androidx.compose.material3:material3:${Version.composeMaterial3Version}")
+    implementation("androidx.compose.animation:animation:${Version.jetpackComposeVersion}")
+    implementation("androidx.compose.ui:ui-tooling:${Version.jetpackComposeVersion}")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:${Version.viewModelComposeVersion}")
+    implementation("com.google.accompanist:accompanist-navigation-animation:"
+                           + Version.accompanistVersion)
+
+    implementation(Dependency.Koin.android)
+
+    androidTestImplementation("androidx.test:runner:1.4.0")
+    androidTestImplementation("androidx.test:rules:1.4.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation("androidx.test.ext:junit:1.1.3")
+
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${Version.jetpackComposeVersion}")
 }
