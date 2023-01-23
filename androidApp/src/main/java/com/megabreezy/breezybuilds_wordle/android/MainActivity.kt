@@ -4,11 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -20,6 +23,9 @@ import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import com.megabreezy.breezybuilds_wordle.Greeting
 import com.megabreezy.breezybuilds_wordle.android.core.navigation.Navigation
+import com.megabreezy.breezybuilds_wordle.android.core.util.LocalSceneDimensions
+import com.megabreezy.breezybuilds_wordle.android.core.util.LocalStageDimensions
+import com.megabreezy.breezybuilds_wordle.android.core.util.rememberGlobalSceneDimensions
 import com.megabreezy.breezybuilds_wordle.core.util.Scenario
 import com.megabreezy.breezybuilds_wordle.core.util.initKoin
 import org.koin.core.context.GlobalContext.get
@@ -80,13 +86,26 @@ class MainActivity : ComponentActivity() {
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        setContent {
-            MyApplicationTheme {
+        setContent()
+        {
+            val globalSceneDimensions = rememberGlobalSceneDimensions()
+
+            MyApplicationTheme()
+            {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
-                ) {
-                    Navigation()
+                )
+                {
+                    globalSceneDimensions.Component()
+
+                    CompositionLocalProvider(LocalStageDimensions provides globalSceneDimensions.stageFrame)
+                    {
+                        CompositionLocalProvider(LocalSceneDimensions provides globalSceneDimensions.sceneFrame)
+                        {
+                            Navigation()
+                        }
+                    }
                 }
             }
         }

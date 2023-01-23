@@ -12,6 +12,8 @@ android {
         targetSdk = Version.androidCompileSdk
         versionCode = 1
         versionName = "1.0"
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures {
         compose = true
@@ -55,4 +57,5 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
 
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:${Version.jetpackComposeVersion}")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:${Version.jetpackComposeVersion}")
 }
