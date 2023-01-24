@@ -1,15 +1,20 @@
 package com.megabreezy.breezybuilds_wordle.game.presentation.component
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.ui.test.assertHeightIsEqualTo
-import androidx.compose.ui.test.assertWidthIsEqualTo
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.sp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.megabreezy.breezybuilds_wordle.android.core.ui.Scene
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneHeader
+import com.megabreezy.breezybuilds_wordle.android.util.theme.ThemeFonts
+import com.megabreezy.breezybuilds_wordle.android.util.theme.dpToSp
 import com.megabreezy.breezybuilds_wordle.core.ui.SceneMock
 import org.junit.Rule
 import org.junit.Test
@@ -63,5 +68,43 @@ class GameSceneHeaderTests
         composeTestRule.onNodeWithContentDescription(
             GameSceneHeader.TagName.COMPONENT.toString()
         ).assertHeightIsEqualTo(expectedFrameHeight!!)
+    }
+
+    @Test
+    fun when_displaying_composable_with_title__title_matches_design_requirements()
+    {
+        // given
+        lateinit var expectedTextStyle: TextStyle
+        val expectedTitleText = "My Awesome Game"
+
+        // when
+        composeTestRule.setContent()
+        {
+            SceneMock.display()
+            {
+                BoxWithConstraints(modifier = Modifier.fillMaxSize())
+                {
+                    expectedTextStyle = TextStyle(
+                        color = MaterialTheme.colors.onPrimary,
+                        fontFamily = ThemeFonts.roboto,
+                        fontWeight = FontWeight.Black,
+                        fontSize = dpToSp(dp = this.maxHeight * (40 / Scene.idealFrame().height)),
+                        lineHeight = dpToSp(this.maxHeight * (46.88f / Scene.idealFrame().height)),
+                        letterSpacing = (0.1).sp
+                    )
+
+                    GameSceneHeader.Component(options = GameSceneHeader.ComponentOptions(text = expectedTitleText))
+                }
+            }
+        }
+
+        // then
+        composeTestRule.onNodeWithContentDescription(
+            GameSceneHeader.TagName.COMPONENT.toString()
+        ).onChild().assertTextEquals(expectedTitleText)
+
+        composeTestRule.onNode(
+            SemanticsMatcher.expectValue(GameSceneHeader.TextStyleKey, expectedTextStyle)
+        ).assertExists()
     }
 }

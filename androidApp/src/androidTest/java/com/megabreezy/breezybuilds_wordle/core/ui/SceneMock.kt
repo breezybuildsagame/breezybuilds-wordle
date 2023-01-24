@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.megabreezy.breezybuilds_wordle.android.MyApplicationTheme
 import com.megabreezy.breezybuilds_wordle.android.core.ui.LayoutFrame
@@ -29,15 +30,11 @@ class SceneMock(
         {
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .background(MaterialTheme.colors.background)
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize().background(Color(0xFF202020)),
             )
             {
                 CompositionLocalProvider(LocalSceneDimensions provides frame)
                 {
-                    println("Displaying mock content")
-                    println(LocalSceneDimensions.current)
                     content()
                 }
             }
