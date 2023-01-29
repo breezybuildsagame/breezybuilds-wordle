@@ -3,11 +3,13 @@ package com.megabreezy.breezybuilds_wordle.game.presentation.component
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.material.MaterialTheme
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.megabreezy.breezybuilds_wordle.android.core.ui.Scene
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneBoard
@@ -126,5 +128,104 @@ class GameSceneBoardTests
             SemanticsMatcher.expectValue(GameSceneBoard.Tile.TextStyleKey, expectedTextStyle)
         ).assertExists()
         composeTestRule.onNodeWithContentDescription(GameSceneBoard.TagName.TILE.toString()).onChild().assertTextEquals("G")
+    }
+
+    @Test
+    fun when_incorrect_tile_appears__view_matches_design_requirements()
+    {
+        // given
+        lateinit var expectedBorder: BorderStroke
+        var expectedBackgroundColor: Color? = null
+
+        // when
+        composeTestRule.setContent()
+        {
+            expectedBorder = BorderStroke(
+                color = MaterialTheme.colors.error,
+                width = 0.dp
+            )
+            expectedBackgroundColor = MaterialTheme.colors.error
+
+            GameSceneBoard.Tile.Component(
+                options = GameSceneBoard.Tile.ComponentOptions(
+                    letter = "G",
+                    state = GameBoard.Tile.State.INCORRECT
+                )
+            )
+        }
+
+        // then
+        composeTestRule.onNode(
+            SemanticsMatcher.expectValue(GameSceneBoard.Tile.BackgroundColorKey, expectedBackgroundColor!!)
+        ).assertExists()
+        composeTestRule.onNode(
+            SemanticsMatcher.expectValue(GameSceneBoard.Tile.BorderStrokeKey, expectedBorder)
+        ).assertExists()
+    }
+
+    @Test
+    fun when_close_tile_appears__view_matches_design_requirements()
+    {
+        // given
+        lateinit var expectedBorder: BorderStroke
+        var expectedBackgroundColor: Color? = null
+
+        // when
+        composeTestRule.setContent()
+        {
+            expectedBorder = BorderStroke(
+                color = MaterialTheme.colors.error,
+                width = 0.dp
+            )
+            expectedBackgroundColor = MaterialTheme.colors.secondaryVariant
+
+            GameSceneBoard.Tile.Component(
+                options = GameSceneBoard.Tile.ComponentOptions(
+                    letter = "G",
+                    state = GameBoard.Tile.State.CLOSE
+                )
+            )
+        }
+
+        // then
+        composeTestRule.onNode(
+            SemanticsMatcher.expectValue(GameSceneBoard.Tile.BackgroundColorKey, expectedBackgroundColor!!)
+        ).assertExists()
+        composeTestRule.onNode(
+            SemanticsMatcher.expectValue(GameSceneBoard.Tile.BorderStrokeKey, expectedBorder)
+        ).assertExists()
+    }
+
+    @Test
+    fun when_correct_tile_appears__view_matches_design_requirements()
+    {
+        // given
+        lateinit var expectedBorder: BorderStroke
+        var expectedBackgroundColor: Color? = null
+
+        // when
+        composeTestRule.setContent()
+        {
+            expectedBorder = BorderStroke(
+                color = MaterialTheme.colors.error,
+                width = 0.dp
+            )
+            expectedBackgroundColor = MaterialTheme.colors.secondary
+
+            GameSceneBoard.Tile.Component(
+                options = GameSceneBoard.Tile.ComponentOptions(
+                    letter = "G",
+                    state = GameBoard.Tile.State.CORRECT
+                )
+            )
+        }
+
+        // then
+        composeTestRule.onNode(
+            SemanticsMatcher.expectValue(GameSceneBoard.Tile.BackgroundColorKey, expectedBackgroundColor!!)
+        ).assertExists()
+        composeTestRule.onNode(
+            SemanticsMatcher.expectValue(GameSceneBoard.Tile.BorderStrokeKey, expectedBorder)
+        ).assertExists()
     }
 }

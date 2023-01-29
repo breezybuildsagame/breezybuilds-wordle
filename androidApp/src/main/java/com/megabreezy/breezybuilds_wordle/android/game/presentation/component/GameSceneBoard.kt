@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.contentDescription
@@ -26,17 +27,33 @@ object GameSceneBoard
 {
     object Tile
     {
+        val BackgroundColorKey = SemanticsPropertyKey<Color>("BackgroundColor")
         val BorderStrokeKey = SemanticsPropertyKey<BorderStroke>("BorderStroke")
         val TextStyleKey = SemanticsPropertyKey<TextStyle>("TextStyle")
 
+        private var SemanticsPropertyReceiver.gameSceneBoardTileBackgroundColor by BackgroundColorKey
         private var SemanticsPropertyReceiver.gameSceneBoardTileBorderStroke by BorderStrokeKey
         private var SemanticsPropertyReceiver.gameSceneBoardTileTextStyle by TextStyleKey
 
         @Composable
         fun Component(options: ComponentOptions = ComponentOptions())
         {
+            val borderWidth: Float = when(options.state)
+            {
+                GameBoard.Tile.State.INCORRECT -> 2f
+                else -> 0f
+            }
+
+            val backgroundColor: Color = when(options.state)
+            {
+                GameBoard.Tile.State.CLOSE -> MaterialTheme.colors.secondaryVariant
+                GameBoard.Tile.State.CORRECT -> MaterialTheme.colors.secondary
+                GameBoard.Tile.State.INCORRECT -> MaterialTheme.colors.error
+                else -> Color.Transparent
+            }
+
             val borderStroke = BorderStroke(
-                width = LocalSceneDimensions.current.height * (2 / Scene.idealFrame().height),
+                width = LocalSceneDimensions.current.height * (borderWidth / Scene.idealFrame().height),
                 color = MaterialTheme.colors.error
             )
             val textStyle = TextStyle(
@@ -56,6 +73,7 @@ object GameSceneBoard
                     {
                         contentDescription = TagName.TILE.toString()
                         gameSceneBoardTileBorderStroke = borderStroke
+                        gameSceneBoardTileBackgroundColor = backgroundColor
                     }
             )
             {
