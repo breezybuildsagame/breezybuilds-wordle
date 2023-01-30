@@ -3,6 +3,7 @@ package com.megabreezy.breezybuilds_wordle.game.presentation.component
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -140,18 +141,21 @@ class GameSceneBoardTests
         // when
         composeTestRule.setContent()
         {
-            expectedBorder = BorderStroke(
-                color = MaterialTheme.colors.error,
-                width = 0.dp
-            )
-            expectedBackgroundColor = MaterialTheme.colors.error
-
-            GameSceneBoard.Tile.Component(
-                options = GameSceneBoard.Tile.ComponentOptions(
-                    letter = "G",
-                    state = GameBoard.Tile.State.INCORRECT
+            SceneMock.display()
+            {
+                expectedBorder = BorderStroke(
+                    color = Color.Transparent,
+                    width = 0.dp
                 )
-            )
+                expectedBackgroundColor = MaterialTheme.colors.error
+
+                GameSceneBoard.Tile.Component(
+                    options = GameSceneBoard.Tile.ComponentOptions(
+                        letter = "G",
+                        state = GameBoard.Tile.State.INCORRECT
+                    )
+                )
+            }
         }
 
         // then
@@ -173,18 +177,21 @@ class GameSceneBoardTests
         // when
         composeTestRule.setContent()
         {
-            expectedBorder = BorderStroke(
-                color = MaterialTheme.colors.error,
-                width = 0.dp
-            )
-            expectedBackgroundColor = MaterialTheme.colors.secondaryVariant
-
-            GameSceneBoard.Tile.Component(
-                options = GameSceneBoard.Tile.ComponentOptions(
-                    letter = "G",
-                    state = GameBoard.Tile.State.CLOSE
+            SceneMock.display()
+            {
+                expectedBorder = BorderStroke(
+                    color = Color.Transparent,
+                    width = 0.dp
                 )
-            )
+                expectedBackgroundColor = MaterialTheme.colors.secondaryVariant
+
+                GameSceneBoard.Tile.Component(
+                    options = GameSceneBoard.Tile.ComponentOptions(
+                        letter = "G",
+                        state = GameBoard.Tile.State.CLOSE
+                    )
+                )
+            }
         }
 
         // then
@@ -206,18 +213,21 @@ class GameSceneBoardTests
         // when
         composeTestRule.setContent()
         {
-            expectedBorder = BorderStroke(
-                color = MaterialTheme.colors.error,
-                width = 0.dp
-            )
-            expectedBackgroundColor = MaterialTheme.colors.secondary
-
-            GameSceneBoard.Tile.Component(
-                options = GameSceneBoard.Tile.ComponentOptions(
-                    letter = "G",
-                    state = GameBoard.Tile.State.CORRECT
+            SceneMock.display()
+            {
+                expectedBorder = BorderStroke(
+                    color = Color.Transparent,
+                    width = 0.dp
                 )
-            )
+                expectedBackgroundColor = MaterialTheme.colors.secondary
+
+                GameSceneBoard.Tile.Component(
+                    options = GameSceneBoard.Tile.ComponentOptions(
+                        letter = "G",
+                        state = GameBoard.Tile.State.CORRECT
+                    )
+                )
+            }
         }
 
         // then
@@ -227,5 +237,69 @@ class GameSceneBoardTests
         composeTestRule.onNode(
             SemanticsMatcher.expectValue(GameSceneBoard.Tile.BorderStrokeKey, expectedBorder)
         ).assertExists()
+    }
+
+    @Test
+    fun when_view_appears_with_Rows__view_matches_design_requirements()
+    {
+        // given
+        var expectedRowSpacerHeight: Dp? = null
+        var expectedTileSpacerWidth: Dp? = null
+        val expectedRows: List<@Composable () -> Unit> = listOf(
+            {
+                GameSceneBoard.Row.Component(
+                    options = GameSceneBoard.Row.ComponentOptions(
+                        tiles = listOf(
+                            { GameSceneBoard.Tile.Component(options = GameSceneBoard.Tile.ComponentOptions(letter = "A")) },
+                            { GameSceneBoard.Tile.Component(options = GameSceneBoard.Tile.ComponentOptions(letter = "B")) },
+                        )
+                    )
+                )
+            },
+            {
+                GameSceneBoard.Row.Component(
+                    options = GameSceneBoard.Row.ComponentOptions(
+                        tiles = listOf(
+                            { GameSceneBoard.Tile.Component(options = GameSceneBoard.Tile.ComponentOptions(letter = "C")) },
+                            { GameSceneBoard.Tile.Component(options = GameSceneBoard.Tile.ComponentOptions(letter = "D")) },
+                            { GameSceneBoard.Tile.Component(options = GameSceneBoard.Tile.ComponentOptions(letter = "E")) },
+                        )
+                    )
+                )
+            }
+        )
+
+        // when
+        composeTestRule.setContent()
+        {
+            SceneMock.display()
+            {
+                BoxWithConstraints()
+                {
+                    expectedTileSpacerWidth = this.maxWidth * (7 / Scene.idealFrame().width)
+                    expectedRowSpacerHeight = this.maxHeight * (10 / Scene.idealFrame().height)
+                }
+
+                GameSceneBoard.Component(options = GameSceneBoard.ComponentOptions(rows = expectedRows))
+            }
+        }
+        val displayedBoard = composeTestRule.onNodeWithContentDescription(GameSceneBoard.TagName.BOARD.toString(), useUnmergedTree = true)
+
+        // then
+        displayedBoard.onChildAt(index = 0).onChildAt(index = 0).assertTextEquals("A")
+        displayedBoard.onChildAt(index = 1).assertContentDescriptionEquals("spacer")
+        displayedBoard.onChildAt(index = 1).assertWidthIsEqualTo(expectedTileSpacerWidth!!)
+        displayedBoard.onChildAt(index = 2).onChildAt(index = 0).assertTextEquals("B")
+        displayedBoard.onChildAt(index = 3).assertContentDescriptionEquals("spacer")
+        displayedBoard.onChildAt(index = 3).assertHeightIsEqualTo(expectedRowSpacerHeight!!)
+
+        displayedBoard.onChildAt(index = 4).onChildAt(index = 0).assertTextEquals("C")
+        displayedBoard.onChildAt(index = 5).assertContentDescriptionEquals("spacer")
+        displayedBoard.onChildAt(index = 5).assertWidthIsEqualTo(expectedTileSpacerWidth!!)
+        displayedBoard.onChildAt(index = 6).onChildAt(index = 0).assertTextEquals("D")
+        displayedBoard.onChildAt(index = 7).assertContentDescriptionEquals("spacer")
+        displayedBoard.onChildAt(index = 7).assertWidthIsEqualTo(expectedTileSpacerWidth!!)
+        displayedBoard.onChildAt(index = 8).onChildAt(index = 0).assertTextEquals("E")
+        displayedBoard.onChildAt(index = 9).assertDoesNotExist()
     }
 }

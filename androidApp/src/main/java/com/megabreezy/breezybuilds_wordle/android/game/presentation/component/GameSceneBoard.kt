@@ -1,10 +1,9 @@
 package com.megabreezy.breezybuilds_wordle.android.game.presentation.component
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +24,35 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
 
 object GameSceneBoard
 {
+    @Composable
+    fun Component(options: ComponentOptions = ComponentOptions())
+    {
+        Column(
+            modifier = Modifier
+                .semantics { contentDescription = TagName.BOARD.toString() },
+            verticalArrangement = Arrangement.Top
+        )
+        {
+            options.rows.forEachIndexed()
+            { rowIndex, rowView ->
+                rowView()
+
+                if (
+                    (options.rows.count() > 1 && rowIndex == 0)
+                    || (options.rows.count() > 1 && rowIndex != 0 && rowIndex != (options.rows.count() - 1))
+                )
+                {
+                    Spacer(
+                        modifier = Modifier
+                            .height(height = LocalSceneDimensions.current.height * (10 / Scene.idealFrame().height))
+                            .aspectRatio(Scene.idealFrame().width / 10f)
+                            .semantics { contentDescription = "spacer" }
+                    )
+                }
+            }
+        }
+    }
+
     object Tile
     {
         val BackgroundColorKey = SemanticsPropertyKey<Color>("BackgroundColor")
@@ -40,8 +68,14 @@ object GameSceneBoard
         {
             val borderWidth: Float = when(options.state)
             {
-                GameBoard.Tile.State.INCORRECT -> 2f
+                GameBoard.Tile.State.HIDDEN -> 2f
                 else -> 0f
+            }
+
+            val borderColor: Color = when(options.state)
+            {
+                GameBoard.Tile.State.HIDDEN -> MaterialTheme.colors.error
+                else -> Color.Transparent
             }
 
             val backgroundColor: Color = when(options.state)
@@ -54,7 +88,7 @@ object GameSceneBoard
 
             val borderStroke = BorderStroke(
                 width = LocalSceneDimensions.current.height * (borderWidth / Scene.idealFrame().height),
-                color = MaterialTheme.colors.error
+                color = borderColor
             )
             val textStyle = TextStyle(
                 color = MaterialTheme.colors.onPrimary,
@@ -67,8 +101,9 @@ object GameSceneBoard
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .width(width = LocalSceneDimensions.current.width * (61 / Scene.idealFrame().width))
-                    .border(borderStroke)
                     .aspectRatio(ratio = 1f)
+                    .border(borderStroke)
+                    .background(color = backgroundColor)
                     .semantics
                     {
                         contentDescription = TagName.TILE.toString()
@@ -95,9 +130,41 @@ object GameSceneBoard
         )
     }
 
+    object Row
+    {
+        @Composable
+        fun Component(options: ComponentOptions = ComponentOptions())
+        {
+            Row()
+            {
+                options.tiles.forEachIndexed()
+                { tileIndex, tileView ->
+                    tileView()
+
+                    if (
+                        (options.tiles.count() > 1 && tileIndex == 0)
+                        || (options.tiles.count() > 1 && tileIndex != 0 && tileIndex != (options.tiles.count() - 1))
+                    )
+                    {
+                        Spacer(
+                            modifier = Modifier
+                                .width(width = LocalSceneDimensions.current.width * (7 / Scene.idealFrame().width))
+                                .aspectRatio(7f / 61)
+                                .semantics { contentDescription = "spacer" }
+                        )
+                    }
+                }
+            }
+        }
+
+        data class ComponentOptions(val tiles: List<@Composable () -> Unit> = listOf())
+    }
+
+    data class ComponentOptions(val rows: List<@Composable () -> Unit> = listOf())
+
     enum class TagName(private val id: String)
     {
-        TILE(id = "game_scene_board_tile_component");
+        BOARD(id = "game_scene_board_component"), TILE(id = "game_scene_board_tile_component");
 
         override fun toString(): String = this.id
     }
