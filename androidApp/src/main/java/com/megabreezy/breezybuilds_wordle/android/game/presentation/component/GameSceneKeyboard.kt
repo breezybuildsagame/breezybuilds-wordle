@@ -39,6 +39,8 @@ object GameSceneKeyboard
                 containerColor = when (options.backgroundColor)
                 {
                     GameKeyboard.Key.BackgroundColor.DEFAULT -> MaterialTheme.colorScheme.background
+                    GameKeyboard.Key.BackgroundColor.NOT_FOUND -> MaterialTheme.colorScheme.error
+                    GameKeyboard.Key.BackgroundColor.NEARBY -> MaterialTheme.colorScheme.tertiary
                     else -> Color.Transparent
                 }
             )

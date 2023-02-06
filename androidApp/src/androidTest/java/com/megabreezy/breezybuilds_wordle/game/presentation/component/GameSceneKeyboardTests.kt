@@ -196,4 +196,62 @@ class GameSceneKeyboardTests
             SemanticsMatcher.expectValue(GameSceneKeyboard.Key.ButtonColorsKey, expectedButtonColors)
         ).assertExists()
     }
+
+    @Test
+    fun when_not_found_key_composable_invoked__color_matches_design_requirements()
+    {
+        // given
+        lateinit var expectedButtonColors: ButtonColors
+
+        // when
+        composeTestRule.setContent()
+        {
+            SceneMock.display()
+            {
+                expectedButtonColors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error
+                )
+
+                GameSceneKeyboard.Key.Component(
+                    options = GameSceneKeyboard.Key.ComponentOptions(
+                        backgroundColor = GameKeyboard.Key.BackgroundColor.NOT_FOUND
+                    )
+                )
+            }
+        }
+
+        // then
+        composeTestRule.onNode(
+            SemanticsMatcher.expectValue(GameSceneKeyboard.Key.ButtonColorsKey, expectedButtonColors)
+        ).assertExists()
+    }
+
+    @Test
+    fun when_nearby_key_composable_invoked__color_matches_design_requirements()
+    {
+        // given
+        lateinit var expectedButtonColors: ButtonColors
+
+        // when
+        composeTestRule.setContent()
+        {
+            SceneMock.display()
+            {
+                expectedButtonColors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.tertiary
+                )
+
+                GameSceneKeyboard.Key.Component(
+                    options = GameSceneKeyboard.Key.ComponentOptions(
+                        backgroundColor = GameKeyboard.Key.BackgroundColor.NEARBY
+                    )
+                )
+            }
+        }
+
+        // then
+        composeTestRule.onNode(
+            SemanticsMatcher.expectValue(GameSceneKeyboard.Key.ButtonColorsKey, expectedButtonColors)
+        ).assertExists()
+    }
 }
