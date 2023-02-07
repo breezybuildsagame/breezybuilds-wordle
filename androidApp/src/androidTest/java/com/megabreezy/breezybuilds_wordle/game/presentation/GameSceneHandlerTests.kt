@@ -6,6 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.GameSceneHandler
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneBoard
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneHeader
+import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneKeyboard
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.rememberGameSceneHandler
 import com.megabreezy.breezybuilds_wordle.core.ui.SceneMock
 import com.megabreezy.breezybuilds_wordle.core.util.KoinPlatformManager
@@ -106,10 +107,36 @@ class GameSceneHandlerTests
 
         handler.setUp()
 
-        composeTestRule.onRoot().printToLog("TAG")
         // then
         composeTestRule.onNodeWithContentDescription(
             GameSceneBoard.TagName.BOARD.toString(), useUnmergedTree = true
         ).onChildAt(index = expectedTilesCount - 1).assertExists()
+    }
+
+    @Test
+    fun when_gameKeyboard_view_appears__rows_match_expected_value()
+    {
+        // given
+        lateinit var handler: GameSceneHandler
+        var expectedKeyCount = 0
+        GameSceneViewModel().getGameKeyboard().rows().forEach { expectedKeyCount += it.count() }
+
+        // when
+        composeTestRule.setContent()
+        {
+            handler = rememberGameSceneHandler()
+
+            SceneMock.display()
+            {
+                handler.GameKeyboard()
+            }
+        }
+
+        handler.setUp()
+
+        // then
+        composeTestRule.onNodeWithContentDescription(
+            GameSceneKeyboard.TagName.ROWS.toString(), useUnmergedTree = true
+        ).onChildAt(index = expectedKeyCount - 1).assertExists()
     }
 }
