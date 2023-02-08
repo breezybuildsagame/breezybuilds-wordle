@@ -1,9 +1,11 @@
 package com.megabreezy.breezybuilds_wordle.game.presentation
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.GameSceneHandler
+import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneAnnouncement
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneBoard
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneHeader
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneKeyboard
@@ -138,5 +140,123 @@ class GameSceneHandlerTests
         composeTestRule.onNodeWithContentDescription(
             GameSceneKeyboard.TagName.ROWS.toString(), useUnmergedTree = true
         ).onChildAt(index = expectedKeyCount - 1).assertExists()
+    }
+
+    @Test
+    fun when_GameAnnouncement_view_appears__text_matches_expected_value()
+    {
+        // given
+        lateinit var handler: GameSceneHandler
+        val expectedTextValue = "My Middle Layer Announcement"
+        val actualAnnouncement = GameSceneViewModel().getAnnouncement()
+        actualAnnouncement.setMessage(newMessage = expectedTextValue)
+
+        // when
+        composeTestRule.setContent()
+        {
+            handler = rememberGameSceneHandler()
+
+            SceneMock.display()
+            {
+                handler.GameAnnouncement()
+            }
+        }
+
+        // then
+        composeTestRule.onNodeWithContentDescription(
+            GameSceneAnnouncement.TagName.COMPONENT.toString(), useUnmergedTree = true
+        ).assertTextEquals(expectedTextValue)
+    }
+
+    @Test
+    fun when_onRevealNextTile_invoked__active_view_is_published_to_GAME()
+    {
+        // given
+        lateinit var handler: GameSceneHandler
+        val actualAnnouncement = GameSceneViewModel().getAnnouncement()
+
+        // when
+        composeTestRule.setContent()
+        {
+            handler = rememberGameSceneHandler()
+
+            LaunchedEffect(Unit) { handler.setUp() }
+
+            SceneMock.display()
+            {
+                handler.GameAnnouncement()
+            }
+        }
+        actualAnnouncement.setMessage(newMessage = "Revealing next tile!")
+        handler.onRevealNextTile()
+
+        // then
+        Assert.assertEquals(GameSceneHandler.ViewType.GAME, handler.activeView)
+        Assert.assertTrue(handler.gameKeyboardIsEnabled)
+        composeTestRule.onNodeWithContentDescription(
+            GameSceneAnnouncement.TagName.COMPONENT.toString(), useUnmergedTree = true
+        ).assertTextEquals("Revealing next tile!")
+    }
+
+    @Test
+    fun when_onRoundCompleted_invoked__active_view_is_published_to_GAME()
+    {
+        // given
+        lateinit var handler: GameSceneHandler
+        val actualAnnouncement = GameSceneViewModel().getAnnouncement()
+
+        // when
+        composeTestRule.setContent()
+        {
+            handler = rememberGameSceneHandler()
+
+            LaunchedEffect(Unit) { handler.setUp() }
+
+            SceneMock.display()
+            {
+                handler.GameAnnouncement()
+            }
+        }
+        actualAnnouncement.setMessage(newMessage = "Next Round!")
+        handler.activeView = GameSceneHandler.ViewType.EMPTY
+        handler.onRoundCompleted()
+
+        // then
+        Assert.assertEquals(GameSceneHandler.ViewType.GAME, handler.activeView)
+        Assert.assertTrue(handler.gameKeyboardIsEnabled)
+        composeTestRule.onNodeWithContentDescription(
+            GameSceneAnnouncement.TagName.COMPONENT.toString(), useUnmergedTree = true
+        ).assertTextEquals("Next Round!")
+    }
+
+    @Test
+    fun when_onStartingGame_invoked__active_view_is_published_to_GAME()
+    {
+        // given
+        lateinit var handler: GameSceneHandler
+        val actualAnnouncement = GameSceneViewModel().getAnnouncement()
+
+        // when
+        composeTestRule.setContent()
+        {
+            handler = rememberGameSceneHandler()
+
+            LaunchedEffect(Unit) { handler.setUp() }
+
+            SceneMock.display()
+            {
+                handler.GameAnnouncement()
+            }
+        }
+        actualAnnouncement.setMessage(newMessage = "Start Game!")
+        handler.activeView = GameSceneHandler.ViewType.EMPTY
+        handler.onStartingGame()
+
+        // then
+        Assert.assertEquals(GameSceneHandler.ViewType.GAME, handler.activeView)
+        Assert.assertFalse(handler.gameKeyboardIsEnabled)
+        composeTestRule.onNodeWithContentDescription(
+            GameSceneAnnouncement.TagName.COMPONENT.toString(), useUnmergedTree = true
+        ).assertTextEquals("Start Game!")
     }
 }

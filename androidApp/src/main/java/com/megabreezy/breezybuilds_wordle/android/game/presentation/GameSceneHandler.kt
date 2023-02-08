@@ -1,6 +1,7 @@
 package com.megabreezy.breezybuilds_wordle.android.game.presentation
 
 import androidx.compose.runtime.*
+import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneAnnouncement
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneBoard
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneHeader
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneKeyboard
@@ -12,6 +13,7 @@ class GameSceneHandler: GameSceneHandleable
     private var viewModel = GameSceneViewModel()
 
     var activeView by mutableStateOf(ViewType.EMPTY)
+    var gameAnnouncementText by mutableStateOf(viewModel.getAnnouncement().message())
     var gameBoardRows by mutableStateOf(listOf<@Composable () -> Unit>())
     var gameKeyboardRows by mutableStateOf(listOf<List<@Composable () -> Unit>>())
     var gameKeyboardIsEnabled by mutableStateOf(false)
@@ -83,6 +85,15 @@ class GameSceneHandler: GameSceneHandleable
         gameKeyboardRows = updatedGameKeyboardRows.toList()
     }
 
+    private fun updateMutableStates(keyboardIsEnabled: Boolean = false)
+    {
+        updateGameBoardRows()
+        updateGameKeyboardRows()
+        gameKeyboardIsEnabled = keyboardIsEnabled
+        gameAnnouncementText = viewModel.getAnnouncement().message()
+        activeView = ViewType.GAME
+    }
+
     override fun onAnnouncementShouldShow()
     {
         TODO("Not yet implemented")
@@ -98,38 +109,18 @@ class GameSceneHandler: GameSceneHandleable
         TODO("Not yet implemented")
     }
 
-    override fun onGameStarted()
-    {
-        updateGameBoardRows()
-        updateGameKeyboardRows()
-
-        activeView = ViewType.GAME
-        gameKeyboardIsEnabled = true
-    }
+    override fun onGameStarted() { updateMutableStates(keyboardIsEnabled = true) }
 
     override fun onGuessingWord()
     {
         TODO("Not yet implemented")
     }
 
-    override fun onRevealNextTile()
-    {
-        TODO("Not yet implemented")
-    }
+    override fun onRevealNextTile() { updateMutableStates(keyboardIsEnabled = true) }
 
-    override fun onRoundCompleted()
-    {
-        TODO("Not yet implemented")
-    }
+    override fun onRoundCompleted() { updateMutableStates(keyboardIsEnabled = true) }
 
-    override fun onStartingGame()
-    {
-        updateGameBoardRows()
-        updateGameKeyboardRows()
-
-        activeView = ViewType.GAME
-        gameKeyboardIsEnabled = false
-    }
+    override fun onStartingGame() { updateMutableStates() }
 
     @Composable
     fun GameHeader()
@@ -151,6 +142,15 @@ class GameSceneHandler: GameSceneHandleable
     fun GameKeyboard()
     {
         GameSceneKeyboard.Component(options = GameSceneKeyboard.ComponentOptions(rows = gameKeyboardRows))
+    }
+
+    @Composable
+    fun GameAnnouncement()
+    {
+        gameAnnouncementText?.let()
+        {
+            GameSceneAnnouncement.Component(options = GameSceneAnnouncement.ComponentOptions(text = it))
+        }
     }
 
     enum class ViewType { EMPTY, GAME }
