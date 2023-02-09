@@ -7,6 +7,7 @@ import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.Ga
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneKeyboard
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneHandleable
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneViewModel
+import kotlinx.coroutines.launch
 
 class GameSceneHandler: GameSceneHandleable
 {
@@ -68,12 +69,14 @@ class GameSceneHandler: GameSceneHandleable
             { middleKey ->
                 updatedGameKeyboardRowKeys.add()
                 {
+                    val scope = rememberCoroutineScope()
+
                     GameSceneKeyboard.Key.Component(
                         options = GameSceneKeyboard.Key.ComponentOptions(
                             letters = middleKey.letters(),
                             resourceId = middleKey.resourceId(),
                             backgroundColor = middleKey.backgroundColor(),
-                            onClick = { TODO() }
+                            onClick = { if (gameKeyboardIsEnabled) scope.launch { middleKey.click() } }
                         )
                     )
                 }
@@ -94,27 +97,15 @@ class GameSceneHandler: GameSceneHandleable
         activeView = ViewType.GAME
     }
 
-    override fun onAnnouncementShouldShow()
-    {
-        TODO("Not yet implemented")
-    }
+    override fun onAnnouncementShouldShow() { updateMutableStates(keyboardIsEnabled = true) }
 
-    override fun onAnnouncementShouldHide()
-    {
-        TODO("Not yet implemented")
-    }
+    override fun onAnnouncementShouldHide() { updateMutableStates(keyboardIsEnabled = true) }
 
-    override fun onGameOver()
-    {
-        TODO("Not yet implemented")
-    }
+    override fun onGameOver() { updateMutableStates(keyboardIsEnabled = false) }
 
     override fun onGameStarted() { updateMutableStates(keyboardIsEnabled = true) }
 
-    override fun onGuessingWord()
-    {
-        TODO("Not yet implemented")
-    }
+    override fun onGuessingWord() { updateMutableStates() }
 
     override fun onRevealNextTile() { updateMutableStates(keyboardIsEnabled = true) }
 
