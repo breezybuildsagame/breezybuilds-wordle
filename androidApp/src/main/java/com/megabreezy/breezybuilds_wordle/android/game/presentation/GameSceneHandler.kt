@@ -14,7 +14,7 @@ class GameSceneHandler(private val scope: CoroutineScope? = null): GameSceneHand
 {
     private var viewModel = GameSceneViewModel()
     private var headerTitleText by mutableStateOf(viewModel.getHeader().title())
-    private var middleGameBoardRows by mutableStateOf(viewModel.getGameBoard().rows())
+    private var gameBoardRows by mutableStateOf(listOf<@Composable () -> Unit>())
     private var gameKeyboardRows by mutableStateOf(listOf<List<@Composable () -> Unit>>())
 
     var activeView by mutableStateOf(ViewType.EMPTY)
@@ -22,6 +22,35 @@ class GameSceneHandler(private val scope: CoroutineScope? = null): GameSceneHand
     var gameKeyboardIsEnabled by mutableStateOf(false)
 
     fun setUp() { viewModel.setUp(handler = this) }
+
+    private fun updateGameBoardRows()
+    {
+        val composableGameBoardRows = mutableListOf<@Composable () -> Unit>()
+
+        viewModel.getGameBoard().rows().forEach()
+        { middleRow ->
+            val composableGameBoardRowTiles = mutableListOf<@Composable () -> Unit>()
+
+            middleRow.forEach()
+            { middleTile ->
+                composableGameBoardRowTiles.add {
+                    GameSceneBoard.Tile.Component(
+                        options = GameSceneBoard.Tile.ComponentOptions(
+                            state = middleTile.state(),
+                            letter = middleTile.letter()?.toString() ?: ""
+                        )
+                    )
+                }
+            }
+
+            composableGameBoardRows.add {
+                GameSceneBoard.Row.Component(
+                    options = GameSceneBoard.Row.ComponentOptions(tiles = composableGameBoardRowTiles.toList())
+                )
+            }
+        }
+        gameBoardRows = composableGameBoardRows.toList()
+    }
 
     private fun updateGameKeyboardRows()
     {
@@ -54,11 +83,10 @@ class GameSceneHandler(private val scope: CoroutineScope? = null): GameSceneHand
 
     private fun updateMutableStates(keyboardIsEnabled: Boolean = false)
     {
+        updateGameBoardRows()
         updateGameKeyboardRows()
         gameKeyboardIsEnabled = keyboardIsEnabled
         gameAnnouncementText = viewModel.getAnnouncement().message()
-        middleGameBoardRows = listOf()
-        middleGameBoardRows = viewModel.getGameBoard().rows()
 
         activeView = ViewType.GAME
     }
@@ -83,35 +111,7 @@ class GameSceneHandler(private val scope: CoroutineScope? = null): GameSceneHand
     fun GameHeader() { GameSceneHeader.Component(options = GameSceneHeader.ComponentOptions(text = headerTitleText)) }
 
     @Composable
-    fun GameBoard()
-    {
-        val composableGameBoardRows = mutableListOf<@Composable () -> Unit>()
-
-        middleGameBoardRows.forEach()
-        { middleRow ->
-            val composableGameBoardRowTiles = mutableListOf<@Composable () -> Unit>()
-
-            middleRow.forEach()
-            { middleTile ->
-                composableGameBoardRowTiles.add {
-                    GameSceneBoard.Tile.Component(
-                        options = GameSceneBoard.Tile.ComponentOptions(
-                            state = middleTile.state(),
-                            letter = middleTile.letter()?.toString() ?: ""
-                        )
-                    )
-                }
-            }
-
-            composableGameBoardRows.add {
-                GameSceneBoard.Row.Component(
-                    options = GameSceneBoard.Row.ComponentOptions(tiles = composableGameBoardRowTiles.toList())
-                )
-            }
-        }
-
-        GameSceneBoard.Component(options = GameSceneBoard.ComponentOptions(rows = composableGameBoardRows))
-    }
+    fun GameBoard() { GameSceneBoard.Component(options = GameSceneBoard.ComponentOptions(rows = gameBoardRows)) }
 
     @Composable
     fun GameKeyboard()
