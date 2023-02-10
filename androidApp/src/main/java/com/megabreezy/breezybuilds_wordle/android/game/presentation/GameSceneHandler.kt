@@ -15,45 +15,13 @@ class GameSceneHandler: GameSceneHandleable
 
     var activeView by mutableStateOf(ViewType.EMPTY)
     var gameAnnouncementText by mutableStateOf(viewModel.getAnnouncement().message())
-    var gameBoardRows by mutableStateOf(listOf<@Composable () -> Unit>())
+    var middleGameBoardRows by mutableStateOf(viewModel.getGameBoard().rows())
     var gameKeyboardRows by mutableStateOf(listOf<List<@Composable () -> Unit>>())
     var gameKeyboardIsEnabled by mutableStateOf(false)
 
     fun setUp()
     {
         viewModel.setUp(handler = this)
-    }
-
-    private fun updateGameBoardRows()
-    {
-        val updatedGameBoardRows = mutableListOf<@Composable () -> Unit>()
-        val updatedGameBoardRowTiles = mutableListOf<@Composable () -> Unit>()
-
-        viewModel.getGameBoard().rows().forEach()
-        { middleRow ->
-
-            updatedGameBoardRowTiles.clear()
-
-            middleRow.forEach()
-            { middleTile ->
-                updatedGameBoardRowTiles.add {
-                    GameSceneBoard.Tile.Component(
-                        options = GameSceneBoard.Tile.ComponentOptions(
-                            state = middleTile.state(),
-                            letter = middleTile.letter()?.toString() ?: ""
-                        )
-                    )
-                }
-            }
-
-            updatedGameBoardRows.add {
-                GameSceneBoard.Row.Component(
-                    options = GameSceneBoard.Row.ComponentOptions(tiles = updatedGameBoardRowTiles.toList())
-                )
-            }
-        }
-
-        gameBoardRows = updatedGameBoardRows
     }
 
     private fun updateGameKeyboardRows()
@@ -90,10 +58,11 @@ class GameSceneHandler: GameSceneHandleable
 
     private fun updateMutableStates(keyboardIsEnabled: Boolean = false)
     {
-        updateGameBoardRows()
         updateGameKeyboardRows()
         gameKeyboardIsEnabled = keyboardIsEnabled
         gameAnnouncementText = viewModel.getAnnouncement().message()
+        middleGameBoardRows = viewModel.getGameBoard().rows()
+
         activeView = ViewType.GAME
     }
 
@@ -126,7 +95,34 @@ class GameSceneHandler: GameSceneHandleable
     @Composable
     fun GameBoard()
     {
-        GameSceneBoard.Component(options = GameSceneBoard.ComponentOptions(rows = gameBoardRows))
+        val composableGameBoardRows = mutableListOf<@Composable () -> Unit>()
+        val composableGameBoardRowTiles = mutableListOf<@Composable () -> Unit>()
+
+        middleGameBoardRows.forEach()
+        { middleRow ->
+
+            composableGameBoardRowTiles.clear()
+
+            middleRow.forEach()
+            { middleTile ->
+                composableGameBoardRowTiles.add {
+                    GameSceneBoard.Tile.Component(
+                        options = GameSceneBoard.Tile.ComponentOptions(
+                            state = middleTile.state(),
+                            letter = middleTile.letter()?.toString() ?: ""
+                        )
+                    )
+                }
+            }
+
+            composableGameBoardRows.add {
+                GameSceneBoard.Row.Component(
+                    options = GameSceneBoard.Row.ComponentOptions(tiles = composableGameBoardRowTiles.toList())
+                )
+            }
+        }
+
+        GameSceneBoard.Component(options = GameSceneBoard.ComponentOptions(rows = composableGameBoardRows))
     }
 
     @Composable
