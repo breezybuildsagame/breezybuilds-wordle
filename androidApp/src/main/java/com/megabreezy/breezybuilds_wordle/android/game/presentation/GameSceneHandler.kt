@@ -80,21 +80,16 @@ class GameSceneHandler(private val scope: CoroutineScope? = null): GameSceneHand
     override fun onStartingGame() { updateMutableStates() }
 
     @Composable
-    fun GameHeader()
-    {
-        GameSceneHeader.Component(options = GameSceneHeader.ComponentOptions(text = headerTitleText))
-    }
+    fun GameHeader() { GameSceneHeader.Component(options = GameSceneHeader.ComponentOptions(text = headerTitleText)) }
 
     @Composable
     fun GameBoard()
     {
         val composableGameBoardRows = mutableListOf<@Composable () -> Unit>()
-        val composableGameBoardRowTiles = mutableListOf<@Composable () -> Unit>()
 
         middleGameBoardRows.forEach()
         { middleRow ->
-
-            composableGameBoardRowTiles.clear()
+            val composableGameBoardRowTiles = mutableListOf<@Composable () -> Unit>()
 
             middleRow.forEach()
             { middleTile ->
