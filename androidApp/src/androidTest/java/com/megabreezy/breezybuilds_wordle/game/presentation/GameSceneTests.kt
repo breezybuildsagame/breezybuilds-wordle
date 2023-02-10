@@ -2,6 +2,7 @@ package com.megabreezy.breezybuilds_wordle.game.presentation
 
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -79,7 +80,7 @@ class GameSceneTests
         // when
         composeTestRule.setContent()
         {
-            mockHandler = rememberGameSceneHandler()
+            mockHandler = rememberGameSceneHandler(scope = rememberCoroutineScope())
             GameScene.sceneHandler = mockHandler
             SceneMock.display()
             {

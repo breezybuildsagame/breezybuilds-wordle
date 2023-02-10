@@ -1,6 +1,7 @@
 package com.megabreezy.breezybuilds_wordle.game.presentation
 
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -361,7 +362,7 @@ class GameSceneHandlerTests
         // when
         composeTestRule.setContent()
         {
-            handler = rememberGameSceneHandler()
+            handler = rememberGameSceneHandler(scope = rememberCoroutineScope())
 
             LaunchedEffect(Unit) { handler.setUp() }
 

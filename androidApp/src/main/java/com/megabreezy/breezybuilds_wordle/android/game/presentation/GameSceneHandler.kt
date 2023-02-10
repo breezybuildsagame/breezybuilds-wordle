@@ -7,9 +7,10 @@ import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.Ga
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneKeyboard
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneHandleable
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class GameSceneHandler: GameSceneHandleable
+class GameSceneHandler(private val scope: CoroutineScope? = null): GameSceneHandleable
 {
     private var viewModel = GameSceneViewModel()
 
@@ -27,24 +28,21 @@ class GameSceneHandler: GameSceneHandleable
     private fun updateGameKeyboardRows()
     {
         val updatedGameKeyboardRows = mutableListOf<List<@Composable () -> Unit>>()
-        val updatedGameKeyboardRowKeys = mutableListOf<@Composable () -> Unit>()
 
         viewModel.getGameKeyboard().rows().forEach()
         { middleRow ->
-            updatedGameKeyboardRowKeys.clear()
+            val updatedGameKeyboardRowKeys = mutableListOf<@Composable () -> Unit>()
 
             middleRow.forEach()
             { middleKey ->
                 updatedGameKeyboardRowKeys.add()
                 {
-                    val scope = rememberCoroutineScope()
-
                     GameSceneKeyboard.Key.Component(
                         options = GameSceneKeyboard.Key.ComponentOptions(
                             letters = middleKey.letters(),
                             resourceId = middleKey.resourceId(),
                             backgroundColor = middleKey.backgroundColor(),
-                            onClick = { if (gameKeyboardIsEnabled) scope.launch { middleKey.click() } }
+                            onClick = { if (gameKeyboardIsEnabled) scope?.launch { middleKey.click() } }
                         )
                     )
                 }
@@ -144,4 +142,4 @@ class GameSceneHandler: GameSceneHandleable
 }
 
 @Composable
-fun rememberGameSceneHandler() = remember { GameSceneHandler() }
+fun rememberGameSceneHandler(scope: CoroutineScope? = null) = remember { GameSceneHandler(scope = scope) }

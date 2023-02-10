@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
@@ -19,7 +20,8 @@ object GameScene: Scene()
     @Composable
     override fun View()
     {
-        val handler = sceneHandler ?: rememberGameSceneHandler()
+        val scope = rememberCoroutineScope()
+        val handler = sceneHandler ?: rememberGameSceneHandler(scope = scope)
 
         LaunchedEffect(Unit) { handler.setUp() }
 
