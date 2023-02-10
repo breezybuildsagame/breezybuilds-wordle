@@ -20,10 +20,7 @@ class GameSceneHandler(private val scope: CoroutineScope? = null): GameSceneHand
     var gameKeyboardRows by mutableStateOf(listOf<List<@Composable () -> Unit>>())
     var gameKeyboardIsEnabled by mutableStateOf(false)
 
-    fun setUp()
-    {
-        viewModel.setUp(handler = this)
-    }
+    fun setUp() { viewModel.setUp(handler = this) }
 
     private fun updateGameKeyboardRows()
     {
