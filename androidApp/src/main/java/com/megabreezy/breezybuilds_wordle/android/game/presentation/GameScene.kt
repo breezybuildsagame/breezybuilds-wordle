@@ -33,41 +33,45 @@ object GameScene: Scene()
         {
             when (handler.activeView)
             {
-                GameSceneHandler.ViewType.GAME -> {
-                    Box(modifier = Modifier.fillMaxSize())
-                    {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .semantics { contentDescription = TagName.CONTAINER.toString() }
-                        )
-                        {
-                            handler.GameHeader()
-                            RowSpacer(ratio = idealFrame().width / 63)
-                            handler.GameBoard()
-                            RowSpacer(modifier = Modifier.weight(1f))
-                            handler.GameKeyboard()
-                        }
-                    }
-                    handler.gameAnnouncementText?.let()
-                    {
-                        Box(modifier = Modifier.fillMaxSize())
-                        {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .semantics { contentDescription = TagName.OVERLAY.toString() }
-                            )
-                            {
-                                RowSpacer(ratio = idealFrame().width / 200)
-                                handler.GameAnnouncement()
-                            }
-                        }
-                    }
-                }
+                GameSceneHandler.ViewType.GAME -> SceneContent(handler = handler)
                 else -> Unit
+            }
+        }
+    }
+
+    @Composable
+    private fun SceneContent(handler: GameSceneHandler)
+    {
+        Box(modifier = Modifier.fillMaxSize())
+        {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .semantics { contentDescription = TagName.CONTAINER.toString() }
+            )
+            {
+                handler.GameHeader()
+                RowSpacer(ratio = idealFrame().width / 63)
+                handler.GameBoard()
+                RowSpacer(modifier = Modifier.weight(1f))
+                handler.GameKeyboard()
+            }
+        }
+        handler.gameAnnouncementText?.let()
+        {
+            Box(modifier = Modifier.fillMaxSize())
+            {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .semantics { contentDescription = TagName.OVERLAY.toString() }
+                )
+                {
+                    RowSpacer(ratio = idealFrame().width / 200)
+                    handler.GameAnnouncement()
+                }
             }
         }
     }

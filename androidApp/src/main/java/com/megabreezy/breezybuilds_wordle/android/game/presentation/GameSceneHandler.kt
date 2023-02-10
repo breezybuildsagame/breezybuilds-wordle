@@ -15,6 +15,7 @@ class GameSceneHandler(private val scope: CoroutineScope? = null): GameSceneHand
     private var viewModel = GameSceneViewModel()
 
     var activeView by mutableStateOf(ViewType.EMPTY)
+    var headerTitleText by mutableStateOf(viewModel.getHeader().title())
     var gameAnnouncementText by mutableStateOf(viewModel.getAnnouncement().message())
     var middleGameBoardRows by mutableStateOf(viewModel.getGameBoard().rows())
     var gameKeyboardRows by mutableStateOf(listOf<List<@Composable () -> Unit>>())
@@ -80,11 +81,7 @@ class GameSceneHandler(private val scope: CoroutineScope? = null): GameSceneHand
     @Composable
     fun GameHeader()
     {
-        GameSceneHeader.Component(
-            options = GameSceneHeader.ComponentOptions(
-                text = viewModel.getHeader().title()
-            )
-        )
+        GameSceneHeader.Component(options = GameSceneHeader.ComponentOptions(text = headerTitleText))
     }
 
     @Composable
