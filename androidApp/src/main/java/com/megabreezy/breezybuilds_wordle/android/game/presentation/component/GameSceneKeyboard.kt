@@ -8,7 +8,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
 import androidx.compose.ui.semantics.SemanticsPropertyReceiver
@@ -71,11 +70,10 @@ object GameSceneKeyboard
             val buttonColors = ButtonDefaults.buttonColors(
                 containerColor = when (options.backgroundColor)
                 {
-                    GameKeyboard.Key.BackgroundColor.DEFAULT -> MaterialTheme.colorScheme.background
                     GameKeyboard.Key.BackgroundColor.NOT_FOUND -> MaterialTheme.colorScheme.error
                     GameKeyboard.Key.BackgroundColor.NEARBY -> MaterialTheme.colorScheme.tertiary
                     GameKeyboard.Key.BackgroundColor.CORRECT -> MaterialTheme.colorScheme.secondary
-                    else -> Color.Transparent
+                    else -> MaterialTheme.colorScheme.background
                 }
             )
             val buttonShape = RoundedCornerShape(
@@ -116,8 +114,7 @@ object GameSceneKeyboard
                             .aspectRatio(ratio = 1f)
                     )
                 }
-
-                options.letters?.let()
+                ?: options.letters?.let()
                 {
                     Text(
                         text = options.letters,

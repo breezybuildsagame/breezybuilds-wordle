@@ -16,7 +16,7 @@ object GameScene: Scene()
     @Composable
     override fun View()
     {
-        var handler = rememberGameSceneHandler()
+        val handler = rememberGameSceneHandler()
 
         LaunchedEffect(Unit) { handler.setUp() }
 

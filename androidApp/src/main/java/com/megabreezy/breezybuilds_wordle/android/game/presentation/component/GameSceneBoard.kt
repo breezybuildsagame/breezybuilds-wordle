@@ -4,8 +4,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,15 +75,15 @@ object GameSceneBoard
 
             val borderColor: Color = when(options.state)
             {
-                GameBoard.Tile.State.HIDDEN -> MaterialTheme.colors.error
+                GameBoard.Tile.State.HIDDEN -> MaterialTheme.colorScheme.error
                 else -> Color.Transparent
             }
 
             val backgroundColor: Color = when(options.state)
             {
-                GameBoard.Tile.State.CLOSE -> MaterialTheme.colors.secondaryVariant
-                GameBoard.Tile.State.CORRECT -> MaterialTheme.colors.secondary
-                GameBoard.Tile.State.INCORRECT -> MaterialTheme.colors.error
+                GameBoard.Tile.State.CLOSE -> MaterialTheme.colorScheme.tertiary
+                GameBoard.Tile.State.CORRECT -> MaterialTheme.colorScheme.secondary
+                GameBoard.Tile.State.INCORRECT -> MaterialTheme.colorScheme.error
                 else -> Color.Transparent
             }
 
@@ -92,7 +92,7 @@ object GameSceneBoard
                 color = borderColor
             )
             val textStyle = TextStyle(
-                color = MaterialTheme.colors.onPrimary,
+                color = MaterialTheme.colorScheme.onPrimary,
                 fontFamily = ThemeFonts.roboto,
                 fontSize = dpToSp(dp = LocalSceneDimensions.current.height * (35 / Scene.idealFrame().height)),
                 fontWeight = FontWeight.Bold

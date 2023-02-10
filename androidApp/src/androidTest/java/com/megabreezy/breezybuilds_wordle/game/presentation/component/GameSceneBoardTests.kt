@@ -2,7 +2,7 @@ package com.megabreezy.breezybuilds_wordle.game.presentation.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.*
@@ -80,7 +80,7 @@ class GameSceneBoardTests
                 BoxWithConstraints()
                 {
                     expectedBorder = BorderStroke(
-                        color = MaterialTheme.colors.error,
+                        color = MaterialTheme.colorScheme.error,
                         width = this.maxHeight * (2 /Scene.idealFrame().height)
                     )
                 }
@@ -113,7 +113,7 @@ class GameSceneBoardTests
                 BoxWithConstraints()
                 {
                     expectedTextStyle = TextStyle(
-                        color = MaterialTheme.colors.onPrimary,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         fontFamily = ThemeFonts.roboto,
                         fontSize = dpToSp(dp = this.maxHeight * (35 / Scene.idealFrame().height)),
                         fontWeight = FontWeight.Bold
@@ -147,7 +147,7 @@ class GameSceneBoardTests
                     color = Color.Transparent,
                     width = 0.dp
                 )
-                expectedBackgroundColor = MaterialTheme.colors.error
+                expectedBackgroundColor = MaterialTheme.colorScheme.error
 
                 GameSceneBoard.Tile.Component(
                     options = GameSceneBoard.Tile.ComponentOptions(
@@ -183,7 +183,7 @@ class GameSceneBoardTests
                     color = Color.Transparent,
                     width = 0.dp
                 )
-                expectedBackgroundColor = MaterialTheme.colors.secondaryVariant
+                expectedBackgroundColor = MaterialTheme.colorScheme.tertiary
 
                 GameSceneBoard.Tile.Component(
                     options = GameSceneBoard.Tile.ComponentOptions(
@@ -219,7 +219,7 @@ class GameSceneBoardTests
                     color = Color.Transparent,
                     width = 0.dp
                 )
-                expectedBackgroundColor = MaterialTheme.colors.secondary
+                expectedBackgroundColor = MaterialTheme.colorScheme.secondary
 
                 GameSceneBoard.Tile.Component(
                     options = GameSceneBoard.Tile.ComponentOptions(

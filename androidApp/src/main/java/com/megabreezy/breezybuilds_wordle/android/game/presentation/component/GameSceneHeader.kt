@@ -1,7 +1,7 @@
 package com.megabreezy.breezybuilds_wordle.android.game.presentation.component
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,7 +25,7 @@ object GameSceneHeader
     fun Component(options: ComponentOptions = ComponentOptions())
     {
         val textStyle = TextStyle(
-            color = MaterialTheme.colors.onPrimary,
+            color = MaterialTheme.colorScheme.onPrimary,
             fontFamily = ThemeFonts.roboto,
             fontWeight = FontWeight.Black,
             fontSize = dpToSp(dp = LocalSceneDimensions.current.height * (40 / Scene.idealFrame().height)),
