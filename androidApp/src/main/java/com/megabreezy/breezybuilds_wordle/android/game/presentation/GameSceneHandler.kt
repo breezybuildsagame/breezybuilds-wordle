@@ -13,12 +13,12 @@ import kotlinx.coroutines.launch
 class GameSceneHandler(private val scope: CoroutineScope? = null): GameSceneHandleable
 {
     private var viewModel = GameSceneViewModel()
+    private var headerTitleText by mutableStateOf(viewModel.getHeader().title())
+    private var middleGameBoardRows by mutableStateOf(viewModel.getGameBoard().rows())
+    private var gameKeyboardRows by mutableStateOf(listOf<List<@Composable () -> Unit>>())
 
     var activeView by mutableStateOf(ViewType.EMPTY)
-    var headerTitleText by mutableStateOf(viewModel.getHeader().title())
     var gameAnnouncementText by mutableStateOf(viewModel.getAnnouncement().message())
-    var middleGameBoardRows by mutableStateOf(viewModel.getGameBoard().rows())
-    var gameKeyboardRows by mutableStateOf(listOf<List<@Composable () -> Unit>>())
     var gameKeyboardIsEnabled by mutableStateOf(false)
 
     fun setUp() { viewModel.setUp(handler = this) }
