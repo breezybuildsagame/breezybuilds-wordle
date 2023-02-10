@@ -9,12 +9,17 @@ import androidx.compose.ui.unit.Dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.megabreezy.breezybuilds_wordle.android.core.ui.Scene
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.GameScene
+import com.megabreezy.breezybuilds_wordle.android.game.presentation.GameSceneHandler
+import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneAnnouncement
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneBoard
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneHeader
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneKeyboard
+import com.megabreezy.breezybuilds_wordle.android.game.presentation.rememberGameSceneHandler
 import com.megabreezy.breezybuilds_wordle.core.ui.SceneMock
 import com.megabreezy.breezybuilds_wordle.core.util.KoinPlatformManager
 import com.megabreezy.breezybuilds_wordle.core.util.Scenario
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case.GameUseCase
+import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneViewModel
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -68,9 +73,32 @@ class GameSceneTests
     fun when_announcement_appears__expected_announcement_is_displayed()
     {
         // given
+        lateinit var mockHandler: GameSceneHandler
+        var expectedTopSpacerHeight: Dp? = null
 
         // when
+        composeTestRule.setContent()
+        {
+            mockHandler = rememberGameSceneHandler()
+            GameScene.sceneHandler = mockHandler
+            SceneMock.display()
+            {
+                BoxWithConstraints(modifier = Modifier.fillMaxSize())
+                {
+                    expectedTopSpacerHeight = this.maxHeight * (200 / Scene.idealFrame().height)
+                }
+
+                GameScene.Stage()
+            }
+        }
+        GameSceneViewModel().getAnnouncement().setMessage(newMessage = "Game Over, man!")
+        mockHandler.onGameOver()
+
+        val overlay = composeTestRule.onNodeWithContentDescription(GameScene.TagName.OVERLAY.toString(), useUnmergedTree = true)
 
         // then
+        overlay.onChildAt(index = 0).assertContentDescriptionEquals("spacer")
+        overlay.onChildAt(index = 0).assertHeightIsEqualTo(expectedTopSpacerHeight!!)
+        overlay.onChildAt(index = 1).assertContentDescriptionEquals(GameSceneAnnouncement.TagName.COMPONENT.toString())
     }
 }
