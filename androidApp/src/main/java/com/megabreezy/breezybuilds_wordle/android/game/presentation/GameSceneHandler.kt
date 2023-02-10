@@ -57,6 +57,7 @@ class GameSceneHandler(private val scope: CoroutineScope? = null): GameSceneHand
         updateGameKeyboardRows()
         gameKeyboardIsEnabled = keyboardIsEnabled
         gameAnnouncementText = viewModel.getAnnouncement().message()
+        middleGameBoardRows = listOf()
         middleGameBoardRows = viewModel.getGameBoard().rows()
 
         activeView = ViewType.GAME
