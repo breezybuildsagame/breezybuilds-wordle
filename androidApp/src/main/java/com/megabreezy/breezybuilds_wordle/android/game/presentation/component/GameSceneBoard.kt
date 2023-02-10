@@ -28,6 +28,7 @@ object GameSceneBoard
     fun Component(options: ComponentOptions = ComponentOptions())
     {
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .semantics { contentDescription = TagName.BOARD.toString() },
             verticalArrangement = Arrangement.Top

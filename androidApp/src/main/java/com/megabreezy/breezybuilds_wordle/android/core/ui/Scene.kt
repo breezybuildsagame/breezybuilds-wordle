@@ -44,22 +44,14 @@ open class Scene
     @Composable
     private fun SceneSpacer(
         modifier: Modifier = Modifier,
-        ratio: Float? = null,
-        type: String = "COLUMN",
+        ratio: Float? = null
     )
     {
-        if (type == "COLUMN") modifier.fillMaxHeight() else modifier.fillMaxWidth()
-
-        ratio?.let()
-        {
-            return Spacer(
-                modifier = modifier
-                    .aspectRatio(it)
-                    .semantics { contentDescription = "spacer" }
-            )
-        }
-
-        Spacer(modifier = modifier.semantics { contentDescription = "spacer" })
+        Spacer(
+            modifier = Modifier
+                .then(ratio?.let { modifier.aspectRatio(ratio = it) } ?: modifier)
+                .semantics { contentDescription = "spacer" }
+        )
     }
 
     @Composable
@@ -68,7 +60,7 @@ open class Scene
         ratio: Float? = null
     )
     {
-        SceneSpacer(modifier = modifier, ratio = ratio)
+        SceneSpacer(modifier = modifier.fillMaxHeight(), ratio = ratio)
     }
 
     @Composable
@@ -77,7 +69,7 @@ open class Scene
         ratio: Float? = null
     )
     {
-        SceneSpacer(modifier = modifier, ratio = ratio, type = "ROW")
+        SceneSpacer(modifier = modifier.fillMaxWidth(), ratio = ratio)
     }
 
     @Composable

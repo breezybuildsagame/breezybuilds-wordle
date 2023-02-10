@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -31,6 +32,7 @@ object GameSceneKeyboard
         Box()
         {
             Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .semantics { contentDescription = TagName.ROWS.toString() },
                 verticalArrangement = Arrangement.spacedBy(
@@ -104,15 +106,6 @@ object GameSceneKeyboard
                 onClick = options.onClick
             )
             {
-                options.letters?.let()
-                {
-                    Text(
-                        text = options.letters,
-                        modifier = Modifier.semantics { gameSceneKeyboardKeyButtonTextStyle = buttonTextStyle },
-                        style = buttonTextStyle
-                    )
-                }
-
                 options.resourceId?.let()
                 {
                     Image(
@@ -121,6 +114,15 @@ object GameSceneKeyboard
                         modifier = Modifier
                             .height(height = LocalSceneDimensions.current.height * (23 / Scene.idealFrame().height))
                             .aspectRatio(ratio = 1f)
+                    )
+                }
+
+                options.letters?.let()
+                {
+                    Text(
+                        text = options.letters,
+                        modifier = Modifier.semantics { gameSceneKeyboardKeyButtonTextStyle = buttonTextStyle },
+                        style = buttonTextStyle
                     )
                 }
             }
