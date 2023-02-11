@@ -3,7 +3,7 @@ package com.megabreezy.breezybuilds_wordle.android.game.presentation.component
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,11 +38,11 @@ object GameSceneAnnouncement
     @Composable
     fun Component(options: ComponentOptions = ComponentOptions())
     {
-        val surfaceBg = MaterialTheme.colors.onPrimary
+        val surfaceBg = MaterialTheme.colorScheme.onPrimary
         val surfaceShape = RoundedCornerShape(
             corner = CornerSize(size = LocalSceneDimensions.current.height * (8 / Scene.idealFrame().height)))
         val textStyle = TextStyle(
-            color = MaterialTheme.colors.primary,
+            color = MaterialTheme.colorScheme.primary,
             fontFamily = ThemeFonts.roboto,
             fontWeight = FontWeight.Bold,
             fontSize = dpToSp(dp = LocalSceneDimensions.current.height * (20 / Scene.idealFrame().height)),
@@ -51,7 +51,7 @@ object GameSceneAnnouncement
         val textPadding = LocalSceneDimensions.current.height * (26 / Scene.idealFrame().height)
 
         Surface(
-            color = MaterialTheme.colors.onPrimary,
+            color = MaterialTheme.colorScheme.onPrimary,
             elevation = LocalSceneDimensions.current.height * (4 / Scene.idealFrame().height),
             shape = surfaceShape,
             modifier = Modifier

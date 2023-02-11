@@ -99,6 +99,6 @@ class GameSceneTests
         // then
         overlay.onChildAt(index = 0).assertContentDescriptionEquals("spacer")
         overlay.onChildAt(index = 0).assertHeightIsEqualTo(expectedTopSpacerHeight!!)
-        overlay.onChildAt(index = 1).assertContentDescriptionEquals(GameSceneAnnouncement.TagName.COMPONENT.toString())
+        overlay.onChildAt(index = 1).onChild().assertContentDescriptionEquals(GameSceneAnnouncement.TagName.COMPONENT.toString())
     }
 }

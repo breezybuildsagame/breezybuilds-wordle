@@ -3,9 +3,8 @@ package com.megabreezy.breezybuilds_wordle.game.presentation.component
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertTextEquals
@@ -62,13 +61,13 @@ class GameSceneAnnouncementTests
                 BoxWithConstraints()
                 {
                     expectedTextStyle = TextStyle(
-                        color = MaterialTheme.colors.primary,
+                        color = MaterialTheme.colorScheme.primary,
                         fontFamily = ThemeFonts.roboto,
                         fontWeight = FontWeight.Bold,
                         fontSize = dpToSp(dp = this.maxHeight * (20 / Scene.idealFrame().height)),
                         textAlign = TextAlign.Center
                     )
-                    expectedBackgroundColor = MaterialTheme.colors.onPrimary
+                    expectedBackgroundColor = MaterialTheme.colorScheme.onPrimary
                     expectedPadding = this.maxHeight * (26 / Scene.idealFrame().height)
                     expectedSurfaceShape = RoundedCornerShape(
                         corner = CornerSize(size = this.maxHeight * (8 / Scene.idealFrame().height)))

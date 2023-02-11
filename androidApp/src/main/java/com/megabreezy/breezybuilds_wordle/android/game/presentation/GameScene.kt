@@ -1,5 +1,6 @@
 package com.megabreezy.breezybuilds_wordle.android.game.presentation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import com.megabreezy.breezybuilds_wordle.android.core.ui.Scene
@@ -57,20 +59,21 @@ object GameScene: Scene()
                 RowSpacer(modifier = Modifier.weight(1f))
                 handler.GameKeyboard()
             }
-        }
-        handler.gameAnnouncementText?.let()
-        {
-            Box(modifier = Modifier.fillMaxSize())
+
+            handler.gameAnnouncementText?.let()
             {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .semantics { contentDescription = TagName.OVERLAY.toString() }
-                )
+                Box(modifier = Modifier.fillMaxSize())
                 {
-                    RowSpacer(ratio = idealFrame().width / 200)
-                    handler.GameAnnouncement()
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .semantics { contentDescription = TagName.OVERLAY.toString() }
+                    )
+                    {
+                        RowSpacer(ratio = idealFrame().width / 200)
+                        handler.GameAnnouncement()
+                    }
                 }
             }
         }
