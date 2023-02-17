@@ -50,6 +50,7 @@ dependencies {
                            + Version.accompanistVersion)
 
     implementation(Dependency.Koin.android)
+    compileOnly("${Dependency.Realm.baseUrl}:library-base:${Version.realmVersion}")
 
     androidTestImplementation("androidx.test:runner:1.4.0")
     androidTestImplementation("androidx.test:rules:1.4.0")

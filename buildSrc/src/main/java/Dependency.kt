@@ -27,4 +27,11 @@ object Dependency
         const val global = "dev.icerock.moko:resources-generator:${Version.mokoResourcesVersion}"
         const val plugin = "dev.icerock.mobile.multiplatform-resources"
     }
+
+    // Local storage
+    object Realm {
+        const val baseUrl = "io.realm.kotlin"
+        const val common = "$baseUrl:library-base:${Version.realmVersion}"
+
+    }
 }

@@ -4,6 +4,7 @@ object Version
     const val koinVersion = "3.1.6"
     const val kotlinVersion = "1.7.20"
     const val mokoResourcesVersion = "0.20.1"
+    const val realmVersion = "1.6.1"
 
     // Android App Version Tracking
     const val accompanistVersion = "0.25.1"
