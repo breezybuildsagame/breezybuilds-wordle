@@ -32,6 +32,5 @@ object Dependency
     object Realm {
         const val baseUrl = "io.realm.kotlin"
         const val common = "$baseUrl:library-base:${Version.realmVersion}"
-
     }
 }
