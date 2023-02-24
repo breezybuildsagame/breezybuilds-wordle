@@ -16,19 +16,16 @@ class AnswerLocalDataSource(private var realm: Realm? = null): AnswerLocalDataMa
 
     override fun getCurrent(): Answer = try
     {
-        val cachedAnswers = realm?.query<CachedAnswer>("isCurrent = true")?.find()
-
-        Answer(word = Word(word = cachedAnswers!!.first().word))
+        realm?.query<CachedAnswer>("isCurrent = true")?.find()?.map { Answer(word = Word(word = it.word)) }!!.last()
     }
     catch (e: Throwable)
     {
         throw AnswerNotFoundLocalDataException("No current answer found.")
     }
 
-    override fun getPrevious(): List<Answer>
-    {
-        TODO("Not yet implemented")
-    }
+    override fun getPrevious(): List<Answer> = realm?.query<CachedAnswer>("isCurrent = false")?.find()?.map()
+    { Answer(word = Word(it.word), isCurrent = it.isCurrent) }
+    ?: listOf()
 
     override fun put(newAnswer: Answer): Answer
     {
