@@ -17,10 +17,7 @@ import com.megabreezy.breezybuilds_wordle.core.ui.SceneMock
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 import io.realm.kotlin.ext.query
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
@@ -193,7 +190,32 @@ class AnswerLocalDataSourceTests
     @Test
     fun when_put_method_invoked_with_newAnswer_already_in_database__expected_exception_is_thrown()
     {
-        
+        // given
+        lateinit var dataSource: AnswerLocalDataSource
+        realm.writeBlocking()
+        {
+            copyToRealm(
+                CachedAnswer().apply()
+                {
+                    word = "PREVIOUS"
+                    isCurrent = false
+                }
+            )
+        }
+
+        val actualException = Assert.assertThrows(AnswerPutFailedLocalDataException::class.java)
+        {
+            // when
+            composeTestRule.setContent()
+            {
+                dataSource = remember { AnswerLocalDataSource(realm = realm) }
+
+                SceneMock.display { MockView().View(dataSource = dataSource, answerToPut = Answer(word = Word(word = "PREVIOUS"))) }
+            }
+        }
+
+        // then
+        Assert.assertEquals("Answer: PREVIOUS already exists!", actualException.message)
     }
 
     @Test

@@ -16,14 +16,14 @@ class AnswerLocalDataSource(private var realm: Realm? = null): AnswerLocalDataMa
 
     override fun getCurrent(): Answer = try
     {
-        realm?.query<CachedAnswer>("isCurrent = true")?.find()?.map { Answer(word = Word(word = it.word)) }!!.last()
+        realm?.query<CachedAnswer>("isCurrent == true")?.find()?.map { Answer(word = Word(word = it.word)) }!!.last()
     }
     catch (e: Throwable)
     {
         throw AnswerNotFoundLocalDataException("No current answer found.")
     }
 
-    override fun getPrevious(): List<Answer> = realm?.query<CachedAnswer>("isCurrent = false")?.find()?.map()
+    override fun getPrevious(): List<Answer> = realm?.query<CachedAnswer>("isCurrent == false")?.find()?.map()
     { Answer(word = Word(it.word), isCurrent = it.isCurrent) }
     ?: listOf()
 
@@ -31,6 +31,12 @@ class AnswerLocalDataSource(private var realm: Realm? = null): AnswerLocalDataMa
     {
         realm?.write()
         {
+            if (this.query<CachedAnswer>("word == '${newAnswer.word()}'").find().isNotEmpty())
+            {
+                this.cancelWrite()
+                throw AnswerPutFailedLocalDataException("Answer: ${newAnswer.word()} already exists!")
+            }
+
             copyToRealm(CachedAnswer()).apply()
             {
                 word = newAnswer.word().word()

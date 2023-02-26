@@ -41,7 +41,7 @@ class GameSceneHandler: ObservableObject
                 Task
                 {
                     var rowViews = [GameSceneBoard.Row]()
-                    var middleRows = try? await viewModel.getGameBoard()
+                    let middleRows = try? await viewModel.getGameBoard()
                     for row in middleRows?.rows() ?? []
                     {
                         var rowTiles = [GameSceneBoard.Tile]()
