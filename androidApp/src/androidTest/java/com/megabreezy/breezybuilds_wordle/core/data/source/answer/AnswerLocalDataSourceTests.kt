@@ -203,9 +203,9 @@ class AnswerLocalDataSourceTests
             )
         }
 
+        // when
         val actualException = Assert.assertThrows(AnswerPutFailedLocalDataException::class.java)
         {
-            // when
             composeTestRule.setContent()
             {
                 dataSource = remember { AnswerLocalDataSource(realm = realm) }
@@ -221,7 +221,36 @@ class AnswerLocalDataSourceTests
     @Test
     fun when_put_method_invoked_with_newAnswer_where_isCurrent_is_true__all_previous_Answer_records_updated_to_isCurrent_false()
     {
+        // given
+        lateinit var dataSource: AnswerLocalDataSource
+        realm.writeBlocking()
+        {
+            copyToRealm(
+                CachedAnswer().apply()
+                {
+                    word = "ANSWER1"
+                    isCurrent = false
+                }
+            )
+            copyToRealm(
+                CachedAnswer().apply()
+                {
+                    word = "ANSWER2"
+                    isCurrent = true
+                }
+            )
+        }
 
+        // when
+        composeTestRule.setContent()
+        {
+            dataSource = remember { AnswerLocalDataSource(realm = realm) }
+
+            SceneMock.display { MockView().View(dataSource = dataSource, answerToPut = Answer(word = Word(word = "ANSWER3"), isCurrent = true)) }
+        }
+
+        // then
+        Assert.assertEquals(1, realm.query<CachedAnswer>("isCurrent == true").find().count())
     }
 
     class MockView

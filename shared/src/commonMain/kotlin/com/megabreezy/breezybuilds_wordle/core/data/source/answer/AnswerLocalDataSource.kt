@@ -37,6 +37,8 @@ class AnswerLocalDataSource(private var realm: Realm? = null): AnswerLocalDataMa
                 throw AnswerPutFailedLocalDataException("Answer: ${newAnswer.word()} already exists!")
             }
 
+            this.query<CachedAnswer>("isCurrent == true").find().forEach { it.isCurrent = false }
+
             copyToRealm(CachedAnswer()).apply()
             {
                 word = newAnswer.word().word()
