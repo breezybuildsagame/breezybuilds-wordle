@@ -19,7 +19,7 @@ class GameGuessRepository: GameGuessGateway, KoinComponent
     private val guessLocalDataSource: GuessLocalDataManageable by inject()
     private val wordLocalDataSource: WordLocalDataManageable by inject()
 
-    override fun create(): GameGuess
+    override suspend fun create(): GameGuess
     {
         val gameBoard = GameUseCase().getGameBoard()
         var currentGuess = ""

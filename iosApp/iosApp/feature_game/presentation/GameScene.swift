@@ -27,7 +27,7 @@ struct GameScene: View
                         {
                             handler.gameHeader()
                             Spacer()
-                            handler.gameBoard()
+                            handler.gameBoard
                             Spacer()
                             handler.gameKeyboard()
                         }

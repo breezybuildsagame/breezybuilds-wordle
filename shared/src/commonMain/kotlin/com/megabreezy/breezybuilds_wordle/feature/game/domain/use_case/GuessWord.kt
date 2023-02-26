@@ -7,7 +7,7 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessN
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameAnswer
 import org.koin.core.component.inject
 
-fun GameUseCase.guessWord()
+suspend fun GameUseCase.guessWord()
 {
     val guessRepository: GameGuessGateway by inject()
 

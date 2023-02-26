@@ -6,6 +6,7 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.*
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameAnswer
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameGuess
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
+import kotlinx.coroutines.runBlocking
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
@@ -44,10 +45,10 @@ class GuessWordTests
     {
         // given
         answerRepository.guessMatchesAnswer = true
-        GameUseCase().getGameBoard().activeRow()?.forEach { it.setLetter(newLetter = 'T') }
+        runBlocking { GameUseCase().getGameBoard().activeRow()?.forEach { it.setLetter(newLetter = 'T') } }
 
         // when
-        GameUseCase().guessWord()
+        runBlocking { GameUseCase().guessWord() }
 
         // then
         assertNotNull(guessRepository.guessToReturn)
@@ -59,13 +60,16 @@ class GuessWordTests
         // given
         val expectedExceptionMessage = "Invalid guess: T"
         guessRepository.guessIsInvalid = true
-        GameUseCase().getGameBoard().activeRow()?.first()?.setLetter(newLetter = 'T')
-        GameUseCase().getGameBoard().activeRow()?.forEach { it.setLetter(newLetter = 'T') }
+        runBlocking()
+        {
+            GameUseCase().getGameBoard().activeRow()?.first()?.setLetter(newLetter = 'T')
+            GameUseCase().getGameBoard().activeRow()?.forEach { it.setLetter(newLetter = 'T') }
+        }
 
         // when
         val actualException = assertFailsWith<GameUseCase.GuessWordInvalidGuessException>()
         {
-            GameUseCase().guessWord()
+            runBlocking { GameUseCase().guessWord() }
         }
 
         // then
@@ -78,12 +82,12 @@ class GuessWordTests
         // given
         val expectedExceptionMessage = "Not found in words list."
         guessRepository.guessNotFound = true
-        GameUseCase().getGameBoard().activeRow()?.forEach { it.setLetter(newLetter = 'T') }
+        runBlocking { GameUseCase().getGameBoard().activeRow()?.forEach { it.setLetter(newLetter = 'T') } }
 
         // when
         val actualException = assertFailsWith<GameUseCase.GuessWordFailedNotInWordsListException>()
         {
-            GameUseCase().guessWord()
+            runBlocking { GameUseCase().guessWord() }
         }
 
         // then
@@ -95,10 +99,10 @@ class GuessWordTests
     {
         // given
         answerRepository.guessMatchesAnswer = true
-        GameUseCase().getGameBoard().activeRow()?.forEach { it.setLetter(newLetter = 'T') }
+        runBlocking { GameUseCase().getGameBoard().activeRow()?.forEach { it.setLetter(newLetter = 'T') } }
 
         // when
-        GameUseCase().guessWord()
+        runBlocking { GameUseCase().guessWord() }
 
         // then
         assertNotNull(answerRepository.gameAnswer)
@@ -115,7 +119,7 @@ class GuessWordTests
         // when
         val actualException = assertFailsWith<GameUseCase.GuessWordFailedException>
         {
-            GameUseCase().guessWord()
+            runBlocking { GameUseCase().guessWord() }
         }
 
         // then
@@ -130,10 +134,10 @@ class GuessWordTests
         guessRepository.guessNotFound = true
 
         // when
-        GameUseCase().getGameBoard().activeRow()?.first()?.setLetter(newLetter = 'T')
+        runBlocking { GameUseCase().getGameBoard().activeRow()?.first()?.setLetter(newLetter = 'T') }
         val actualException = assertFailsWith<GameUseCase.GuessWordInvalidGuessException>
         {
-            GameUseCase().guessWord()
+            runBlocking { GameUseCase().guessWord() }
         }
 
         // then
@@ -145,12 +149,12 @@ class GuessWordTests
     {
         // given
         val expectedExceptionMessage = "Guess (PLAYS) does not match Answer (TESTS)."
-        GameUseCase().getGameBoard().activeRow()?.forEach { it.setLetter(newLetter = 'T') }
+        runBlocking { GameUseCase().getGameBoard().activeRow()?.forEach { it.setLetter(newLetter = 'T') } }
 
         // when
         val actualException = assertFailsWith<GameUseCase.GuessWordFailedMismatchException>()
         {
-            GameUseCase().guessWord()
+            runBlocking { GameUseCase().guessWord() }
         }
 
         // then
@@ -162,10 +166,10 @@ class GuessWordTests
     {
         // given
         answerRepository.guessMatchesAnswer = true
-        GameUseCase().getGameBoard().activeRow()?.forEach { it.setLetter(newLetter = 'T') }
+        runBlocking { GameUseCase().getGameBoard().activeRow()?.forEach { it.setLetter(newLetter = 'T') } }
 
         // when
-        GameUseCase().guessWord()
+        runBlocking { GameUseCase().guessWord() }
 
         // then
         assertNotNull(answerRepository.gameAnswer)
@@ -178,7 +182,7 @@ class GuessWordTests
         var guessNotFound = false
         var guessToReturn: GameGuess? = null
 
-        override fun create(): GameGuess
+        override suspend fun create(): GameGuess
         {
             if (guessNotFound) throw GameGuessCreateFailedRepositoryException("Not found in words list.")
 
@@ -193,13 +197,13 @@ class GuessWordTests
 
     class MockGameAnswerRepository: GameAnswerGateway
     {
-        var createdGameAnswer: GameAnswer? = null
+         var createdGameAnswer: GameAnswer? = null
         var gameAnswer: GameAnswer? = null
         var createShouldFail = false
         var getShouldFail = false
         var guessMatchesAnswer = false
 
-        override fun create(): GameAnswer
+        override suspend fun create(): GameAnswer
         {
             if (createShouldFail) throw GameAnswerNotCreatedRepositoryException(message = "Answer not found.")
 
@@ -216,6 +220,6 @@ class GuessWordTests
 
             return gameAnswer!!
         }
-        ?: create()
+        ?: runBlocking { create() }
     }
 }

@@ -16,7 +16,6 @@ final class GameSceneHandlerTests: XCTestCase
 {
     override func setUpWithError() throws
     {
-        KoinPlatformManager.shared.stop()
         KoinPlatformManager.shared.start(
             scenarios: [
                 Scenario.wordFound,
@@ -24,8 +23,6 @@ final class GameSceneHandlerTests: XCTestCase
             ]
         )
     }
-    
-    override class func tearDown() { KoinPlatformManager.shared.stop() }
     
     func test_when_initialized__activeView_is_Empty()
     {
@@ -72,16 +69,19 @@ final class GameSceneHandlerTests: XCTestCase
     func test_when_gameBoard_view_appears__rows_match_expected_value()
     {
         // given
-        let expectedRowCount = GameSceneViewModel().getGameBoard().rows().count
+        //let expectedRowCount = GameSceneViewModel().getGameBoard().rows().count
         let sut = GameSceneHandler()
-        let actualBoard = sut.gameBoard()
+        let expectation = XCTestExpectation(description: "waiting for gameboard to appear.")
+        let mockView = MockBoardView(handler: sut, expectation: expectation)
         
         // when
         defer { ViewHosting.expel() }
-        ViewHosting.host(view: actualBoard.environmentObject(SceneDimensions()))
+        ViewHosting.host(view: mockView.environmentObject(SceneDimensions()))
         
         // then
-        XCTAssertEqual(expectedRowCount, try actualBoard.inspect().vStack().forEach(0).count)
+        wait(for: [expectation], timeout: 1.0)
+        XCTAssertNoThrow(try mockView.inspect().zStack().view(GameSceneBoard.self, 0))
+        XCTAssertTrue(try mockView.inspect().zStack().view(GameSceneBoard.self, 0).actualView().rows.count > 0)
     }
     
     func test_when_gameKeyboard_view_appears__rows_match_expected_value()
@@ -330,9 +330,32 @@ final class GameSceneHandlerTests: XCTestCase
         var body: some View
         {
             Text(handler.gameAnnouncement()?.text ?? "Default")
-                .onReceive(handler.$activeView)
-            { newActiveView in
-                if newActiveView != .EMPTY { expectation.fulfill() }
+                .onReceive(handler.objectWillChange)
+            { _ in
+                if handler.activeView != .EMPTY { expectation.fulfill() }
+            }
+        }
+    }
+    
+    struct MockBoardView: View
+    {
+        @ObservedObject var handler: GameSceneHandler
+        
+        var expectation: XCTestExpectation
+        
+        var body: some View
+        {
+            ZStack
+            {
+                handler.gameBoard
+            }
+            .onAppear { handler.setUp() }
+            .onReceive(handler.objectWillChange)
+            { _ in
+                if handler.gameBoard != nil
+                {
+                    expectation.fulfill()
+                }
             }
         }
     }

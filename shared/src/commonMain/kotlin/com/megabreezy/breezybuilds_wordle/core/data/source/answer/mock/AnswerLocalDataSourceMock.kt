@@ -26,7 +26,7 @@ class AnswerLocalDataSourceMock(
 
     override fun getPrevious(): List<Answer> = previousAnswersToReturn
 
-    override fun put(newAnswer: Answer): Answer
+    override suspend fun put(newAnswer: Answer): Answer
     {
         saveErrorMessage?.let { throw AnswerPutFailedLocalDataException(message = it) }
 

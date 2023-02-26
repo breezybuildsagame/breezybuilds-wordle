@@ -15,6 +15,7 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswer
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotFoundRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameAnswer
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
+import kotlinx.coroutines.runBlocking
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
@@ -52,7 +53,7 @@ class GameAnswerRepositoryTests
         val sut = GameAnswerRepository()
 
         // when
-        sut.create()
+        runBlocking { sut.create() }
 
         // then
         assertNotNull(answerDataSource.getCurrentAnswerToReturn)
@@ -71,7 +72,7 @@ class GameAnswerRepositoryTests
         answerDataSource.getPreviousAnswersToReturn = previousAnswers
 
         // when
-        sut.create()
+        runBlocking { sut.create() }
         val expectedExcludingWords = listOf(
             Word(word = "MOCKS"),
             Word(word = "SOCKS"),
@@ -92,7 +93,7 @@ class GameAnswerRepositoryTests
         val sut = GameAnswerRepository()
 
         // when
-        sut.create()
+        runBlocking { sut.create() }
         val expectedUpdatedAnswer = Answer(word = answerDataSource.getCurrentAnswerToReturn!!.word(), isCurrent = false)
 
         // then
@@ -108,7 +109,7 @@ class GameAnswerRepositoryTests
         answerDataSource.updateAnswerShouldFail = true
 
         // when
-        val actualException = assertFailsWith<GameAnswerNotCreatedRepositoryException> { sut.create() }
+        val actualException = assertFailsWith<GameAnswerNotCreatedRepositoryException> { runBlocking { sut.create() } }
 
         assertEquals(expectedExceptionMessage, actualException.message)
     }
@@ -126,7 +127,7 @@ class GameAnswerRepositoryTests
         answerDataSource.getPreviousAnswersToReturn = previousAnswers
 
         // when
-        sut.create()
+        runBlocking { sut.create() }
         val expectedExcludingWords = listOf(
             Word(word = "MOCKS"),
             Word(word = "SOCKS"),
@@ -145,7 +146,7 @@ class GameAnswerRepositoryTests
         val sut = GameAnswerRepository()
 
         // when
-        val actualWord = sut.create()
+        val actualWord = runBlocking { sut.create() }
         val expectedWord = GameAnswer(word = wordDataSource.wordToReturn!!.word())
 
         // then
@@ -159,7 +160,7 @@ class GameAnswerRepositoryTests
         val sut = GameAnswerRepository()
 
         // when
-        val actualGameAnswer = sut.create()
+        val actualGameAnswer = runBlocking { sut.create() }
         val expectedNewAnswer = Answer(word = wordDataSource.wordToReturn!!, isCurrent = true)
         val expectedGameAnswer = GameAnswer(word = wordDataSource.wordToReturn!!.word())
 
@@ -179,7 +180,7 @@ class GameAnswerRepositoryTests
         // when
         val actualException = assertFailsWith<GameAnswerNotCreatedRepositoryException>
         {
-            sut.create()
+            runBlocking { sut.create() }
         }
 
         // then
@@ -274,7 +275,7 @@ class GameAnswerRepositoryTests
 
         override fun getPrevious(): List<Answer> = getPreviousAnswersToReturn
 
-        override fun put(newAnswer: Answer): Answer
+        override suspend fun put(newAnswer: Answer): Answer
         {
             if (putNewAnswerShouldFail) throw AnswerPutFailedLocalDataException(message = "New Answer not saved.")
 

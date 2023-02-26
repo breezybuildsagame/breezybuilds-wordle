@@ -9,6 +9,7 @@ import com.megabreezy.breezybuilds_wordle.core.util.Scenario
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.AnnouncementRepresentable
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case.SetUpGameEventsTests
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
@@ -45,11 +46,11 @@ class GameSceneViewModelTests: KoinComponent
     {
         // given
         answerLocalDataSource.getAnswerShouldFail = true
-        val handler = MockSceneHandler()
+        val handler = SetUpGameEventsTests.MockSceneHandler()
         val sut = GameSceneViewModel()
 
         // when
-        sut.setUp(handler = handler)
+        runBlocking { sut.setUp(handler = handler) }
 
         // then
         assertNotNull(answerLocalDataSource.answerToPut)
@@ -77,10 +78,10 @@ class GameSceneViewModelTests: KoinComponent
         // given
         val sut = GameSceneViewModel()
         val expectedGameBoard: GameBoard by inject()
-        sut.setUp()
+        runBlocking { sut.setUp() }
 
         // when
-        val actualGameBoard = sut.getGameBoard()
+        val actualGameBoard = runBlocking { sut.getGameBoard() }
 
         // then
         assertEquals(expectedGameBoard, actualGameBoard)
@@ -137,7 +138,7 @@ class GameSceneViewModelTests: KoinComponent
         var answerToPut: Answer? = null
         var getAnswerShouldFail = false
 
-        override fun put(newAnswer: Answer): Answer
+        override suspend fun put(newAnswer: Answer): Answer
         {
             answerToPut = newAnswer
 

@@ -21,35 +21,38 @@ class GameSceneHandler(private val scope: CoroutineScope? = null): GameSceneHand
     var gameAnnouncementText by mutableStateOf(viewModel.getAnnouncement().message())
     var gameKeyboardIsEnabled by mutableStateOf(false)
 
-    fun setUp() { viewModel.setUp(handler = this) }
+    suspend fun setUp() { viewModel.setUp(handler = this) }
 
     private fun updateGameBoardRows()
     {
-        val composableGameBoardRows = mutableListOf<@Composable () -> Unit>()
+        scope?.launch()
+        {
+            val composableGameBoardRows = mutableListOf<@Composable () -> Unit>()
 
-        viewModel.getGameBoard().rows().forEach()
-        { middleRow ->
-            val composableGameBoardRowTiles = mutableListOf<@Composable () -> Unit>()
+            viewModel.getGameBoard().rows().forEach()
+            { middleRow ->
+                val composableGameBoardRowTiles = mutableListOf<@Composable () -> Unit>()
 
-            middleRow.forEach()
-            { middleTile ->
-                composableGameBoardRowTiles.add {
-                    GameSceneBoard.Tile.Component(
-                        options = GameSceneBoard.Tile.ComponentOptions(
-                            state = middleTile.state(),
-                            letter = middleTile.letter()?.toString() ?: ""
+                middleRow.forEach()
+                { middleTile ->
+                    composableGameBoardRowTiles.add {
+                        GameSceneBoard.Tile.Component(
+                            options = GameSceneBoard.Tile.ComponentOptions(
+                                state = middleTile.state(),
+                                letter = middleTile.letter()?.toString() ?: ""
+                            )
                         )
+                    }
+                }
+
+                composableGameBoardRows.add {
+                    GameSceneBoard.Row.Component(
+                        options = GameSceneBoard.Row.ComponentOptions(tiles = composableGameBoardRowTiles.toList())
                     )
                 }
             }
-
-            composableGameBoardRows.add {
-                GameSceneBoard.Row.Component(
-                    options = GameSceneBoard.Row.ComponentOptions(tiles = composableGameBoardRowTiles.toList())
-                )
-            }
+            gameBoardRows = composableGameBoardRows.toList()
         }
-        gameBoardRows = composableGameBoardRows.toList()
     }
 
     private fun updateGameKeyboardRows()

@@ -27,9 +27,18 @@ class AnswerLocalDataSource(private var realm: Realm? = null): AnswerLocalDataMa
     { Answer(word = Word(it.word), isCurrent = it.isCurrent) }
     ?: listOf()
 
-    override fun put(newAnswer: Answer): Answer
+    override suspend fun put(newAnswer: Answer): Answer
     {
-        TODO("Not yet implemented")
+        realm?.write()
+        {
+            copyToRealm(CachedAnswer()).apply()
+            {
+                word = newAnswer.word().word()
+                isCurrent = newAnswer.isCurrent()
+            }
+        }
+
+        return newAnswer
     }
 
     override fun update(existingAnswer: Answer): Answer

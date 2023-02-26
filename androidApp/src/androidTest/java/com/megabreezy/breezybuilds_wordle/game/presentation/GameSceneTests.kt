@@ -20,7 +20,6 @@ import com.megabreezy.breezybuilds_wordle.core.ui.SceneMock
 import com.megabreezy.breezybuilds_wordle.core.util.KoinPlatformManager
 import com.megabreezy.breezybuilds_wordle.core.util.Scenario
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneViewModel
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -34,9 +33,6 @@ class GameSceneTests
 
     @Before
     fun setUp() { KoinPlatformManager.start(scenarios = listOf(Scenario.WORD_FOUND, Scenario.ANSWER_SAVED)) }
-
-    @After
-    fun tearDown() { KoinPlatformManager.stop() }
 
     @Test
     fun when_view_appears__handler_setUp_is_invoked()

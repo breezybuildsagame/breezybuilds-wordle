@@ -5,7 +5,7 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneHandleable
 import kotlinx.coroutines.delay
 
-fun GameUseCase.setUpGameEvents(
+suspend fun GameUseCase.setUpGameEvents(
     sceneHandler: GameSceneHandleable? = null,
     announcementDelay: Long = 1000L
 )

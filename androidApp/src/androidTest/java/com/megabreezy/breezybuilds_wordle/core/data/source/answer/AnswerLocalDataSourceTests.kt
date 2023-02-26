@@ -12,6 +12,7 @@ import androidx.compose.ui.test.onChildAt
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Answer
+import com.megabreezy.breezybuilds_wordle.core.domain.model.Word
 import com.megabreezy.breezybuilds_wordle.core.ui.SceneMock
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
@@ -170,20 +171,54 @@ class AnswerLocalDataSourceTests
         composeTestRule.onNodeWithContentDescription("PREVIOUS_ANSWERS", useUnmergedTree = true).onChildAt(index = 0).assertDoesNotExist()
     }
 
+    @Test
+    fun when_put_method_invoked_with_newAnswer_and_updated_Answer_is_received__expected_Answer_is_returned()
+    {
+        // given
+        lateinit var dataSource: AnswerLocalDataSource
+        val expectedPutAnswer = "SLEEPY"
+
+        // when
+        composeTestRule.setContent()
+        {
+            dataSource = remember { AnswerLocalDataSource(realm = realm) }
+
+            SceneMock.display { MockView().View(dataSource = dataSource, answerToPut = Answer(word = Word(word = expectedPutAnswer))) }
+        }
+
+        // then
+        composeTestRule.onNodeWithContentDescription("PUT_ANSWER").assertTextEquals(expectedPutAnswer)
+    }
+
+    @Test
+    fun when_put_method_invoked_with_newAnswer_already_in_database__expected_exception_is_thrown()
+    {
+        
+    }
+
+    @Test
+    fun when_put_method_invoked_with_newAnswer_where_isCurrent_is_true__all_previous_Answer_records_updated_to_isCurrent_false()
+    {
+
+    }
+
     class MockView
     {
         @Composable
         fun View(
-            dataSource: AnswerLocalDataSource
+            dataSource: AnswerLocalDataSource,
+            answerToPut: Answer? = null
         )
         {
             var currentAnswer by remember { mutableStateOf("") }
             var previousAnswers by remember { mutableStateOf<List<Answer>>(listOf()) }
+            var putAnswer by remember { mutableStateOf<Answer?>(null) }
 
             LaunchedEffect(Unit)
             {
                 currentAnswer = try { dataSource.getCurrent().word().toString() } catch(e: Throwable) { e.message ?: "" }
                 previousAnswers = dataSource.getPrevious()
+                putAnswer = answerToPut?.let { dataSource.put(newAnswer = it) }
             }
 
             Text(
@@ -198,6 +233,11 @@ class AnswerLocalDataSourceTests
                     Text(text = it.word().toString())
                 }
             }
+
+            Text(
+                text = putAnswer?.word()?.word() ?: "",
+                modifier = Modifier.semantics { contentDescription = "PUT_ANSWER" }
+            )
         }
     }
 }

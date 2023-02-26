@@ -19,7 +19,7 @@ class GameAnswerRepository: GameAnswerGateway, KoinComponent
     private val answerLocalDataSource: AnswerLocalDataManageable by inject()
     private val wordLocalDataSource: WordLocalDataManageable by inject()
 
-    override fun create(): GameAnswer
+    override suspend fun create(): GameAnswer
     {
         val excludedWords = mutableListOf<Word>()
         answerLocalDataSource.getPrevious().forEach { excludedWords.add(Word(word = it.word().toString())) }
