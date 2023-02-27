@@ -76,7 +76,7 @@ class GuessLocalDataSourceTests
         {
             dataSource = remember { GuessLocalDataSource(realm = realm) }
 
-            SceneMock.display { MockGuessLocalDataSourceTestView(localDataSource = dataSource) }
+            SceneMock.display { MockGuessLocalDataSourceTestView(localDataSource = dataSource).View() }
         }
 
         // then
