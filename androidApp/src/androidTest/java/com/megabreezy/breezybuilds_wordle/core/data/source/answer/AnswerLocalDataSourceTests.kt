@@ -169,7 +169,7 @@ class AnswerLocalDataSourceTests
     }
 
     @Test
-    fun when_put_method_invoked_with_newAnswer_and_updated_Answer_is_received__expected_Answer_is_returned()
+    fun when_insert_method_invoked_with_newAnswer_and_updated_Answer_is_received__expected_Answer_is_returned()
     {
         // given
         lateinit var dataSource: AnswerLocalDataSource
@@ -188,7 +188,7 @@ class AnswerLocalDataSourceTests
     }
 
     @Test
-    fun when_put_method_invoked_with_newAnswer_already_in_database__expected_exception_is_thrown()
+    fun when_insert_method_invoked_with_newAnswer_already_in_database__expected_exception_is_thrown()
     {
         // given
         lateinit var dataSource: AnswerLocalDataSource
@@ -204,7 +204,7 @@ class AnswerLocalDataSourceTests
         }
 
         // when
-        val actualException = Assert.assertThrows(AnswerPutFailedLocalDataException::class.java)
+        val actualException = Assert.assertThrows(AnswerInsertFailedLocalDataException::class.java)
         {
             composeTestRule.setContent()
             {
@@ -219,7 +219,7 @@ class AnswerLocalDataSourceTests
     }
 
     @Test
-    fun when_put_method_invoked_with_newAnswer_where_isCurrent_is_true__all_previous_Answer_records_updated_to_isCurrent_false()
+    fun when_insert_method_invoked_with_newAnswer_where_isCurrent_is_true__all_previous_Answer_records_updated_to_isCurrent_false()
     {
         // given
         lateinit var dataSource: AnswerLocalDataSource
@@ -253,23 +253,92 @@ class AnswerLocalDataSourceTests
         Assert.assertEquals(1, realm.query<CachedAnswer>("isCurrent == true").find().count())
     }
 
+    @Test
+    fun when_update_method_invoked_with_existing_answer_and_update_is_successful__expected_updated_Answer_is_returned()
+    {
+        // given
+        lateinit var dataSource: AnswerLocalDataSource
+        realm.writeBlocking()
+        {
+            copyToRealm(
+                CachedAnswer().apply()
+                {
+                    word = "ANSWER1"
+                    isCurrent = true
+                }
+            )
+        }
+
+        // when
+        composeTestRule.setContent()
+        {
+            dataSource = remember { AnswerLocalDataSource(realm = realm) }
+
+            SceneMock.display()
+            {
+                MockView().View(
+                    dataSource = dataSource,
+                    answerToUpdate = Answer(word = Word(word = "ANSWER1"), isCurrent = true),
+                    expectedUpdatedAnswer = Answer(word = Word(word = "ANSWER3"), isCurrent = false)
+                )
+            }
+        }
+
+        // then
+        composeTestRule.onNodeWithContentDescription("UPDATED_ANSWER").onChildAt(index = 0).assertTextEquals("ANSWER3")
+        composeTestRule.onNodeWithContentDescription("UPDATED_ANSWER").onChildAt(index = 1).assertTextEquals("false")
+    }
+
+    @Test
+    fun when_update_method_invoked_with_new_answer__expected_exception_is_thrown()
+    {
+        // given
+        lateinit var dataSource: AnswerLocalDataSource
+
+        // when
+        val actualException = Assert.assertThrows(AnswerUpdateFailedLocalDataException::class.java)
+        {
+            composeTestRule.setContent()
+            {
+                dataSource = remember { AnswerLocalDataSource(realm = realm) }
+
+                SceneMock.display()
+                {
+                    MockView().View(
+                        dataSource = dataSource,
+                        answerToUpdate = Answer(word = Word(word = "ANSWER1"), isCurrent = true),
+                        expectedUpdatedAnswer = Answer(word = Word(word = "ANSWER3"), isCurrent = false)
+                    )
+                }
+            }
+        }
+
+        // then
+        Assert.assertEquals("Answer: ANSWER1 not found! Try insert first.", actualException.message)
+    }
+
     class MockView
     {
         @Composable
         fun View(
             dataSource: AnswerLocalDataSource,
-            answerToPut: Answer? = null
+            answerToPut: Answer? = null,
+            answerToUpdate: Answer? = null,
+            expectedUpdatedAnswer: Answer? = null
         )
         {
             var currentAnswer by remember { mutableStateOf("") }
             var previousAnswers by remember { mutableStateOf<List<Answer>>(listOf()) }
             var putAnswer by remember { mutableStateOf<Answer?>(null) }
+            var updatedAnswer by remember { mutableStateOf<Answer?>(null) }
 
             LaunchedEffect(Unit)
             {
                 currentAnswer = try { dataSource.getCurrent().word().toString() } catch(e: Throwable) { e.message ?: "" }
                 previousAnswers = dataSource.getPrevious()
-                putAnswer = answerToPut?.let { dataSource.put(newAnswer = it) }
+                putAnswer = answerToPut?.let { dataSource.insert(newAnswer = it) }
+                updatedAnswer = if (answerToUpdate != null && expectedUpdatedAnswer != null)
+                    dataSource.update(existingAnswer = answerToUpdate, updatedAnswer = expectedUpdatedAnswer) else null
             }
 
             Text(
@@ -289,6 +358,12 @@ class AnswerLocalDataSourceTests
                 text = putAnswer?.word()?.word() ?: "",
                 modifier = Modifier.semantics { contentDescription = "PUT_ANSWER" }
             )
+
+            Column(modifier = Modifier.semantics { contentDescription = "UPDATED_ANSWER" })
+            {
+                Text(text = expectedUpdatedAnswer?.word()?.toString() ?: "")
+                Text(text = if (expectedUpdatedAnswer?.isCurrent() == true) "true" else "false")
+            }
         }
     }
 }

@@ -32,12 +32,13 @@ class GameAnswerRepository: GameAnswerGateway, KoinComponent
 
             val word = wordLocalDataSource.get(excludingWords = excludedWords)
 
-            answerLocalDataSource.put(newAnswer = Answer(word = word, isCurrent = true))
+            answerLocalDataSource.insert(newAnswer = Answer(word = word, isCurrent = true))
 
             mostRecentAnswer?.let()
             { previousAnswer ->
-                previousAnswer.setIsCurrent(newIsCurrent = false)
-                answerLocalDataSource.update(existingAnswer = previousAnswer)
+                val updatedPreviousAnswer = Answer(word = previousAnswer.word(), isCurrent = previousAnswer.isCurrent())
+                updatedPreviousAnswer.setIsCurrent(newIsCurrent = false)
+                answerLocalDataSource.update(existingAnswer = previousAnswer, updatedAnswer = updatedPreviousAnswer)
             }
 
             return GameAnswer(word = word.toString())

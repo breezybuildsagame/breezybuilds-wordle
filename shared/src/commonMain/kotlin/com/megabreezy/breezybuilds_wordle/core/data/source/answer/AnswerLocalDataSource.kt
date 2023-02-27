@@ -27,14 +27,14 @@ class AnswerLocalDataSource(private var realm: Realm? = null): AnswerLocalDataMa
     { Answer(word = Word(it.word), isCurrent = it.isCurrent) }
     ?: listOf()
 
-    override suspend fun put(newAnswer: Answer): Answer
+    override suspend fun insert(newAnswer: Answer): Answer
     {
         realm?.write()
         {
             if (this.query<CachedAnswer>("word == '${newAnswer.word()}'").find().isNotEmpty())
             {
                 this.cancelWrite()
-                throw AnswerPutFailedLocalDataException("Answer: ${newAnswer.word()} already exists!")
+                throw AnswerInsertFailedLocalDataException("Answer: ${newAnswer.word()} already exists!")
             }
 
             this.query<CachedAnswer>("isCurrent == true").find().forEach { it.isCurrent = false }
@@ -49,8 +49,25 @@ class AnswerLocalDataSource(private var realm: Realm? = null): AnswerLocalDataMa
         return newAnswer
     }
 
-    override fun update(existingAnswer: Answer): Answer
+    override suspend fun update(existingAnswer: Answer, updatedAnswer: Answer): Answer
     {
-        TODO("Not yet implemented")
+        var successfullyUpdatedAnswer: Answer? = null
+
+        realm?.write()
+        {
+            val cachedAnswer = this.query<CachedAnswer>("word == '${existingAnswer.word()}'").find().firstOrNull()
+
+            cachedAnswer?.let()
+            {
+                it.word = existingAnswer.word().toString()
+                it.isCurrent = existingAnswer.isCurrent()
+
+                successfullyUpdatedAnswer = Answer(word = Word(word = it.word), isCurrent = it.isCurrent)
+            }
+        }
+
+        successfullyUpdatedAnswer?.let { return it }
+
+        throw AnswerUpdateFailedLocalDataException("Answer: ${existingAnswer.word()} not found! Try insert first.")
     }
 }

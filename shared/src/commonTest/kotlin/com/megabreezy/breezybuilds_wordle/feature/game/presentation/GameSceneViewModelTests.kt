@@ -138,7 +138,7 @@ class GameSceneViewModelTests: KoinComponent
         var answerToPut: Answer? = null
         var getAnswerShouldFail = false
 
-        override suspend fun put(newAnswer: Answer): Answer
+        override suspend fun insert(newAnswer: Answer): Answer
         {
             answerToPut = newAnswer
 
@@ -154,6 +154,6 @@ class GameSceneViewModelTests: KoinComponent
 
         override fun getPrevious(): List<Answer> = listOf()
 
-        override fun update(existingAnswer: Answer) = existingAnswer
+        override suspend fun update(existingAnswer: Answer, updatedAnswer: Answer) = updatedAnswer
     }
 }

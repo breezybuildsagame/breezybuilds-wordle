@@ -2,7 +2,7 @@ package com.megabreezy.breezybuilds_wordle.feature.game.data.gateway
 
 import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerLocalDataManageable
 import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerNotFoundLocalDataException
-import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerPutFailedLocalDataException
+import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerInsertFailedLocalDataException
 import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerUpdateFailedLocalDataException
 import com.megabreezy.breezybuilds_wordle.core.data.source.word.WordLocalDataManageable
 import com.megabreezy.breezybuilds_wordle.core.data.source.word.WordNotFoundLocalDataException
@@ -275,20 +275,20 @@ class GameAnswerRepositoryTests
 
         override fun getPrevious(): List<Answer> = getPreviousAnswersToReturn
 
-        override suspend fun put(newAnswer: Answer): Answer
+        override suspend fun insert(newAnswer: Answer): Answer
         {
-            if (putNewAnswerShouldFail) throw AnswerPutFailedLocalDataException(message = "New Answer not saved.")
+            if (putNewAnswerShouldFail) throw AnswerInsertFailedLocalDataException(message = "New Answer not saved.")
 
             putNewAnswerToReturn = newAnswer
 
             return putNewAnswerToReturn!!
         }
 
-        override fun update(existingAnswer: Answer): Answer
+        override suspend fun update(existingAnswer: Answer, updatedAnswer: Answer): Answer
         {
             if (updateAnswerShouldFail) throw AnswerUpdateFailedLocalDataException(message = "Existing Answer not updated.")
 
-            updatedAnswerToReturn = existingAnswer
+            updatedAnswerToReturn = updatedAnswer
 
             return updatedAnswerToReturn!!
         }

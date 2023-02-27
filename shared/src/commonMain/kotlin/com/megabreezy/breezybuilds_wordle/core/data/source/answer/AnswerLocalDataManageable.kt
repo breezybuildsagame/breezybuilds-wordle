@@ -6,10 +6,10 @@ interface AnswerLocalDataManageable
 {
     fun getCurrent(): Answer
     fun getPrevious(): List<Answer>
-    suspend fun put(newAnswer: Answer): Answer
-    fun update(existingAnswer: Answer): Answer
+    suspend fun insert(newAnswer: Answer): Answer
+    suspend fun update(existingAnswer: Answer, updatedAnswer: Answer): Answer
 }
 
 class AnswerNotFoundLocalDataException(message: String?): Exception(message)
-class AnswerPutFailedLocalDataException(message: String?): Exception(message)
+class AnswerInsertFailedLocalDataException(message: String?): Exception(message)
 class AnswerUpdateFailedLocalDataException(message: String?): Exception(message)

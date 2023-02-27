@@ -97,7 +97,7 @@ class GetGameBoardTests: KoinComponent
             return expectedAnswer
         }
         override fun getPrevious(): List<Answer> = listOf()
-        override suspend fun put(newAnswer: Answer) = newAnswer
-        override fun update(existingAnswer: Answer) = existingAnswer
+        override suspend fun insert(newAnswer: Answer) = newAnswer
+        override suspend fun update(existingAnswer: Answer, updatedAnswer: Answer) = updatedAnswer
     }
 }
