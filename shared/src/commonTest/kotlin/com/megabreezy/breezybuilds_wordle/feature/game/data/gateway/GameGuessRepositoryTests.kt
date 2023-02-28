@@ -179,7 +179,7 @@ class GameGuessRepositoryTests: KoinComponent
             return getAllGuesses!!
         }
 
-        override fun save(newGuess: String): Guess
+        override suspend fun create(newGuess: String): Guess
         {
             if (saveShouldFail) throw GuessSaveFailedLocalDataException(message = "Failed to save new Guess.")
 

@@ -2,26 +2,19 @@ package com.megabreezy.breezybuilds_wordle.core.data.source.guess
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onChildAt
-import androidx.compose.ui.test.onNodeWithContentDescription
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Guess
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Word
 import com.megabreezy.breezybuilds_wordle.core.ui.SceneMock
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 import io.realm.kotlin.ext.query
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 
 class GuessLocalDataSourceTests
 {
@@ -57,18 +50,9 @@ class GuessLocalDataSourceTests
         lateinit var dataSource: GuessLocalDataSource
         realm.writeBlocking()
         {
-            copyToRealm(CachedGuess()).apply()
-            {
-                word = Word(word = "GUESS1")
-            }
-            copyToRealm(CachedGuess()).apply()
-            {
-                word = Word(word = "GUESS2")
-            }
-            copyToRealm(CachedGuess()).apply()
-            {
-                word = Word(word = "GUESS3")
-            }
+            copyToRealm(CachedGuess()).apply { word = "GUESS1" }
+            copyToRealm(CachedGuess()).apply { word = "GUESS2" }
+            copyToRealm(CachedGuess()).apply { word = "GUESS3" }
         }
 
         // when
@@ -78,18 +62,71 @@ class GuessLocalDataSourceTests
 
             SceneMock.display { MockGuessLocalDataSourceTestView(localDataSource = dataSource).View() }
         }
+        val allGuessesContainer = composeTestRule.onNodeWithContentDescription("GET_ALL_GUESSES", useUnmergedTree = true)
+
+        // then=
+        allGuessesContainer.onChildAt(index = 0).assertTextEquals("GUESS1")
+        allGuessesContainer.onChildAt(index = 1).assertTextEquals("GUESS2")
+        allGuessesContainer.onChildAt(index = 2).assertTextEquals("GUESS3")
+    }
+
+    @Test
+    fun when_create_method_invoked_and_create_is_successful__expected_Guess_is_returned()
+    {
+        // given
+        lateinit var dataSource: GuessLocalDataSource
+        val expectedCreatedGuess = Guess(word = Word(word = "TRYING"))
+
+        // when
+        composeTestRule.setContent()
+        {
+            dataSource = remember { GuessLocalDataSource(realm = realm) }
+
+            SceneMock.display()
+            {
+                MockGuessLocalDataSourceTestView(guessToCreate = expectedCreatedGuess, localDataSource = dataSource).View()
+            }
+        }
 
         // then
-        composeTestRule.onNodeWithContentDescription("GET_ALL_GUESSES").onChildAt(index = 0).assertTextEquals("GUESS1")
-        composeTestRule.onNodeWithContentDescription("GET_ALL_GUESSES").onChildAt(index = 1).assertTextEquals("GUESS2")
-        composeTestRule.onNodeWithContentDescription("GET_ALL_GUESSES").onChildAt(index = 2).assertTextEquals("GUESS3")
+        composeTestRule.onNodeWithContentDescription("CREATED_GUESS").assertTextEquals("${expectedCreatedGuess.word()}")
+    }
+
+    @Test
+    fun when_create_method_invoked_and_create_is_unsuccessful__expected_exception_is_thrown()
+    {
+        // given
+        lateinit var dataSource: GuessLocalDataSource
+        realm.writeBlocking()
+        {
+            copyToRealm(CachedGuess()).apply { word = "ALREADY" }
+        }
+
+        // when
+        val actualException = Assert.assertThrows(GuessSaveFailedLocalDataException::class.java)
+        {
+            composeTestRule.setContent()
+            {
+                dataSource = remember { GuessLocalDataSource(realm = realm) }
+
+                SceneMock.display()
+                {
+                    MockGuessLocalDataSourceTestView(guessToCreate = Guess(word = Word(word = "ALREADY")), localDataSource = dataSource).View()
+                }
+            }
+        }
+
+        // then
+        Assert.assertEquals("Guess ALREADY has been previously guessed.", actualException.message)
     }
 
     class MockGuessLocalDataSourceTestView(
+        private val guessToCreate: Guess? = null,
         private val localDataSource: GuessLocalDataSource
     )
     {
-        var getAllGuessList: List<Guess>? = null
+        private var getAllGuessList by mutableStateOf<List<Guess>?>(null)
+        private var createdGuess by mutableStateOf<Guess?>(null)
 
         @Composable
         fun View()
@@ -97,6 +134,7 @@ class GuessLocalDataSourceTests
             LaunchedEffect(Unit)
             {
                 getAllGuessList = localDataSource.getAll()
+                guessToCreate?.let { createdGuess = localDataSource.create(newGuess = "${it.word()}") }
             }
 
             Column(modifier = Modifier.semantics { contentDescription = "GET_ALL_GUESSES" })
@@ -106,6 +144,11 @@ class GuessLocalDataSourceTests
                     Text(text = it.word().toString())
                 }
             }
+
+            Text(
+                text = createdGuess?.let { "${it.word()}" } ?: "",
+                modifier = Modifier.semantics { contentDescription = "CREATED_GUESS" }
+            )
         }
     }
 }

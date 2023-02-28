@@ -12,5 +12,5 @@ class CachedGuess(): RealmObject
     var _id: String = RealmUUID.random().toString()
 
     @Index
-    var word: Word = Word(word = "")
+    var word: String = ""
 }

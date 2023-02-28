@@ -16,7 +16,7 @@ class GuessLocalDataSourceMock(
 {
     override fun getAll(): List<Guess> = guessesToReturn
 
-    override fun save(newGuess: String): Guess
+    override suspend fun create(newGuess: String): Guess
     {
         saveErrorMessage?.let { throw GuessSaveFailedLocalDataException(message = it) }
 
@@ -30,7 +30,7 @@ class GuessLocalDataSourceMock(
 
     companion object
     {
-        val guesses = listOf(
+        private val guesses = listOf(
             Guess(word = Word(word = "SNAIL")),
             Guess(word = Word(word = "WHOLE")),
             Guess(word = Word(word = "SPEAK")),

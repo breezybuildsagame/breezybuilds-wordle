@@ -37,7 +37,7 @@ class GameGuessRepository: GameGuessGateway, KoinComponent
 
         try
         {
-            guessLocalDataSource.save(newGuess = currentGuess)
+            guessLocalDataSource.create(newGuess = currentGuess)
         }
         catch(e: GuessSaveFailedLocalDataException)
         {
