@@ -56,7 +56,7 @@ class GameGuessRepository: GameGuessGateway, KoinComponent
         return guesses
     }
 
-    override fun clear() = try
+    override suspend fun clear() = try
     {
         guessLocalDataSource.clear()
     }

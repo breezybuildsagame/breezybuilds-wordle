@@ -120,9 +120,35 @@ class GuessLocalDataSourceTests
         Assert.assertEquals("Guess ALREADY has been previously guessed.", actualException.message)
     }
 
+    @Test
+    fun when_clear_method_invoked_and_cached_guesses_found__guesses_are_cleared()
+    {
+        // given
+        lateinit var dataSource: GuessLocalDataSource
+        realm.writeBlocking()
+        {
+            copyToRealm(CachedGuess()).apply { word = "GUESS1" }
+            copyToRealm(CachedGuess()).apply { word = "GUESS2" }
+            copyToRealm(CachedGuess()).apply { word = "GUESS3" }
+        }
+
+        // when
+        composeTestRule.setContent()
+        {
+            dataSource = remember { GuessLocalDataSource(realm = realm) }
+
+            SceneMock.display { MockGuessLocalDataSourceTestView(localDataSource = dataSource, shouldClearGuesses = true).View() }
+        }
+        val allGuessesContainer = composeTestRule.onNodeWithContentDescription("GET_ALL_GUESSES", useUnmergedTree = true)
+
+        // then
+        allGuessesContainer.onChildAt(index = 0).assertDoesNotExist()
+    }
+
     class MockGuessLocalDataSourceTestView(
         private val guessToCreate: Guess? = null,
-        private val localDataSource: GuessLocalDataSource
+        private val localDataSource: GuessLocalDataSource,
+        private val shouldClearGuesses: Boolean = false
     )
     {
         private var getAllGuessList by mutableStateOf<List<Guess>?>(null)
@@ -135,6 +161,11 @@ class GuessLocalDataSourceTests
             {
                 getAllGuessList = localDataSource.getAll()
                 guessToCreate?.let { createdGuess = localDataSource.create(newGuess = "${it.word()}") }
+                if (shouldClearGuesses)
+                {
+                    localDataSource.clear()
+                    getAllGuessList = localDataSource.getAll()
+                }
             }
 
             Column(modifier = Modifier.semantics { contentDescription = "GET_ALL_GUESSES" })

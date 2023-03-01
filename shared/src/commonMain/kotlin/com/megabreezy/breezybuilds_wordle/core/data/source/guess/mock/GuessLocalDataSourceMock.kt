@@ -23,7 +23,7 @@ class GuessLocalDataSourceMock(
         return Guess(word = Word(newGuess))
     }
 
-    override fun clear()
+    override suspend fun clear()
     {
         clearErrorMessage?.let { throw GuessClearFailedLocalDataException(message = it) }
     }

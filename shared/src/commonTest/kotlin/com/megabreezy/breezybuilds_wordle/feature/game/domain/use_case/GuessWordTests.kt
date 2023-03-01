@@ -192,7 +192,7 @@ class GuessWordTests
         }
 
         override fun getAll(): List<GameGuess> = listOf()
-        override fun clear() { }
+        override suspend fun clear() { }
     }
 
     class MockGameAnswerRepository: GameAnswerGateway

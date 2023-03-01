@@ -6,7 +6,7 @@ interface GuessLocalDataManageable
 {
     fun getAll(): List<Guess>
     suspend fun create(newGuess: String): Guess
-    fun clear()
+    suspend fun clear()
 }
 
 class GuessSaveFailedLocalDataException(message: String?): Exception(message)

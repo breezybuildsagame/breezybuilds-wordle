@@ -121,7 +121,7 @@ class GameGuessRepositoryTests: KoinComponent
         val sut = GameGuessRepository()
 
         // when
-        sut.clear()
+        runBlocking { sut.clear() }
 
         // then
         assertTrue(guessLocalDataSource.clearDidInvoke)
@@ -136,7 +136,7 @@ class GameGuessRepositoryTests: KoinComponent
         guessLocalDataSource.clearShouldFail = true
 
         // when
-        val actualException = assertFailsWith<GameGuessCreateFailedRepositoryException> { sut.clear() }
+        val actualException = assertFailsWith<GameGuessCreateFailedRepositoryException> { runBlocking { sut.clear() } }
 
         // then
         assertEquals(expectedExceptionMessage, actualException.message)
@@ -188,7 +188,7 @@ class GameGuessRepositoryTests: KoinComponent
             return Guess(word = Word(newGuess))
         }
 
-        override fun clear()
+        override suspend fun clear()
         {
             if (clearShouldFail) throw GuessClearFailedLocalDataException(message = "Failed to clear all Guesses.")
 

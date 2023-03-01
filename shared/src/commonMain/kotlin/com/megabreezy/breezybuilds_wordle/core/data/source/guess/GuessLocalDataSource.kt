@@ -25,7 +25,7 @@ class GuessLocalDataSource(private var realm: Realm? = null): GuessLocalDataMana
 
         realm?.write()
         {
-            if (realm?.query<CachedGuess>("word == '$newGuess'")?.find()?.isNotEmpty() == true)
+            if (query<CachedGuess>("word == '$newGuess'").find().isNotEmpty())
             {
                 this.cancelWrite()
                 throw GuessSaveFailedLocalDataException("Guess $newGuess has been previously guessed.")
@@ -39,8 +39,12 @@ class GuessLocalDataSource(private var realm: Realm? = null): GuessLocalDataMana
         createdGuess?.let { return it } ?: throw GuessSaveFailedLocalDataException("Unexpected error occurred.")
     }
 
-    override fun clear()
+    override suspend fun clear()
     {
-        TODO("Not yet implemented")
+        realm?.write()
+        {
+            val currentlyCachedGuesses = query<CachedGuess>().find()
+            delete(currentlyCachedGuesses)
+        }
     }
 }
