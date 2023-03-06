@@ -16,7 +16,8 @@ fun initKoin(
     appDeclaration()
 
     modules(
-        CoreKoinModule(scenarios = scenarios).mockModule(),
+        //CoreKoinModule(scenarios = scenarios).mockModule(),
+        CoreKoinModule().module(),
         GameKoinModule().module()
     )
 
