@@ -14,6 +14,7 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameGuess
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case.GameUseCase
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case.getGameBoard
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
@@ -47,7 +48,7 @@ class GameGuessRepositoryTests: KoinComponent
     fun `when the create method is invoked - the guess local data source save method is invoked - passing in expected newGuess`()
     {
         // given
-        val gameBoard = GameUseCase().getGameBoard()
+        val gameBoard = runBlocking { GameUseCase().getGameBoard() }
         val wordLocalDataSource: WordLocalDataManageable by inject()
         val expectedGuess = wordLocalDataSource.getAll().first()
         gameBoard.activeRow()?.forEachIndexed()
@@ -57,7 +58,7 @@ class GameGuessRepositoryTests: KoinComponent
         val sut = GameGuessRepository()
 
         // when
-        sut.create()
+        runBlocking { sut.create() }
 
         // then
         assertEquals(expectedGuess.toString(), guessLocalDataSource.newGuess)
@@ -67,7 +68,7 @@ class GameGuessRepositoryTests: KoinComponent
     fun `when attempting to create a GameGuess and data source throws an exception - expected exception is thrown`()
     {
         // given
-        val gameBoard = GameUseCase().getGameBoard()
+        val gameBoard = runBlocking { GameUseCase().getGameBoard() }
         val wordLocalDataSource: WordLocalDataManageable by inject()
         val availableWords = wordLocalDataSource.getAll()
         gameBoard.activeRow()?.forEachIndexed()
@@ -79,7 +80,7 @@ class GameGuessRepositoryTests: KoinComponent
         guessLocalDataSource.saveShouldFail = true
 
         // when
-        val actualException = assertFailsWith<GameGuessCreateFailedRepositoryException> { sut.create() }
+        val actualException = assertFailsWith<GameGuessCreateFailedRepositoryException> { runBlocking { sut.create() } }
 
         // then
         assertEquals(expectedErrorMessage, actualException.message)
@@ -120,7 +121,7 @@ class GameGuessRepositoryTests: KoinComponent
         val sut = GameGuessRepository()
 
         // when
-        sut.clear()
+        runBlocking { sut.clear() }
 
         // then
         assertTrue(guessLocalDataSource.clearDidInvoke)
@@ -135,7 +136,7 @@ class GameGuessRepositoryTests: KoinComponent
         guessLocalDataSource.clearShouldFail = true
 
         // when
-        val actualException = assertFailsWith<GameGuessCreateFailedRepositoryException> { sut.clear() }
+        val actualException = assertFailsWith<GameGuessCreateFailedRepositoryException> { runBlocking { sut.clear() } }
 
         // then
         assertEquals(expectedExceptionMessage, actualException.message)
@@ -145,7 +146,7 @@ class GameGuessRepositoryTests: KoinComponent
     fun `When creating a guess and word not found - expected exception is thrown`()
     {
         // given
-        val gameBoard = GameUseCase().getGameBoard()
+        val gameBoard = runBlocking { GameUseCase().getGameBoard() }
         gameBoard.activeRow()?.forEachIndexed()
         { index, tile ->
             tile.setLetter(newLetter = "ZZZZZ"[index])
@@ -154,7 +155,7 @@ class GameGuessRepositoryTests: KoinComponent
         val sut = GameGuessRepository()
 
         // when
-        val actualException = assertFailsWith<GameGuessNotFoundRepositoryException> { sut.create() }
+        val actualException = assertFailsWith<GameGuessNotFoundRepositoryException> { runBlocking { sut.create() } }
 
         // then
         assertEquals(expectedExceptionMessage, actualException.message)
@@ -178,7 +179,7 @@ class GameGuessRepositoryTests: KoinComponent
             return getAllGuesses!!
         }
 
-        override fun save(newGuess: String): Guess
+        override suspend fun create(newGuess: String): Guess
         {
             if (saveShouldFail) throw GuessSaveFailedLocalDataException(message = "Failed to save new Guess.")
 
@@ -187,7 +188,7 @@ class GameGuessRepositoryTests: KoinComponent
             return Guess(word = Word(newGuess))
         }
 
-        override fun clear()
+        override suspend fun clear()
         {
             if (clearShouldFail) throw GuessClearFailedLocalDataException(message = "Failed to clear all Guesses.")
 

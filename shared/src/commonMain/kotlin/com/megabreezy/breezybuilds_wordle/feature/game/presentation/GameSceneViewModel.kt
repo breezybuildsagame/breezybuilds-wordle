@@ -5,7 +5,7 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case.*
 
 class GameSceneViewModel
 {
-    fun setUp(handler: GameSceneHandleable? = null)
+    suspend fun setUp(handler: GameSceneHandleable? = null)
     {
         handler?.onStartingGame()
         GameUseCase().setUpGameEvents(sceneHandler = handler)
@@ -18,7 +18,7 @@ class GameSceneViewModel
 
     fun getHeader(): GameHeader = GameUseCase().getHeader()
 
-    fun getGameBoard(): GameBoard = GameUseCase().getGameBoard()
+    suspend fun getGameBoard(): GameBoard = GameUseCase().getGameBoard()
 
     fun getGameKeyboard(): GameKeyboard = GameUseCase().getGameKeyboard()
 }

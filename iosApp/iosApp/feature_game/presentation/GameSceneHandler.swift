@@ -13,33 +13,54 @@ class GameSceneHandler: ObservableObject
 {
     static let shared = GameSceneHandler()
     
-    @Published var activeView: ViewType = .EMPTY
+    var activeView: ViewType = .EMPTY
+    {
+        willSet { Task { await MainActor.run { objectWillChange.send() } } }
+    }
     
     private (set) var gameKeyboardIsEnabled = false
     
+    private (set) var gameBoard: GameSceneBoard? = nil
+    {
+        willSet { Task { await MainActor.run { objectWillChange.send() } } }
+    }
+    
     private let viewModel = GameSceneViewModel()
     
-    func setUp() { if activeView == .EMPTY { viewModel.setUp(handler: self) } }
+    func setUp()
+    {
+        if activeView == .EMPTY { viewModel.setUp(handler: self) { _ in self.getGameBoard() } }
+    }
+    
+    private func getGameBoard()
+    {
+        Task
+        {
+            await MainActor.run
+            {
+                Task
+                {
+                    var rowViews = [GameSceneBoard.Row]()
+                    let middleRows = try? await viewModel.getGameBoard()
+                    for row in middleRows?.rows() ?? []
+                    {
+                        var rowTiles = [GameSceneBoard.Tile]()
+                        for tile in row
+                        {
+                            rowTiles.append(GameSceneBoard.Tile(letter: String(describing: tile), state: tile.state()))
+                        }
+                        rowViews.append(GameSceneBoard.Row(tiles: rowTiles))
+                    }
+                    
+                    gameBoard = GameSceneBoard(rows: rowViews)
+                }
+            }
+        }
+    }
     
     func gameHeader() -> GameSceneHeader
     {
         GameSceneHeader(title: viewModel.getHeader().title())
-    }
-    
-    func gameBoard() -> GameSceneBoard
-    {
-        var rowViews = [GameSceneBoard.Row]()
-        for row in viewModel.getGameBoard().rows()
-        {
-            var rowTiles = [GameSceneBoard.Tile]()
-            for tile in row
-            {
-                rowTiles.append(GameSceneBoard.Tile(letter: String(describing: tile), state: tile.state()))
-            }
-            rowViews.append(GameSceneBoard.Row(tiles: rowTiles))
-        }
-        
-        return GameSceneBoard(rows: rowViews)
     }
     
     func gameKeyboard() -> GameSceneKeyboard
@@ -99,5 +120,6 @@ extension GameSceneHandler: GameSceneHandleable
     {
         gameKeyboardIsEnabled = keyboardIsEnabled
         activeView = ViewType.GAME
+        getGameBoard()
     }
 }

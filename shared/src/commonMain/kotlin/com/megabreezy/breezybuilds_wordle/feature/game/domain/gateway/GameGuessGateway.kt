@@ -4,9 +4,9 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameGuess
 
 interface GameGuessGateway
 {
-    fun create(): GameGuess
+    suspend fun create(): GameGuess
     fun getAll(): List<GameGuess>
-    fun clear()
+    suspend fun clear()
 }
 
 class GameGuessCreateFailedRepositoryException(message: String?): Exception(message)

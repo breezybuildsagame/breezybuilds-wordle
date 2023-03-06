@@ -1,12 +1,12 @@
 package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 
 import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerLocalDataManageable
-import com.megabreezy.breezybuilds_wordle.core.data.source.word.WordLocalDataManageable
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Answer
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Word
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
+import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.startKoin
@@ -16,7 +16,7 @@ import kotlin.test.*
 
 class GetGameBoardTests: KoinComponent
 {
-    lateinit var answerLocalDataSource: MockAnswerLocalDataSource
+    private lateinit var answerLocalDataSource: MockAnswerLocalDataSource
 
     @BeforeTest
     fun setUp()
@@ -46,7 +46,7 @@ class GetGameBoardTests: KoinComponent
         )
 
         // when
-        val actualGameBoard = GameUseCase().getGameBoard()
+        val actualGameBoard = runBlocking { GameUseCase().getGameBoard() }
         expectedGameBoard.setRows(newRows = expectedRows)
 
         // then
@@ -57,7 +57,7 @@ class GetGameBoardTests: KoinComponent
     fun `when use case is invoked - rows count is equal to six`()
     {
         // when
-        val actualGameBoard = GameUseCase().getGameBoard()
+        val actualGameBoard = runBlocking { GameUseCase().getGameBoard() }
 
         // then
         assertEquals(6, actualGameBoard.rows().count())
@@ -67,7 +67,7 @@ class GetGameBoardTests: KoinComponent
     fun `when use case is invoked - getGameAnswer use case is invoked`()
     {
         // when
-        GameUseCase().getGameBoard()
+        runBlocking { GameUseCase().getGameBoard() }
 
         // then
         assertTrue(answerLocalDataSource.getDidInvoke)
@@ -80,7 +80,7 @@ class GetGameBoardTests: KoinComponent
         val expectedRowTileCount = answerLocalDataSource.expectedAnswer.word().toString().count()
 
         // when
-        val actualGameBoard = GameUseCase().getGameBoard()
+        val actualGameBoard = runBlocking { GameUseCase().getGameBoard() }
 
         // then
         assertEquals(expectedRowTileCount, actualGameBoard.rows().first().size)
@@ -97,7 +97,7 @@ class GetGameBoardTests: KoinComponent
             return expectedAnswer
         }
         override fun getPrevious(): List<Answer> = listOf()
-        override fun put(newAnswer: Answer) = newAnswer
-        override fun update(existingAnswer: Answer) = existingAnswer
+        override suspend fun insert(newAnswer: Answer) = newAnswer
+        override suspend fun update(existingAnswer: Answer, updatedAnswer: Answer) = updatedAnswer
     }
 }

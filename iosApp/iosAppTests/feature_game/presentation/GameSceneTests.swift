@@ -14,7 +14,6 @@ import ViewInspector
 final class GameSceneTests: XCTestCase
 {
     override func setUpWithError() throws {
-        KoinPlatformManager.shared.stop()
         KoinPlatformManager.shared.start(scenarios: [Scenario.wordFound, Scenario.answerSaved])
     }
     

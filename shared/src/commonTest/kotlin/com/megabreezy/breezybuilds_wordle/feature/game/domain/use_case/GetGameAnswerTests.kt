@@ -6,6 +6,7 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswer
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotFoundRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameAnswer
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
+import kotlinx.coroutines.runBlocking
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
@@ -13,7 +14,7 @@ import kotlin.test.*
 
 class GetGameAnswerTests
 {
-    lateinit var repository: MockRepository
+    private lateinit var repository: MockRepository
 
     @BeforeTest
     fun setUp()
@@ -37,7 +38,7 @@ class GetGameAnswerTests
     fun `when use case invoked - gateway get method is invoked`()
     {
         // when
-        GameUseCase().getGameAnswer()
+        runBlocking { GameUseCase().getGameAnswer() }
 
         // then
         assertNotNull(repository.gameAnswerToReturn)
@@ -50,7 +51,7 @@ class GetGameAnswerTests
         val expectedGameAnswer = GameAnswer(word = "AWESOME")
 
         // when
-        val actualGameAnswer = GameUseCase().getGameAnswer()
+        val actualGameAnswer = runBlocking { GameUseCase().getGameAnswer() }
 
         // then
         assertEquals(expectedGameAnswer, actualGameAnswer)
@@ -64,7 +65,7 @@ class GetGameAnswerTests
         val expectedGameAnswer = GameAnswer(word = "AWESOME")
 
         // when
-        val actualGameAnswer = GameUseCase().getGameAnswer()
+        val actualGameAnswer = runBlocking { GameUseCase().getGameAnswer() }
 
         // then
         assertEquals(expectedGameAnswer, actualGameAnswer)
@@ -81,7 +82,7 @@ class GetGameAnswerTests
         // when
         val actualException = assertFailsWith<GameUseCase.GetGameAnswerFailedException>()
         {
-            GameUseCase().getGameAnswer()
+            runBlocking { GameUseCase().getGameAnswer() }
         }
 
         // then
@@ -94,7 +95,7 @@ class GetGameAnswerTests
         var createShouldFail = false
         var getShouldFail = false
 
-        override fun create(): GameAnswer
+        override suspend fun create(): GameAnswer
         {
             if (createShouldFail) throw GameAnswerNotCreatedRepositoryException("Not found.")
 

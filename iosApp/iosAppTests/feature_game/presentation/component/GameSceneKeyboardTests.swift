@@ -20,7 +20,6 @@ final class GameSceneKeyboardTests: XCTestCase
     {
         dimensions = SceneDimensions()
         
-        KoinPlatformManager.shared.stop()
         KoinPlatformManager.shared.start(
             scenarios: [
                 Scenario.wordFound,

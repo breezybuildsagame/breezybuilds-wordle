@@ -19,7 +19,7 @@ class GameGuessRepository: GameGuessGateway, KoinComponent
     private val guessLocalDataSource: GuessLocalDataManageable by inject()
     private val wordLocalDataSource: WordLocalDataManageable by inject()
 
-    override fun create(): GameGuess
+    override suspend fun create(): GameGuess
     {
         val gameBoard = GameUseCase().getGameBoard()
         var currentGuess = ""
@@ -37,7 +37,7 @@ class GameGuessRepository: GameGuessGateway, KoinComponent
 
         try
         {
-            guessLocalDataSource.save(newGuess = currentGuess)
+            guessLocalDataSource.create(newGuess = currentGuess)
         }
         catch(e: GuessSaveFailedLocalDataException)
         {
@@ -56,7 +56,7 @@ class GameGuessRepository: GameGuessGateway, KoinComponent
         return guesses
     }
 
-    override fun clear() = try
+    override suspend fun clear() = try
     {
         guessLocalDataSource.clear()
     }

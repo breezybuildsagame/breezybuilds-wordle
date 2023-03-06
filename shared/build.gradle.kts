@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("native.cocoapods")
     id("com.android.library")
+    id(Dependency.Realm.baseUrl) version Version.realmVersion
     id(Dependency.MokoResources.plugin)
 }
 
@@ -28,6 +29,7 @@ kotlin {
                 implementation(Dependency.Coroutines.common)
                 implementation(Dependency.Koin.common)
                 implementation(Dependency.MokoResources.common)
+                implementation(Dependency.Realm.common)
             }
         }
         val commonTest by getting {

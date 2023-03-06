@@ -4,7 +4,7 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameAnswer
 
 interface GameAnswerGateway
 {
-    fun create(): GameAnswer
+    suspend fun create(): GameAnswer
     fun get(): GameAnswer
 }
 

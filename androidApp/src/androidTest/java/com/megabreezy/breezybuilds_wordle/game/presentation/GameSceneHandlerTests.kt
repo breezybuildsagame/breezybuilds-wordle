@@ -15,6 +15,7 @@ import com.megabreezy.breezybuilds_wordle.core.ui.SceneMock
 import com.megabreezy.breezybuilds_wordle.core.util.KoinPlatformManager
 import com.megabreezy.breezybuilds_wordle.core.util.Scenario
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneViewModel
+import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.runner.RunWith
 
@@ -34,9 +35,6 @@ class GameSceneHandlerTests
             )
         )
     }
-
-    @After
-    fun tearDown() = KoinPlatformManager.stop()
 
     @Test
     fun when_initialized__activeView_is_Empty()
@@ -60,7 +58,7 @@ class GameSceneHandlerTests
         val sut = GameSceneHandler()
 
         // when
-        sut.setUp()
+        runBlocking { sut.setUp() }
 
         // then
         Assert.assertEquals(expectedActiveView, sut.activeView)
@@ -91,18 +89,21 @@ class GameSceneHandlerTests
     {
         // given
         lateinit var handler: GameSceneHandler
-        val expectedRowCount = GameSceneViewModel().getGameBoard().rows().count()
-        val expectedTilesCount = expectedRowCount * (GameSceneViewModel().getGameBoard().rows().last().count())
+        val expectedRowCount = runBlocking { GameSceneViewModel().getGameBoard().rows().count() }
+        val expectedTilesCount = runBlocking { expectedRowCount * (GameSceneViewModel().getGameBoard().rows().last().count()) }
 
         // when
         composeTestRule.setContent()
         {
-            handler = rememberGameSceneHandler()
+            handler = rememberGameSceneHandler(scope = rememberCoroutineScope())
 
             SceneMock.display { handler.GameBoard() }
         }
 
-        handler.setUp()
+        runBlocking()
+        {
+            handler.setUp()
+        }
 
         // then
         composeTestRule.onNodeWithContentDescription(
@@ -126,7 +127,7 @@ class GameSceneHandlerTests
             SceneMock.display { handler.GameKeyboard() }
         }
 
-        handler.setUp()
+        runBlocking { handler.setUp() }
 
         // then
         composeTestRule.onNodeWithContentDescription(
@@ -368,7 +369,7 @@ class GameSceneHandlerTests
 
             SceneMock.display { handler.GameKeyboard() }
         }
-        handler.setUp()
+        runBlocking { handler.setUp() }
         handler.activeView = GameSceneHandler.ViewType.EMPTY
         composeTestRule.onAllNodesWithContentDescription(
             GameSceneKeyboard.TagName.KEY.toString()
@@ -393,7 +394,7 @@ class GameSceneHandlerTests
 
             SceneMock.display { handler.GameKeyboard() }
         }
-        handler.setUp()
+        runBlocking { handler.setUp() }
         handler.onGuessingWord()
         handler.activeView = GameSceneHandler.ViewType.EMPTY
         composeTestRule.onAllNodesWithContentDescription(
