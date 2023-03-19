@@ -20,6 +20,23 @@ class WordTests
     }
 
     @Test
+    fun `When searching for a capitalized word in a list of lowercase words - expected word is found`()
+    {
+        // given
+        val words = listOf(
+            Word(word = "test"),
+            Word(word = "another"),
+            Word(word = "finally")
+        )
+
+        // when
+        val wordIsFound = words.contains(Word(word = "FINALLY"))
+
+        // then
+        assertTrue(wordIsFound)
+    }
+
+    @Test
     fun `When initialized with word - letters method returns expected list of characters`()
     {
         // given
