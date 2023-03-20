@@ -13,10 +13,12 @@ class CachedAnswer(): RealmObject {
     @Index
     var word: String = ""
     var isCurrent: Boolean = false
+    var playerGuessedCorrectly: Boolean? = null
 
     constructor(answer: Answer): this()
     {
         this.word = answer.word().toString()
         this.isCurrent = answer.isCurrent()
+        this.playerGuessedCorrectly = answer.playerGuessedCorrectly()
     }
 }

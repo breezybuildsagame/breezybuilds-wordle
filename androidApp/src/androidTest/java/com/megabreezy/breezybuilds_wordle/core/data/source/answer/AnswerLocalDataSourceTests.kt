@@ -279,7 +279,7 @@ class AnswerLocalDataSourceTests
                 MockView().View(
                     dataSource = dataSource,
                     answerToUpdate = Answer(word = Word(word = "ANSWER1"), isCurrent = true),
-                    expectedUpdatedAnswer = Answer(word = Word(word = "ANSWER3"), isCurrent = false)
+                    expectedUpdatedAnswer = Answer(word = Word(word = "ANSWER3"), isCurrent = false, playerGuessedCorrectly = true)
                 )
             }
         }
@@ -287,6 +287,7 @@ class AnswerLocalDataSourceTests
         // then
         composeTestRule.onNodeWithContentDescription("UPDATED_ANSWER").onChildAt(index = 0).assertTextEquals("ANSWER3")
         composeTestRule.onNodeWithContentDescription("UPDATED_ANSWER").onChildAt(index = 1).assertTextEquals("false")
+        composeTestRule.onNodeWithContentDescription("UPDATED_ANSWER").onChildAt(index = 2).assertTextEquals("win")
     }
 
     @Test
@@ -363,6 +364,7 @@ class AnswerLocalDataSourceTests
             {
                 Text(text = expectedUpdatedAnswer?.word()?.toString() ?: "")
                 Text(text = if (expectedUpdatedAnswer?.isCurrent() == true) "true" else "false")
+                Text(text = if (expectedUpdatedAnswer?.playerGuessedCorrectly() == true) "win" else "lose")
             }
         }
     }
