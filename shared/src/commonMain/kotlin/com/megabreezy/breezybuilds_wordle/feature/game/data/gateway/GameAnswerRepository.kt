@@ -10,6 +10,7 @@ import com.megabreezy.breezybuilds_wordle.core.domain.model.Word
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerGateway
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotCreatedRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotFoundRepositoryException
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotUpdatedRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameAnswer
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -62,11 +63,49 @@ class GameAnswerRepository: GameAnswerGateway, KoinComponent
         {
             val answer = answerLocalDataSource.getCurrent()
 
+            answer.playerGuessedCorrectly()?.let { throw AnswerNotFoundLocalDataException("Answer not found.") }
+
             return GameAnswer(word = answer.word().toString())
         }
         catch(e: AnswerNotFoundLocalDataException)
         {
             throw GameAnswerNotFoundRepositoryException(message = e.message)
+        }
+    }
+
+    override suspend fun updateAnswerGuessed(existingAnswer: GameAnswer): GameAnswer
+    {
+        try
+        {
+            val currentAnswer = answerLocalDataSource.getCurrent()
+            val updatedAnswer = answerLocalDataSource.getCurrent()
+            updatedAnswer.setPlayerGuessedCorrectly(newPlayerGuessedCorrectly = true)
+
+            answerLocalDataSource.update(existingAnswer = currentAnswer, updatedAnswer = updatedAnswer)
+
+            return existingAnswer
+        }
+        catch (e: AnswerUpdateFailedLocalDataException)
+        {
+            throw GameAnswerNotUpdatedRepositoryException(message = e.message)
+        }
+    }
+
+    override suspend fun updateAnswerNotGuessed(existingAnswer: GameAnswer): GameAnswer
+    {
+        try
+        {
+            val currentAnswer = answerLocalDataSource.getCurrent()
+            val updatedAnswer = answerLocalDataSource.getCurrent()
+            updatedAnswer.setPlayerGuessedCorrectly(newPlayerGuessedCorrectly = false)
+
+            answerLocalDataSource.update(existingAnswer = currentAnswer, updatedAnswer = updatedAnswer)
+
+            return existingAnswer
+        }
+        catch (e: AnswerUpdateFailedLocalDataException)
+        {
+            throw GameAnswerNotUpdatedRepositoryException(message = e.message)
         }
     }
 }

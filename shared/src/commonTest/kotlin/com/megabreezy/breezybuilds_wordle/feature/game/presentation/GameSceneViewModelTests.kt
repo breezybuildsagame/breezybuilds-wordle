@@ -1,15 +1,13 @@
 package com.megabreezy.breezybuilds_wordle.feature.game.presentation
 
 import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerLocalDataManageable
-import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerNotFoundLocalDataException
-import com.megabreezy.breezybuilds_wordle.core.domain.model.Answer
-import com.megabreezy.breezybuilds_wordle.core.domain.model.Word
+import com.megabreezy.breezybuilds_wordle.core.data.source.answer.mock.AnswerLocalDataSourceCommonMock
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
 import com.megabreezy.breezybuilds_wordle.core.util.Scenario
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.AnnouncementRepresentable
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case.SetUpGameEventsTests
+import com.megabreezy.breezybuilds_wordle.feature.game.presentation.mock.GameSceneHandlerCommonMock
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
@@ -21,12 +19,12 @@ import kotlin.test.*
 
 class GameSceneViewModelTests: KoinComponent
 {
-    private lateinit var answerLocalDataSource: MockAnswerLocalDataSource
+    private lateinit var answerLocalDataSource: AnswerLocalDataSourceCommonMock
 
     @BeforeTest
     fun setUp()
     {
-        answerLocalDataSource = MockAnswerLocalDataSource()
+        answerLocalDataSource = AnswerLocalDataSourceCommonMock()
 
         startKoin()
         {
@@ -45,15 +43,15 @@ class GameSceneViewModelTests: KoinComponent
     fun `when setup method is invoked on an instance with a handler - the setUpGameEvents use case is invoked`()
     {
         // given
-        answerLocalDataSource.getAnswerShouldFail = true
-        val handler = SetUpGameEventsTests.MockSceneHandler()
+        answerLocalDataSource.getCurrentAnswerShouldFail = true
+        val handler = GameSceneHandlerCommonMock()
         val sut = GameSceneViewModel()
 
         // when
         runBlocking { sut.setUp(handler = handler) }
 
         // then
-        assertNotNull(answerLocalDataSource.answerToPut)
+        assertNotNull(answerLocalDataSource.putNewAnswerToReturn)
         assertTrue(handler.onStartingGameDidInvoke)
         assertTrue(handler.onGameStartedDidInvoke)
     }
@@ -116,44 +114,5 @@ class GameSceneViewModelTests: KoinComponent
 
         // then
         assertEquals(expectedAnnouncement, actualAnnouncement)
-    }
-
-    class MockSceneHandler: GameSceneHandleable
-    {
-        var onGameStartedDidInvoke = false
-        var onStartingGameDidInvoke = false
-
-        override fun onAnnouncementShouldShow() { }
-        override fun onAnnouncementShouldHide() { }
-        override fun onGameOver() { }
-        override fun onGameStarted() { onGameStartedDidInvoke = true }
-        override fun onGuessingWord() { }
-        override fun onRevealNextTile() { }
-        override fun onRoundCompleted() { }
-        override fun onStartingGame() { onStartingGameDidInvoke = true }
-    }
-
-    class MockAnswerLocalDataSource: AnswerLocalDataManageable
-    {
-        var answerToPut: Answer? = null
-        var getAnswerShouldFail = false
-
-        override suspend fun insert(newAnswer: Answer): Answer
-        {
-            answerToPut = newAnswer
-
-            return newAnswer
-        }
-
-        override fun getCurrent(): Answer
-        {
-            if (getAnswerShouldFail) throw AnswerNotFoundLocalDataException("Not Found.")
-
-            return Answer(word = Word(word = "NOT_IN_USE"))
-        }
-
-        override fun getPrevious(): List<Answer> = listOf()
-
-        override suspend fun update(existingAnswer: Answer, updatedAnswer: Answer) = updatedAnswer
     }
 }

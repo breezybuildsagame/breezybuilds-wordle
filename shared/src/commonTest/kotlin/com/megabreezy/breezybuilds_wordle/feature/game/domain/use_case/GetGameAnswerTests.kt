@@ -4,6 +4,7 @@ import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerGateway
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotCreatedRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotFoundRepositoryException
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotUpdatedRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameAnswer
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
 import kotlinx.coroutines.runBlocking
@@ -92,8 +93,10 @@ class GetGameAnswerTests
     class MockRepository: GameAnswerGateway
     {
         var gameAnswerToReturn: GameAnswer? = null
+        var updatedGameAnswerToReturn: GameAnswer? = null
         var createShouldFail = false
         var getShouldFail = false
+        var updateShouldFail = false
 
         override suspend fun create(): GameAnswer
         {
@@ -111,6 +114,24 @@ class GetGameAnswerTests
             gameAnswerToReturn = GameAnswer(word = "AWESOME")
 
             return gameAnswerToReturn!!
+        }
+
+        override suspend fun updateAnswerGuessed(existingAnswer: GameAnswer): GameAnswer
+        {
+            if (updateShouldFail) throw GameAnswerNotUpdatedRepositoryException("Not updated.")
+
+            updatedGameAnswerToReturn = existingAnswer
+
+            return existingAnswer
+        }
+
+        override suspend fun updateAnswerNotGuessed(existingAnswer: GameAnswer): GameAnswer
+        {
+            if (updateShouldFail) throw GameAnswerNotUpdatedRepositoryException("Not updated.")
+
+            updatedGameAnswerToReturn = existingAnswer
+
+            return existingAnswer
         }
     }
 }

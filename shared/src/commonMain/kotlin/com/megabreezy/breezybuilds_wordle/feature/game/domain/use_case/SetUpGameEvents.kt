@@ -1,15 +1,19 @@
 package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerGateway
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneHandleable
 import kotlinx.coroutines.delay
+import org.koin.core.component.inject
 
 suspend fun GameUseCase.setUpGameEvents(
     sceneHandler: GameSceneHandleable? = null,
     announcementDelay: Long = 1000L
 )
 {
+    val answerRepository: GameAnswerGateway by inject()
+
     getGameBoard().reset()
     getGameKeyboard().reset()
     getAnnouncement().setMessage(newMessage = null)
@@ -45,6 +49,7 @@ suspend fun GameUseCase.setUpGameEvents(
                     {
                         guessWord()
 
+                        answerRepository.updateAnswerGuessed(existingAnswer = getGameAnswer())
                         getAnnouncement().setMessage(newMessage = "Correct! Thanks for playing!")
                         sceneHandler?.onGameOver()
                     }
@@ -101,6 +106,7 @@ suspend fun GameUseCase.setUpGameEvents(
                         }
                         catch (e: GameBoard.SetNewActiveRowFailedException)
                         {
+                            answerRepository.updateAnswerNotGuessed(existingAnswer = getGameAnswer())
                             getAnnouncement().setMessage(newMessage = "Game Over")
                             sceneHandler?.onGameOver()
                         }
