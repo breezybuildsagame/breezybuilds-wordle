@@ -197,11 +197,13 @@ class GuessWordTests
 
     class MockGameAnswerRepository: GameAnswerGateway
     {
-         var createdGameAnswer: GameAnswer? = null
+        var createdGameAnswer: GameAnswer? = null
         var gameAnswer: GameAnswer? = null
+        var updatedGameAnswerToReturn: GameAnswer? = null
         var createShouldFail = false
         var getShouldFail = false
         var guessMatchesAnswer = false
+        var updateShouldFail = false
 
         override suspend fun create(): GameAnswer
         {
@@ -221,5 +223,23 @@ class GuessWordTests
             return gameAnswer!!
         }
         ?: runBlocking { create() }
+
+        override suspend fun updateAnswerGuessed(existingAnswer: GameAnswer): GameAnswer
+        {
+            if (updateShouldFail) throw GameAnswerNotUpdatedRepositoryException("Not updated.")
+
+            updatedGameAnswerToReturn = existingAnswer
+
+            return existingAnswer
+        }
+
+        override suspend fun updateAnswerNotGuessed(existingAnswer: GameAnswer): GameAnswer
+        {
+            if (updateShouldFail) throw GameAnswerNotUpdatedRepositoryException("Not updated.")
+
+            updatedGameAnswerToReturn = existingAnswer
+
+            return existingAnswer
+        }
     }
 }

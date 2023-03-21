@@ -1,18 +1,16 @@
 package com.megabreezy.breezybuilds_wordle.feature.game.data.gateway
 
 import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerLocalDataManageable
-import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerNotFoundLocalDataException
-import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerInsertFailedLocalDataException
-import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerUpdateFailedLocalDataException
+import com.megabreezy.breezybuilds_wordle.core.data.source.answer.mock.AnswerLocalDataSourceCommonMock
 import com.megabreezy.breezybuilds_wordle.core.data.source.word.WordLocalDataManageable
-import com.megabreezy.breezybuilds_wordle.core.data.source.word.WordNotFoundLocalDataException
-import com.megabreezy.breezybuilds_wordle.core.data.source.word.mock.WordLocalDataSourceMock
+import com.megabreezy.breezybuilds_wordle.core.data.source.word.mock.WordLocalDataSourceCommonMock
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Answer
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Word
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
 import com.megabreezy.breezybuilds_wordle.core.util.Scenario
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotCreatedRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotFoundRepositoryException
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotUpdatedRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameAnswer
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
 import kotlinx.coroutines.runBlocking
@@ -23,14 +21,14 @@ import kotlin.test.*
 
 class GameAnswerRepositoryTests
 {
-    private lateinit var answerDataSource: MockAnswerLocalDataSource
-    private lateinit var wordDataSource: MockWordLocalDataSource
+    private lateinit var answerDataSource: AnswerLocalDataSourceCommonMock
+    private lateinit var wordDataSource: WordLocalDataSourceCommonMock
 
     @BeforeTest
     fun setUp()
     {
-        answerDataSource = MockAnswerLocalDataSource()
-        wordDataSource = MockWordLocalDataSource()
+        answerDataSource = AnswerLocalDataSourceCommonMock()
+        wordDataSource = WordLocalDataSourceCommonMock()
 
         startKoin()
         {
@@ -232,65 +230,67 @@ class GameAnswerRepositoryTests
         assertEquals(expectedErrorMessage, actualException.message)
     }
 
-    class MockWordLocalDataSource: WordLocalDataManageable
+    @Test
+    fun `When updateAnswerGuessed method invoked on an instance passing in answer to update and update is successful - expected updated answer is returned`()
     {
-        var excludingWords: List<Word> = listOf()
-        var getShouldFail = false
-        var wordToReturn: Word? = null
+        // given
+        val expectedUpdatedAnswer = Answer(word = Word(word = "SLAYS"), isCurrent = true, playerGuessedCorrectly = true)
+        val actualGameAnswer = GameAnswer(word = expectedUpdatedAnswer.word().toString())
+        answerDataSource.getCurrentAnswerToReturn = Answer(word = Word(word = actualGameAnswer.word()), isCurrent = true, playerGuessedCorrectly = null)
 
-        override fun get(excludingWords: List<Word>): Word
-        {
-            if (getShouldFail) throw WordNotFoundLocalDataException(message = "Not found.")
+        // when
+        runBlocking {  GameAnswerRepository().updateAnswerGuessed(existingAnswer = actualGameAnswer) }
 
-            wordToReturn = Word(WordLocalDataSourceMock.mockWords.first())
-            this.excludingWords = excludingWords
-
-            return wordToReturn!!
-        }
-
-        override fun getAll(): List<Word> = listOf(wordToReturn!!)
+        // then
+        assertEquals(expectedUpdatedAnswer, answerDataSource.updatedAnswerToReturn)
     }
 
-    class MockAnswerLocalDataSource: AnswerLocalDataManageable
+    @Test
+    fun `When updateAnswerGuessed method invoked on an instance and local data source throws an exception - expected exception is thrown`()
     {
-        var getCurrentAnswerToReturn: Answer? = null
-        var getCurrentAnswerShouldFail: Boolean = false
+        // given
+        val expectedErrorMessage = "Existing Answer not updated."
+        answerDataSource.updateAnswerShouldFail = true
 
-        var getPreviousAnswersToReturn = listOf<Answer>()
-
-        var putNewAnswerToReturn: Answer? = null
-        var putNewAnswerShouldFail: Boolean = false
-
-        var updatedAnswerToReturn: Answer? = null
-        var updateAnswerShouldFail: Boolean = false
-
-        override fun getCurrent(): Answer
+        // when
+        val actualError = assertFailsWith<GameAnswerNotUpdatedRepositoryException>()
         {
-            if (getCurrentAnswerShouldFail) throw AnswerNotFoundLocalDataException(message = "Answer not found.")
-
-            getCurrentAnswerToReturn = Answer(word = Word(word = "SLAYS"), isCurrent = true)
-
-            return getCurrentAnswerToReturn!!
+            runBlocking { GameAnswerRepository().updateAnswerGuessed(existingAnswer = GameAnswer(word = "WHATEVER")) }
         }
 
-        override fun getPrevious(): List<Answer> = getPreviousAnswersToReturn
+        // then
+        assertEquals(expectedErrorMessage, actualError.message)
+    }
 
-        override suspend fun insert(newAnswer: Answer): Answer
+    @Test
+    fun `When updateAnswerNotGuessed method invoked on an instance passing in answer to update and update is successful - expected updated answer is returned`()
+    {
+        // given
+        val expectedUpdatedAnswer = Answer(word = Word(word = "SLAYS"), isCurrent = true, playerGuessedCorrectly = false)
+        val actualGameAnswer = GameAnswer(word = expectedUpdatedAnswer.word().toString())
+        answerDataSource.getCurrentAnswerToReturn = Answer(word = Word(word = actualGameAnswer.word()), isCurrent = true, playerGuessedCorrectly = null)
+
+        // when
+        runBlocking {  GameAnswerRepository().updateAnswerNotGuessed(existingAnswer = actualGameAnswer) }
+
+        // then
+        assertEquals(expectedUpdatedAnswer, answerDataSource.updatedAnswerToReturn)
+    }
+
+    @Test
+    fun `When updateAnswerNotGuessed method invoked on an instance and local data source throws an exception - expected exception is thrown`()
+    {
+        // given
+        val expectedErrorMessage = "Existing Answer not updated."
+        answerDataSource.updateAnswerShouldFail = true
+
+        // when
+        val actualError = assertFailsWith<GameAnswerNotUpdatedRepositoryException>()
         {
-            if (putNewAnswerShouldFail) throw AnswerInsertFailedLocalDataException(message = "New Answer not saved.")
-
-            putNewAnswerToReturn = newAnswer
-
-            return putNewAnswerToReturn!!
+            runBlocking { GameAnswerRepository().updateAnswerNotGuessed(existingAnswer = GameAnswer(word = "WHATEVER")) }
         }
 
-        override suspend fun update(existingAnswer: Answer, updatedAnswer: Answer): Answer
-        {
-            if (updateAnswerShouldFail) throw AnswerUpdateFailedLocalDataException(message = "Existing Answer not updated.")
-
-            updatedAnswerToReturn = updatedAnswer
-
-            return updatedAnswerToReturn!!
-        }
+        // then
+        assertEquals(expectedErrorMessage, actualError.message)
     }
 }

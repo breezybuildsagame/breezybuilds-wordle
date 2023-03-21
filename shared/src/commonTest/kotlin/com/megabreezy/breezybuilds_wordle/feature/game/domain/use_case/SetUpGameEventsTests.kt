@@ -2,9 +2,11 @@ package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
 import com.megabreezy.breezybuilds_wordle.core.util.Scenario
+import com.megabreezy.breezybuilds_wordle.feature.game.data.gateway.mock.GameAnswerRepositoryCommonMock
+import com.megabreezy.breezybuilds_wordle.feature.game.data.gateway.mock.GameGuessRepositoryCommonMock
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.*
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.*
-import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneHandleable
+import com.megabreezy.breezybuilds_wordle.feature.game.presentation.mock.GameSceneHandlerCommonMock
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
@@ -16,9 +18,9 @@ import kotlin.test.*
 
 class SetUpGameEventsTests: KoinComponent
 {
-    private lateinit var answerRepository: MockGameAnswerRepository
-    private lateinit var guessRepository: MockGameGuessRepository
-    private lateinit var sceneHandler: MockSceneHandler
+    private lateinit var answerRepository: GameAnswerRepositoryCommonMock
+    private lateinit var guessRepository: GameGuessRepositoryCommonMock
+    private lateinit var sceneHandler: GameSceneHandlerCommonMock
     private lateinit var announcement: MockAnnouncement
 
     private val gameBoard: GameBoard by inject()
@@ -27,9 +29,9 @@ class SetUpGameEventsTests: KoinComponent
     @BeforeTest
     fun setUp()
     {
-        answerRepository = MockGameAnswerRepository()
-        guessRepository = MockGameGuessRepository()
-        sceneHandler = MockSceneHandler()
+        answerRepository = GameAnswerRepositoryCommonMock()
+        guessRepository = GameGuessRepositoryCommonMock()
+        sceneHandler = GameSceneHandlerCommonMock()
         announcement = MockAnnouncement()
 
         startKoin()
@@ -392,6 +394,28 @@ class SetUpGameEventsTests: KoinComponent
     }
 
     @Test
+    fun `when GameBoard setNewActiveRow throws an exception - Answer is updated to expected state`()
+    {
+        // given
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        val keysInUse = listOf(
+            getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
+        )
+
+        // when
+        for (round in gameBoard.rows())
+        {
+            for (key in keysInUse) runBlocking { key?.click() }
+            runBlocking { getKey(letters = "ENTER")?.click() }
+        }
+
+        // then
+        assertTrue(answerRepository.updateAnswerNotGuessedDidInvoke)
+        assertFalse(answerRepository.updateAnswerGuessedDidInvoke)
+        assertEquals(answerRepository.createdGameAnswer, answerRepository.updatedGameAnswerToReturn)
+    }
+
+    @Test
     fun `when GameBoard setNewActiveRow throws an exception - handler onGameOver method is invoked`()
     {
         // given
@@ -412,8 +436,29 @@ class SetUpGameEventsTests: KoinComponent
     }
 
     @Test
+    fun `when use case invoked and enter Key is clicked and GameGuess is correct - Answer is updated to expected state`()
+    {
+        // given
+        answerRepository.guessMatchesAnswer = true
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        val keysInUse = listOf(
+            getKey(letters = "P"), getKey(letters = "L"), getKey(letters = "A"), getKey(letters = "Y"), getKey(letters = "S")
+        )
+
+        // when
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
+
+        // then
+        assertTrue(answerRepository.updateAnswerGuessedDidInvoke)
+        assertFalse(answerRepository.updateAnswerNotGuessedDidInvoke)
+        assertEquals(answerRepository.createdGameAnswer, answerRepository.updatedGameAnswerToReturn)
+    }
+
+    @Test
     fun `when use case invoked and enter Key is clicked and GameGuess is correct - expected announcement is set`()
     {
+        // given
         answerRepository.guessMatchesAnswer = true
         runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
         val keysInUse = listOf(
@@ -442,80 +487,9 @@ class SetUpGameEventsTests: KoinComponent
         }
     }
 
-    class MockSceneHandler: GameSceneHandleable
-    {
-        var onGameOverDidInvoke = false
-        var onGameStartedDidInvoke = false
-        var onGuessingWordDidInvoke = false
-        var onRevealNextTileDidInvoke = false
-        var onRoundCompletedDidInvoke = false
-        var onStartingGameDidInvoke = false
-        var onAnnouncementShouldShowDidInvoke = false
-        var onAnnouncementShouldHideDidInvoke = false
-
-        override fun onAnnouncementShouldShow() { onAnnouncementShouldShowDidInvoke = true }
-        override fun onAnnouncementShouldHide() { onAnnouncementShouldHideDidInvoke = true }
-        override fun onGameOver() { onGameOverDidInvoke = true }
-        override fun onGameStarted() { onGameStartedDidInvoke = true }
-        override fun onGuessingWord() { onGuessingWordDidInvoke = true }
-        override fun onRevealNextTile() { onRevealNextTileDidInvoke = true }
-        override fun onRoundCompleted() { onRoundCompletedDidInvoke = true }
-        override fun onStartingGame() { onStartingGameDidInvoke = true }
-    }
-
     private fun getKey(letters: String): GameKeyboard.Key?
     {
         val row = keyboard.rows().firstOrNull { it.firstOrNull { key -> key.letters() == letters } != null }
         return row?.first { it.letters() == letters }
-    }
-
-    class MockGameGuessRepository: GameGuessGateway
-    {
-        var guessIsInvalid = false
-        var guessNotFound = false
-        var guessContainsMatchingLetters = false
-        var guessToReturn: GameGuess? = null
-
-        override suspend fun create(): GameGuess
-        {
-            if (guessNotFound) throw GameGuessNotFoundRepositoryException("Not found in words list.")
-
-            guessToReturn = if (guessIsInvalid) GameGuess(word = "T")
-            else if (guessContainsMatchingLetters) GameGuess(word = "TREAT")
-            else GameGuess(word = "PLAYS")
-
-            return guessToReturn!!
-        }
-
-        override fun getAll(): List<GameGuess> = listOf()
-        override suspend fun clear() { }
-    }
-
-    class MockGameAnswerRepository: GameAnswerGateway
-    {
-        var createdGameAnswer: GameAnswer? = null
-        var gameAnswer: GameAnswer? = null
-        var getShouldFail = false
-        var guessMatchesAnswer = false
-        var guessContainsCloseLetter = false
-
-        override suspend fun create(): GameAnswer
-        {
-            createdGameAnswer = if (guessMatchesAnswer) GameAnswer(word = "PLAYS")
-            else if (guessContainsCloseLetter) GameAnswer(word = "SPEAR")
-            else GameAnswer(word = "TESTS")
-
-            return createdGameAnswer!!
-        }
-
-        override fun get(): GameAnswer = createdGameAnswer?.let()
-        {
-            if (getShouldFail) throw GameAnswerNotFoundRepositoryException("Answer not found.")
-
-            gameAnswer = createdGameAnswer
-
-            return gameAnswer!!
-        }
-        ?: runBlocking { create() }
     }
 }
