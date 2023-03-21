@@ -21,7 +21,7 @@ class AnswerLocalDataSourceCommonMock: AnswerLocalDataManageable
     {
         if (getCurrentAnswerShouldFail) throw AnswerNotFoundLocalDataException(message = "Answer not found.")
 
-        getCurrentAnswerToReturn = Answer(word = Word(word = "SLAYS"), isCurrent = true)
+        if (getCurrentAnswerToReturn == null) getCurrentAnswerToReturn = Answer(word = Word(word = "SLAYS"), isCurrent = true)
 
         return getCurrentAnswerToReturn!!
     }

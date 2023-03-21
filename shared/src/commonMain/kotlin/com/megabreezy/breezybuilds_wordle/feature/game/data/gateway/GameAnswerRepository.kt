@@ -63,6 +63,8 @@ class GameAnswerRepository: GameAnswerGateway, KoinComponent
         {
             val answer = answerLocalDataSource.getCurrent()
 
+            answer.playerGuessedCorrectly()?.let { throw AnswerNotFoundLocalDataException("Answer not found.") }
+
             return GameAnswer(word = answer.word().toString())
         }
         catch(e: AnswerNotFoundLocalDataException)

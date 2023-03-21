@@ -231,6 +231,23 @@ class GameAnswerRepositoryTests
     }
 
     @Test
+    fun `When get method invoked and answer data source returns an Answer with playerGuessedCorrectly not null - expected exception is thrown`()
+    {
+        // given
+        val expectedErrorMessage = "Answer not found."
+        answerDataSource.getCurrentAnswerToReturn = Answer(word = Word("FINISHED"), isCurrent = true, playerGuessedCorrectly = true)
+
+        // when
+        val actualException = assertFailsWith<GameAnswerNotFoundRepositoryException>()
+        {
+            GameAnswerRepository().get()
+        }
+
+        // then
+        assertEquals(expectedErrorMessage, actualException.message)
+    }
+
+    @Test
     fun `When updateAnswerGuessed method invoked on an instance passing in answer to update and update is successful - expected updated answer is returned`()
     {
         // given
