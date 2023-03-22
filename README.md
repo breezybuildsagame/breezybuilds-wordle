@@ -11,13 +11,14 @@ The aim for this project is primarily to serve as inspiration and reference for 
 
 The Stats feature will present player statistics at the touch of a button and will also serve as a prompt for starting a new game (as the one game per day stipulation is not currently in place).
 
-* [Clearn Architecture Visual Design Doc](https://www.figma.com/file/MGS6fPuVWmYU5GG0uXIOFH/KMM-by-Example%3A-Wordle-(Clean-Architecture)?node-id=509-2813&t=W1HDPcoXkeuzVBys-4)
+* [Clearn Architecture Design Doc](https://www.figma.com/file/MGS6fPuVWmYU5GG0uXIOFH/KMM-by-Example%3A-Wordle-(Clean-Architecture)?node-id=509-2813&t=W1HDPcoXkeuzVBys-4)
+* [Visual Design Doc](https://www.figma.com/file/zQEo2VR54levonpi5pTd1v/Wordle?node-id=18%3A366&t=J7s3sjvHTIxL951t-1)
 
 ## Completed Features:
 
 ### Game
 
-* [Clean Architecture Visual Design Doc](https://www.figma.com/file/MGS6fPuVWmYU5GG0uXIOFH/KMM-by-Example%3A-Wordle-(Clean-Architecture)?node-id=107-1879&t=W1HDPcoXkeuzVBys-4)
+* [Clean Architecture Design Doc](https://www.figma.com/file/MGS6fPuVWmYU5GG0uXIOFH/KMM-by-Example%3A-Wordle-(Clean-Architecture)?node-id=107-1879&t=W1HDPcoXkeuzVBys-4)
 * [Shared Code](https://github.com/breezybuildsagame/breezybuilds-wordle/tree/main/shared/src/commonMain/kotlin/com/megabreezy/breezybuilds_wordle/feature/game)
 * [Shared Unit Tests](https://github.com/breezybuildsagame/breezybuilds-wordle/tree/main/shared/src/commonTest/kotlin/com/megabreezy/breezybuilds_wordle/feature/game)
 * [iOS Code](https://github.com/breezybuildsagame/breezybuilds-wordle/tree/main/iosApp/iosApp/feature_game/presentation)
