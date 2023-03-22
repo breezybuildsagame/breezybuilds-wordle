@@ -373,6 +373,25 @@ class SetUpGameEventsTests: KoinComponent
     }
 
     @Test
+    fun `when GameBoard setNewActiveRow throws an exception - injected GameGuessGateway's clear method is invoked`()
+    {
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        val keysInUse = listOf(
+            getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
+        )
+
+        // when
+        for (round in gameBoard.rows())
+        {
+            for (key in keysInUse) runBlocking { key?.click() }
+            runBlocking { getKey(letters = "ENTER")?.click() }
+        }
+
+        // then
+        assertTrue(guessRepository.clearDidInvoke)
+    }
+
+    @Test
     fun `when GameBoard setNewActiveRow throws an exception - expected announcement is set`()
     {
         // given
@@ -453,6 +472,24 @@ class SetUpGameEventsTests: KoinComponent
         assertTrue(answerRepository.updateAnswerGuessedDidInvoke)
         assertFalse(answerRepository.updateAnswerNotGuessedDidInvoke)
         assertEquals(answerRepository.createdGameAnswer, answerRepository.updatedGameAnswerToReturn)
+    }
+
+    @Test
+    fun `when use case invoked and enter Key is clicked and GameGuess is correct - injected GameGuessGateway's clear method is invoked`()
+    {
+        // given
+        answerRepository.guessMatchesAnswer = true
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        val keysInUse = listOf(
+            getKey(letters = "P"), getKey(letters = "L"), getKey(letters = "A"), getKey(letters = "Y"), getKey(letters = "S")
+        )
+
+        // when
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
+
+        // then
+        assertTrue(guessRepository.clearDidInvoke)
     }
 
     @Test
