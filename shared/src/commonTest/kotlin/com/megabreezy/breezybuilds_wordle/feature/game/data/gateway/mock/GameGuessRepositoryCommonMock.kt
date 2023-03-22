@@ -10,6 +10,7 @@ class GameGuessRepositoryCommonMock: GameGuessGateway
     var guessNotFound = false
     var guessContainsMatchingLetters = false
     var guessToReturn: GameGuess? = null
+    var clearDidInvoke = false
 
     override suspend fun create(): GameGuess
     {
@@ -23,5 +24,5 @@ class GameGuessRepositoryCommonMock: GameGuessGateway
     }
 
     override fun getAll(): List<GameGuess> = listOf()
-    override suspend fun clear() { }
+    override suspend fun clear() { clearDidInvoke = true }
 }
