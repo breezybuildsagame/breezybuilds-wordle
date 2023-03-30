@@ -5,10 +5,8 @@ import kotlin.coroutines.cancellation.CancellationException
 
 interface CompletedGameLocalDataManageable
 {
-    @Throws(
-        CompletedGameNotFoundLocalDataException::class
-    )
-    fun get(): CompletedGame
+    @Throws(CompletedGameNotFoundLocalDataException::class)
+    fun getAll(): List<CompletedGame>
 
     @Throws(
         CancellationException::class,

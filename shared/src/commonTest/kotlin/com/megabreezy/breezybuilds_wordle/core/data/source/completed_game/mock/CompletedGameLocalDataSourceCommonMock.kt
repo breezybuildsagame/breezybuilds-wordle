@@ -9,7 +9,7 @@ import com.megabreezy.breezybuilds_wordle.core.domain.model.Word
 
 class CompletedGameLocalDataSourceCommonMock: CompletedGameLocalDataManageable
 {
-    var getCompletedGameToReturn: CompletedGame? = null
+    var getCompletedGamesToReturn: MutableList<CompletedGame> = mutableListOf()
 
     var getShouldFail = false
     var getShouldFailErrorMessage = "No CompletedGame records found."
@@ -18,13 +18,16 @@ class CompletedGameLocalDataSourceCommonMock: CompletedGameLocalDataManageable
     var putShouldFail = false
     var putShouldFailErrorMessage = "CompletedGame not saved."
 
-    override fun get(): CompletedGame
+    override fun getAll(): List<CompletedGame>
     {
         if (getShouldFail) throw CompletedGameNotFoundLocalDataException(message = getShouldFailErrorMessage)
 
-        getCompletedGameToReturn = getCompletedGameToReturn ?: CompletedGame(answer = Answer(word = Word("SLAYS")))
+        if (getCompletedGamesToReturn.isEmpty())
+        {
+            getCompletedGamesToReturn.add(element = CompletedGame(answer = Answer(word = Word("SLAYS"))))
+        }
 
-        return getCompletedGameToReturn!!
+        return getCompletedGamesToReturn
     }
 
     override suspend fun put(newCompletedGame: CompletedGame): CompletedGame
@@ -32,6 +35,7 @@ class CompletedGameLocalDataSourceCommonMock: CompletedGameLocalDataManageable
         if (putShouldFail) throw CompletedGameNotSavedLocalDataException(message = putShouldFailErrorMessage)
 
         putGames.add(newCompletedGame)
+        getCompletedGamesToReturn.add(newCompletedGame)
 
         return newCompletedGame
     }
