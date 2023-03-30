@@ -30,6 +30,7 @@ kotlin {
                 implementation(Dependency.Koin.common)
                 implementation(Dependency.MokoResources.common)
                 implementation(Dependency.Realm.common)
+                implementation(Dependency.DateTime.common)
             }
         }
         val commonTest by getting {
@@ -78,7 +79,7 @@ multiplatformResources {
 }
 
 android {
-    namespace = "ly.tithe.breezybuilds_wordle"
+    namespace = "com.megabreezy.breezybuilds_wordle"
     compileSdk = 32
 
     /**

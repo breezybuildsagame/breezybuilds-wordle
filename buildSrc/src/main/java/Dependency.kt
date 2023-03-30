@@ -33,4 +33,10 @@ object Dependency
         const val baseUrl = "io.realm.kotlin"
         const val common = "$baseUrl:library-base:${Version.realmVersion}"
     }
+
+    // Time
+    object DateTime {
+        const val baseUrl = "org.jetbrains.kotlinx:kotlinx-datetime"
+        const val common = "$baseUrl:${Version.dateTimeVersion}"
+    }
 }
