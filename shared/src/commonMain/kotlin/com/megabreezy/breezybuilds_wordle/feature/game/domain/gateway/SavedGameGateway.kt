@@ -4,7 +4,7 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.SavedGame
 
 interface SavedGameGateway
 {
-    fun create(): SavedGame
+    suspend fun create(): SavedGame
 }
 
 class SavedGameCreateFailedRepositoryException(message: String?): Exception(message)

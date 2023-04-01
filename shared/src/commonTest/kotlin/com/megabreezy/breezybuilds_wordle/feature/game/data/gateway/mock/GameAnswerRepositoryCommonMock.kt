@@ -34,8 +34,7 @@ class GameAnswerRepositoryCommonMock: GameAnswerGateway
         gameAnswer = createdGameAnswer
 
         return gameAnswer!!
-    }
-        ?: runBlocking { create() }
+    } ?: runBlocking { create() }
 
     override suspend fun updateAnswerGuessed(existingAnswer: GameAnswer): GameAnswer
     {
