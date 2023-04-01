@@ -21,6 +21,20 @@ class CompletedGameLocalDataSource(private var realm: Realm? = null): CompletedG
 
     override suspend fun put(newCompletedGame: CompletedGame): CompletedGame
     {
-        TODO("Not yet implemented")
+        realm?.write()
+        {
+            copyToRealm(
+                CachedCompletedGame().apply()
+                {
+                    answer = newCompletedGame.answer()
+                    date = newCompletedGame.date()
+                    playerGuesses = newCompletedGame.playerGuesses().map { "${it.word()}" }
+                    playerGuessedCorrectly = newCompletedGame.answer().playerGuessedCorrectly() ?: false
+                    word = "${newCompletedGame.answer().word()}"
+                }
+            )
+        }
+
+        return newCompletedGame
     }
 }

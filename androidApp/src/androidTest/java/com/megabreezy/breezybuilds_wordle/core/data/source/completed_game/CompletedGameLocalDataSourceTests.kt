@@ -7,10 +7,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.test.assertCountEquals
-import androidx.compose.ui.test.assertTextEquals
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onAllNodesWithContentDescription
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Answer
 import com.megabreezy.breezybuilds_wordle.core.domain.model.CompletedGame
@@ -101,11 +99,9 @@ class CompletedGameLocalDataSourceTests
         {
             localDataSource = CompletedGameLocalDataSource(realm = realm)
 
-            SceneMock.display {
-                MockView().Component(localDataSource = localDataSource)
-            }
+            SceneMock.display { MockView.Component(localDataSource = localDataSource) }
         }
-        val gamesList = composeTestRule.onAllNodesWithContentDescription("${expectedCompletedGames.first().date()}")
+        val gamesList = composeTestRule.onNodeWithContentDescription("COLUMN").onChildren()
 
         // then
         gamesList.assertCountEquals(expectedCompletedGames.count())
@@ -115,21 +111,65 @@ class CompletedGameLocalDataSourceTests
         }
     }
 
-    class MockView
+    @Test
+    fun when_getAll_method_invoked_and_data_source_returns_no_results__no_exception_is_thrown()
+    {
+        // given
+        lateinit var localDataSource: CompletedGameLocalDataSource
+
+        // when
+        composeTestRule.setContent()
+        {
+            localDataSource = CompletedGameLocalDataSource(realm = realm)
+
+            SceneMock.display { MockView.Component(localDataSource = localDataSource) }
+        }
+
+        // then
+        composeTestRule.onNodeWithContentDescription("COLUMN").onChild().assertDoesNotExist()
+    }
+
+    @Test
+    fun when_put_method_invoked_with_newCompletedGame__expected_CompletedGame_is_returned()
+    {
+        // given
+        lateinit var localDataSource: CompletedGameLocalDataSource
+        val expectedCompletedGame = mockGamesList.last()
+
+        // when
+        composeTestRule.setContent()
+        {
+            localDataSource = CompletedGameLocalDataSource(realm = realm)
+
+            SceneMock.display { MockView.Component(localDataSource = localDataSource, newCompletedGame = expectedCompletedGame) }
+        }
+        val gamesList = composeTestRule.onAllNodesWithContentDescription("${expectedCompletedGame.date()}")
+
+        // then
+        gamesList.assertCountEquals(1)
+        gamesList.onFirst().assertContentDescriptionEquals("${expectedCompletedGame.date()}")
+        gamesList.onFirst().assertTextEquals("${expectedCompletedGame.answer().word()}")
+    }
+
+    object MockView
     {
         @Composable
         fun Component(
-            localDataSource: CompletedGameLocalDataSource
+            localDataSource: CompletedGameLocalDataSource,
+            newCompletedGame: CompletedGame? = null
         )
         {
             var completedGames by remember { mutableStateOf<List<CompletedGame>>(listOf()) }
+            var updatedCompletedGame by remember { mutableStateOf(CompletedGame(answer = Answer(Word(word = "")))) }
 
             LaunchedEffect(Unit)
             {
                 completedGames = localDataSource.getAll()
+
+                newCompletedGame?.let { updatedCompletedGame = localDataSource.put(newCompletedGame = it) }
             }
 
-            Column(modifier = Modifier.fillMaxSize())
+            Column(modifier = Modifier.fillMaxSize().semantics { contentDescription = "COLUMN" })
             {
                 completedGames.forEach()
                 {
@@ -138,6 +178,14 @@ class CompletedGameLocalDataSourceTests
                         modifier = Modifier.semantics { contentDescription = "${it.date()}" }
                     )
                 }
+            }
+
+            updatedCompletedGame?.let()
+            {
+                Text(
+                    text = "${it.answer().word()}",
+                    modifier = Modifier.semantics { contentDescription = "${it.date()}" }
+                )
             }
         }
     }
