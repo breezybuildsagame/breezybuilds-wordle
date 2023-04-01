@@ -20,8 +20,7 @@ class CachedCompletedGameTests
         val sut = CachedCompletedGame(game = CompletedGame(answer = expectedAnswer))
 
         // then
-        assertEquals(expectedAnswer, sut.answer)
-        assertEquals("${expectedAnswer.word()}", sut.word)
+        assertEquals(expectedAnswer, sut.answer())
     }
 
     @Test
@@ -51,6 +50,6 @@ class CachedCompletedGameTests
         val sut = CachedCompletedGame(game = CompletedGame(answer = Answer(word = Word("TOAST")), playerGuesses = expectedGuesses))
 
         // then
-        assertEquals(expectedGuesses, sut.playerGuesses)
+        assertEquals(expectedGuesses, sut.playerGuesses())
     }
 }

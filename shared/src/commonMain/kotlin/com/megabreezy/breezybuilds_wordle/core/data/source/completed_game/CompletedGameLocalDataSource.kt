@@ -3,6 +3,7 @@ package com.megabreezy.breezybuilds_wordle.core.data.source.completed_game
 import com.megabreezy.breezybuilds_wordle.core.domain.model.CompletedGame
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
+import io.realm.kotlin.ext.query
 
 class CompletedGameLocalDataSource(private var realm: Realm? = null): CompletedGameLocalDataManageable
 {
@@ -14,7 +15,8 @@ class CompletedGameLocalDataSource(private var realm: Realm? = null): CompletedG
 
     override fun getAll(): List<CompletedGame>
     {
-        TODO("Not yet implemented")
+        return realm?.query<CachedCompletedGame>()?.find()
+            ?.map { CompletedGame(answer = it.answer(), date = it.date, playerGuesses = it.playerGuesses()) } ?: listOf()
     }
 
     override suspend fun put(newCompletedGame: CompletedGame): CompletedGame

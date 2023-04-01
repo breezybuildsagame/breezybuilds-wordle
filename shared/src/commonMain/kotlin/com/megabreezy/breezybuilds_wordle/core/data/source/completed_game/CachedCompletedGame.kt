@@ -20,13 +20,25 @@ class CachedCompletedGame(): RealmObject
     var date: Long = 0L
 
     var answer: Answer = Answer(word = Word(word = this.word), isCurrent = false)
-    var playerGuesses: List<Guess> = listOf()
+    var isCurrent = false
+    var playerGuessedCorrectly = false
+    var playerGuesses: List<String> = listOf()
 
     constructor(game: CompletedGame): this()
     {
         this.answer = game.answer()
-        this.word = game.answer().word().toString()
         this.date = game.date()
-        this.playerGuesses = game.playerGuesses()
+        this.playerGuesses = game.playerGuesses().map { "${it.word()}" }
+        this.playerGuessedCorrectly = game.answer().playerGuessedCorrectly() ?: false
+        this.isCurrent = game.answer().isCurrent()
+        this.word = game.answer().word().toString()
     }
+
+    fun answer() = Answer(
+        isCurrent = this.isCurrent,
+        playerGuessedCorrectly = this.playerGuessedCorrectly,
+        word = Word(this.word)
+    )
+
+    fun playerGuesses(): List<Guess> = playerGuesses.map { Guess(word = Word(it)) }
 }

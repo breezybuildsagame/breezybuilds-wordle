@@ -85,7 +85,13 @@ class CompletedGameLocalDataSourceTests
             expectedCompletedGames.forEach()
             {
                 copyToRealm(
-                    CachedCompletedGame(game = it)
+                    CachedCompletedGame().apply {
+                        answer = it.answer()
+                        date = it.date()
+                        playerGuesses = it.playerGuesses().map { "${it.word()}" }
+                        playerGuessedCorrectly = it.answer().playerGuessedCorrectly() ?: false
+                        word = "${it.answer().word()}"
+                    }
                 )
             }
         }
