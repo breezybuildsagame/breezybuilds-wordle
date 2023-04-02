@@ -11,6 +11,8 @@ import com.megabreezy.breezybuilds_wordle.core.data.source.word.WordLocalDataSou
 import com.megabreezy.breezybuilds_wordle.core.data.source.word.mock.WordLocalDataSourceMock
 import com.megabreezy.breezybuilds_wordle.core.navigation.AppNavigationHandleable
 import com.megabreezy.breezybuilds_wordle.core.navigation.AppNavigator
+import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.AppModal
+import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.AppModalRepresentable
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -18,6 +20,8 @@ class CoreKoinModule(val scenarios: List<Scenario> = listOf())
 {
     fun mockModule(): Module = module()
     {
+        single<AppModalRepresentable> { AppModal() }
+
         single<AppNavigationHandleable> { AppNavigator() }
 
         AnswerLocalDataSourceMock.injectDefinition(module = this, scenarios = scenarios)
@@ -29,6 +33,8 @@ class CoreKoinModule(val scenarios: List<Scenario> = listOf())
 
     fun module(): Module = module()
     {
+        single<AppModalRepresentable> { AppModal() }
+
         single<AppNavigationHandleable> { AppNavigator() }
 
         single<AnswerLocalDataManageable> { AnswerLocalDataSource() }

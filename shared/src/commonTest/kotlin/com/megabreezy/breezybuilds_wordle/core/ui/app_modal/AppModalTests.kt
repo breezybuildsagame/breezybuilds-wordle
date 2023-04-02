@@ -11,7 +11,7 @@ class AppModalTests
     fun `When setContent invoked with new content - content method returns expected value`()
     {
         // given
-        var mockContent = MockAppModalContent()
+        val mockContent = MockAppModalContent()
         val sut = AppModal()
 
         // when

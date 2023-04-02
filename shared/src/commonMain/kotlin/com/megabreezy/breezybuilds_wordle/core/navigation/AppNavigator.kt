@@ -14,8 +14,14 @@ class AppNavigator: AppNavigationHandleable
 
     override fun navigate(route: AppRoute, direction: NavigationDirection)
     {
-        routes.add(route)
-        sceneNavigator?.navigate(route = route, direction = direction)
+        when(route)
+        {
+            AppRoute.STATS -> Unit
+            else -> {
+                routes.add(route)
+                sceneNavigator?.navigate(route = route, direction = direction)
+            }
+        }
     }
 
     override fun popBack(numberOfScreens: Int)

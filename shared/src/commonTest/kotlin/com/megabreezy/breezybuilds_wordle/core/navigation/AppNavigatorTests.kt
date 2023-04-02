@@ -2,6 +2,7 @@ package com.megabreezy.breezybuilds_wordle.core.navigation
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class AppNavigatorTests
 {
@@ -33,6 +34,42 @@ class AppNavigatorTests
 
         // then
         assertEquals(AppRoute.GAME, sut.currentRoute())
+    }
+
+    @Test
+    fun `When navigate invoked with Stats AppRoute - AppRoute does not change`()
+    {
+        // given
+        val sut = AppNavigator()
+        sut.navigate(route = AppRoute.GAME)
+
+        // when
+        sut.navigate(route = AppRoute.STATS)
+
+        // then
+        assertEquals(AppRoute.GAME, sut.currentRoute())
+    }
+
+    @Test
+    fun `When navigate invoked with Stats AppRoute - the injected AppModalRepresentable setContent method is invoked passing in GetStatsModal use case`()
+    {
+        // given
+
+        // when
+
+        // then
+        assertTrue(false)
+    }
+
+    @Test
+    fun `When navigate invoked with Stats AppRoute - the AppModalViewHandler onModalShouldShow is invoked with expected animation duration`()
+    {
+        // given
+
+        // when
+
+        // then
+        assertTrue(false)
     }
 
     class MockSceneNavigator(): SceneNavigationHandleable

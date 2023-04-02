@@ -26,6 +26,6 @@ class GameNavigationHandler: GameNavigationHandleable, KoinComponent
 
     override fun onGameOver()
     {
-        TODO("Not yet implemented")
+        appNavigator.navigate(route = AppRoute.STATS)
     }
 }
