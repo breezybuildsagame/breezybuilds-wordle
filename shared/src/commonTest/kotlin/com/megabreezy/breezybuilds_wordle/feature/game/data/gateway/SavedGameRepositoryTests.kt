@@ -6,6 +6,8 @@ import com.megabreezy.breezybuilds_wordle.core.data.source.completed_game.mock.C
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
 import com.megabreezy.breezybuilds_wordle.feature.game.data.gateway.mock.GameAnswerRepositoryCommonMock
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerGateway
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotFoundRepositoryException
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.SavedGameCreateFailedRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
 import kotlinx.coroutines.runBlocking
 import org.koin.core.context.startKoin
@@ -54,7 +56,19 @@ class SavedGameRepositoryTests
     @Test
     fun `When create method invoked and GameAnswerGateway throws an exception - expected exception is thrown`()
     {
+        // given
+        gameAnswerRepository.getShouldFail = true
+        val expectedExceptionMessage = gameAnswerRepository.getExceptionMessage
+        val sut = SavedGameRepository()
 
+        // when
+        val actualException = assertFailsWith<SavedGameCreateFailedRepositoryException>
+        {
+            runBlocking { sut.create() }
+        }
+
+        // then
+        assertEquals(expectedExceptionMessage, actualException.message)
     }
 
     @Test
