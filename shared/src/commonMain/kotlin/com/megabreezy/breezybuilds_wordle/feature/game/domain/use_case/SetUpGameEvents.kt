@@ -1,5 +1,6 @@
 package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.GameNavigationHandleable
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerGateway
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessGateway
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.SavedGameGateway
@@ -17,6 +18,7 @@ suspend fun GameUseCase.setUpGameEvents(
     val answerRepository: GameAnswerGateway by inject()
     val guessRepository: GameGuessGateway by inject()
     val savedGameRepository: SavedGameGateway by inject()
+    val gameNavigationHandler: GameNavigationHandleable by inject()
 
     getGameBoard().reset()
     getGameKeyboard().reset()
@@ -58,6 +60,8 @@ suspend fun GameUseCase.setUpGameEvents(
                         guessRepository.clear()
                         getAnnouncement().setMessage(newMessage = "Correct! Thanks for playing!")
                         sceneHandler?.onGameOver()
+                        delay(timeMillis = announcementDelay)
+                        gameNavigationHandler.onGameOver()
                     }
                     catch(e: GameUseCase.GuessWordInvalidGuessException)
                     {
@@ -117,6 +121,8 @@ suspend fun GameUseCase.setUpGameEvents(
                             guessRepository.clear()
                             getAnnouncement().setMessage(newMessage = "Game Over")
                             sceneHandler?.onGameOver()
+                            delay(timeMillis = announcementDelay)
+                            gameNavigationHandler.onGameOver()
                         }
                     }
                     catch (e: GameUseCase.GuessWordFailedNotInWordsListException)
