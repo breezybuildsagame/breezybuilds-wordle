@@ -1,4 +1,4 @@
-package com.megabreezy.breezybuilds_wordle.core.ui
+package com.megabreezy.breezybuilds_wordle.core.ui.button
 
 interface ButtonRepresentable
 {
