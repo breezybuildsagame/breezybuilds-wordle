@@ -4,6 +4,7 @@ import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
 import com.megabreezy.breezybuilds_wordle.core.util.Scenario
 import com.megabreezy.breezybuilds_wordle.feature.game.data.gateway.mock.GameAnswerRepositoryCommonMock
 import com.megabreezy.breezybuilds_wordle.feature.game.data.gateway.mock.GameGuessRepositoryCommonMock
+import com.megabreezy.breezybuilds_wordle.feature.game.data.gateway.mock.SavedGameRepositoryCommonMock
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.*
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.*
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.mock.GameSceneHandlerCommonMock
@@ -20,6 +21,7 @@ class SetUpGameEventsTests: KoinComponent
 {
     private lateinit var answerRepository: GameAnswerRepositoryCommonMock
     private lateinit var guessRepository: GameGuessRepositoryCommonMock
+    private lateinit var savedGameRepository: SavedGameRepositoryCommonMock
     private lateinit var sceneHandler: GameSceneHandlerCommonMock
     private lateinit var announcement: MockAnnouncement
 
@@ -31,6 +33,7 @@ class SetUpGameEventsTests: KoinComponent
     {
         answerRepository = GameAnswerRepositoryCommonMock()
         guessRepository = GameGuessRepositoryCommonMock()
+        savedGameRepository = SavedGameRepositoryCommonMock()
         sceneHandler = GameSceneHandlerCommonMock()
         announcement = MockAnnouncement()
 
@@ -44,6 +47,7 @@ class SetUpGameEventsTests: KoinComponent
                     single<GameAnswerGateway> { answerRepository }
                     single<GameGuessGateway> { guessRepository }
                     single<AnnouncementRepresentable> { announcement }
+                    single<SavedGameGateway> { savedGameRepository }
                 }
             )
         }
@@ -373,6 +377,26 @@ class SetUpGameEventsTests: KoinComponent
     }
 
     @Test
+    fun `when GameBoard setNewActiveRow throws an exception - injected CompletedGameGateway's put method is invoked`()
+    {
+        // given
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        val keysInUse = listOf(
+            getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
+        )
+
+        // when
+        for (round in gameBoard.rows())
+        {
+            for (key in keysInUse) runBlocking { key?.click() }
+            runBlocking { getKey(letters = "ENTER")?.click() }
+        }
+
+        // then
+        assertNotNull(savedGameRepository.savedGameToReturn)
+    }
+
+    @Test
     fun `when GameBoard setNewActiveRow throws an exception - injected GameGuessGateway's clear method is invoked`()
     {
         runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
@@ -472,6 +496,24 @@ class SetUpGameEventsTests: KoinComponent
         assertTrue(answerRepository.updateAnswerGuessedDidInvoke)
         assertFalse(answerRepository.updateAnswerNotGuessedDidInvoke)
         assertEquals(answerRepository.createdGameAnswer, answerRepository.updatedGameAnswerToReturn)
+    }
+
+    @Test
+    fun `when use case invoked and enter Key is clicked and GameGuess is correct - injected CompletedGameGateway's put method is invoked`()
+    {
+        // given
+        answerRepository.guessMatchesAnswer = true
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        val keysInUse = listOf(
+            getKey(letters = "P"), getKey(letters = "L"), getKey(letters = "A"), getKey(letters = "Y"), getKey(letters = "S")
+        )
+
+        // when
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
+
+        // then
+        assertNotNull(savedGameRepository.savedGameToReturn)
     }
 
     @Test

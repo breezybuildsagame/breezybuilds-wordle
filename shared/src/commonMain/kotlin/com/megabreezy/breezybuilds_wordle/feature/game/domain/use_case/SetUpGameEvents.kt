@@ -2,6 +2,7 @@ package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerGateway
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessGateway
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.SavedGameGateway
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneHandleable
@@ -15,6 +16,7 @@ suspend fun GameUseCase.setUpGameEvents(
 {
     val answerRepository: GameAnswerGateway by inject()
     val guessRepository: GameGuessGateway by inject()
+    val savedGameRepository: SavedGameGateway by inject()
 
     getGameBoard().reset()
     getGameKeyboard().reset()
@@ -52,6 +54,7 @@ suspend fun GameUseCase.setUpGameEvents(
                         guessWord()
 
                         answerRepository.updateAnswerGuessed(existingAnswer = getGameAnswer())
+                        savedGameRepository.create()
                         guessRepository.clear()
                         getAnnouncement().setMessage(newMessage = "Correct! Thanks for playing!")
                         sceneHandler?.onGameOver()
@@ -110,6 +113,7 @@ suspend fun GameUseCase.setUpGameEvents(
                         catch (e: GameBoard.SetNewActiveRowFailedException)
                         {
                             answerRepository.updateAnswerNotGuessed(existingAnswer = getGameAnswer())
+                            savedGameRepository.create()
                             guessRepository.clear()
                             getAnnouncement().setMessage(newMessage = "Game Over")
                             sceneHandler?.onGameOver()
