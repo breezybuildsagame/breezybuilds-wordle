@@ -6,6 +6,32 @@ import kotlin.test.assertEquals
 class GuessDistributionTests
 {
     @Test
+    fun `When Row initialized with round parameter - title method returns expected integer value`()
+    {
+        // given
+        val expectedRound = 9
+
+        // when
+        val sut = GuessDistribution.Row(round = expectedRound)
+
+        // then
+        assertEquals(expectedRound, sut.round())
+    }
+
+    @Test
+    fun `When Row initialized with correctGuessesCount parameter - correctGuessesCount method returns expected integer value`()
+    {
+        // given
+        val expectedCorrectGuessesCount = 39
+
+        // when
+        val sut = GuessDistribution.Row(correctGuessesCount = expectedCorrectGuessesCount)
+
+        // then
+        assertEquals(expectedCorrectGuessesCount, sut.correctGuessesCount())
+    }
+
+    @Test
     fun `When entity initialized with title parameter - title method returns expected string value`()
     {
         // given
@@ -19,28 +45,18 @@ class GuessDistributionTests
     }
 
     @Test
-    fun `When entity initialized with round parameter - title method returns expected integer value`()
+    fun `When entity initialized with rows parameter - rows method returns expected rows list`()
     {
         // given
-        val expectedRound = 9
+        val expectedRows = listOf(
+            GuessDistribution.Row(round = 1, correctGuessesCount = 10),
+            GuessDistribution.Row(round = 2, correctGuessesCount = 3)
+        )
 
         // when
-        val sut = GuessDistribution(round = expectedRound)
+        val sut = GuessDistribution(rows = expectedRows)
 
         // then
-        assertEquals(expectedRound, sut.round())
-    }
-
-    @Test
-    fun `When entity initialized with correctGuessesCount parameter - correctGuessesCount method returns expected integer value`()
-    {
-        // given
-        val expectedCorrectGuessesCount = 39
-
-        // when
-        val sut = GuessDistribution(correctGuessesCount = expectedCorrectGuessesCount)
-
-        // then
-        assertEquals(expectedCorrectGuessesCount, sut.correctGuessesCount())
+        assertEquals(expectedRows, sut.rows())
     }
 }
