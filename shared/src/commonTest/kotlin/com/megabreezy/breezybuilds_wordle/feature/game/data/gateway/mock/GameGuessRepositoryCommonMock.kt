@@ -10,6 +10,8 @@ class GameGuessRepositoryCommonMock: GameGuessGateway
     var guessNotFound = false
     var guessContainsMatchingLetters = false
     var guessToReturn: GameGuess? = null
+    var getAllGuessesToReturn: List<GameGuess>? = null
+    var getAllShouldFail = false
     var clearDidInvoke = false
 
     override suspend fun create(): GameGuess
@@ -23,6 +25,18 @@ class GameGuessRepositoryCommonMock: GameGuessGateway
         return guessToReturn!!
     }
 
-    override fun getAll(): List<GameGuess> = listOf()
+    override fun getAll(): List<GameGuess>
+    {
+        if (getAllShouldFail) throw GameGuessNotFoundRepositoryException("No guesses found.")
+
+        getAllGuessesToReturn = getAllGuessesToReturn ?: listOf(
+            GameGuess(word = "TRIES"),
+            GameGuess(word = "SLAPS"),
+            GameGuess(word = "GLIDE")
+        )
+
+        return getAllGuessesToReturn!!
+    }
+
     override suspend fun clear() { clearDidInvoke = true }
 }
