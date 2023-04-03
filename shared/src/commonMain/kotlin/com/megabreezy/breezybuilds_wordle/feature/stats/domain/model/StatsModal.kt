@@ -4,7 +4,7 @@ import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.AppModalContentRepre
 import com.megabreezy.breezybuilds_wordle.core.ui.button.ButtonRepresentable
 
 class StatsModal(
-    private val closeButton: ButtonRepresentable = Button { },
+    private var closeButton: ButtonRepresentable = Button { },
     private val stats: List<Stat> = listOf(),
     private val guessDistribution: GuessDistribution = GuessDistribution()
 ): AppModalContentRepresentable
@@ -13,7 +13,21 @@ class StatsModal(
 
     fun guessDistribution(): GuessDistribution = this.guessDistribution
 
+    fun setCloseButton(newCloseButton: Button) { this.closeButton = newCloseButton }
+
     override fun closeButton(): ButtonRepresentable = closeButton
+
+    override fun equals(other: Any?): Boolean = other is StatsModal
+        && this.stats() == other.stats()
+        && this.guessDistribution() == other.guessDistribution()
+
+    override fun hashCode(): Int
+    {
+        var result = closeButton.hashCode()
+        result = 31 * result + stats.hashCode()
+        result = 31 * result + guessDistribution.hashCode()
+        return result
+    }
 
     class Button(private val onClick: suspend () -> Unit): ButtonRepresentable
     {

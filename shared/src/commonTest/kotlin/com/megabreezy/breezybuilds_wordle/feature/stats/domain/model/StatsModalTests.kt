@@ -56,4 +56,20 @@ class StatsModalTests
         // then
         assertTrue(clickDidInvoke)
     }
+
+    @Test
+    fun `When setCloseButton method invoked with newCloseButton and button is clicked - expected function is invoked`()
+    {
+        // given
+        var clickDidInvoke = false
+        val mockButton = StatsModal.Button { clickDidInvoke = true }
+
+        // when
+        val sut = StatsModal()
+        sut.setCloseButton(newCloseButton = mockButton)
+        runBlocking { sut.closeButton().click() }
+
+        // then
+        assertTrue(clickDidInvoke)
+    }
 }
