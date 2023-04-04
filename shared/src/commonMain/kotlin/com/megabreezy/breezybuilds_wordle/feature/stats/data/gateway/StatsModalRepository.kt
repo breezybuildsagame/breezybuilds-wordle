@@ -2,7 +2,6 @@ package com.megabreezy.breezybuilds_wordle.feature.stats.data.gateway
 
 import com.megabreezy.breezybuilds_wordle.core.data.source.completed_game.CompletedGameLocalDataManageable
 import com.megabreezy.breezybuilds_wordle.core.domain.model.CompletedGame
-import com.megabreezy.breezybuilds_wordle.core.domain.model.Guess
 import com.megabreezy.breezybuilds_wordle.feature.stats.domain.gateway.StatsModalGateway
 import com.megabreezy.breezybuilds_wordle.feature.stats.domain.model.GuessDistribution
 import com.megabreezy.breezybuilds_wordle.feature.stats.domain.model.Stat
@@ -12,7 +11,7 @@ import org.koin.core.component.inject
 
 class StatsModalRepository: StatsModalGateway, KoinComponent
 {
-    val localDataSource: CompletedGameLocalDataManageable by inject()
+    private val localDataSource: CompletedGameLocalDataManageable by inject()
 
     override fun get(): StatsModal
     {
@@ -21,7 +20,7 @@ class StatsModalRepository: StatsModalGateway, KoinComponent
 
         val totalGamesPlayedStat = Stat(headline = "${completedGames.count()}", description = "Played")
         val winPercentStat = Stat(
-            headline = "${completedGames.count { it.answer().playerGuessedCorrectly() ?: false } / completedGames.count()}",
+            headline = "${(completedGames.count { it.answer().playerGuessedCorrectly() ?: false } / completedGames.count().toFloat() * 100).toInt()}",
             description = "Win %"
         )
         val currentStreakStat = Stat(
@@ -29,14 +28,20 @@ class StatsModalRepository: StatsModalGateway, KoinComponent
             description = "Current Streak"
         )
         val maxStreakStat = Stat(
-            headline = "${winGroups.maxByOrNull { group -> group.count() } ?: 0}",
+            headline = "${winGroups.maxByOrNull { group -> group.count() }?.count() ?: 0}",
             description = "Max Streak"
         )
+
+        val guessDistributionRows: List<GuessDistribution.Row> = getWinsByRound(completedGames).mapIndexed()
+        { index, int ->
+            GuessDistribution.Row(round = index + 1, correctGuessesCount = int)
+        }
 
         return StatsModal(
             stats = listOf(totalGamesPlayedStat, winPercentStat, currentStreakStat, maxStreakStat),
             guessDistribution = GuessDistribution(
                 title = "Guess Distribution",
+                rows = guessDistributionRows
             )
         )
     }
