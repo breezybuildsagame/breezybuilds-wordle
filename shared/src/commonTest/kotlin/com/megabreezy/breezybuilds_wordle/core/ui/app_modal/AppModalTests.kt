@@ -22,6 +22,17 @@ class AppModalTests
         assertTrue(mockContent.closeButton.clickDidInvoke)
     }
 
+    @Test
+    fun `When setHandler invoked with newHandler - handler method returns expected value`()
+    {
+        // given
+
+        // when
+
+        // then
+        assertTrue(false)
+    }
+
     class MockAppModalContent: AppModalContentRepresentable
     {
         var closeButton = MockAppModalButtonRepresentable()

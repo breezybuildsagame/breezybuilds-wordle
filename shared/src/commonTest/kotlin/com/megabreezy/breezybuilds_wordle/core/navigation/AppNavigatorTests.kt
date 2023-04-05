@@ -1,11 +1,46 @@
 package com.megabreezy.breezybuilds_wordle.core.navigation
 
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.AppModalRepresentable
+import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.mock.AppModalCommonMock
+import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
+import com.megabreezy.breezybuilds_wordle.feature.stats.data.gateway.mock.StatsModalRepositoryCommonMock
+import com.megabreezy.breezybuilds_wordle.feature.stats.domain.gateway.StatsModalGateway
+import com.megabreezy.breezybuilds_wordle.feature.stats.domain.model.GuessDistribution
+import com.megabreezy.breezybuilds_wordle.feature.stats.domain.model.Stat
+import com.megabreezy.breezybuilds_wordle.feature.stats.domain.model.StatsModal
+import com.megabreezy.breezybuilds_wordle.feature.stats.domain.use_case.StatsUseCase
+import com.megabreezy.breezybuilds_wordle.feature.stats.domain.use_case.getStatsModal
+import com.megabreezy.breezybuilds_wordle.feature.stats.util.StatsKoinModule
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.dsl.module
+import kotlin.test.*
 
 class AppNavigatorTests
 {
+    private lateinit var appModal: AppModalCommonMock
+    private lateinit var statsModalRepository: StatsModalRepositoryCommonMock
+
+    @BeforeTest
+    fun setUp()
+    {
+        appModal = AppModalCommonMock()
+        statsModalRepository = StatsModalRepositoryCommonMock()
+
+        startKoin()
+        {
+            modules(
+                CoreKoinModule().mockModule(),
+                StatsKoinModule().module(),
+                module { single<AppModalRepresentable> { appModal } },
+                module { single<StatsModalGateway> { statsModalRepository } }
+            )
+        }
+    }
+
+    @AfterTest
+    fun tearDown() = stopKoin()
+
     @Test
     fun `when navigate invoked with AppRoute and NavigationDirection - sceneNavigator navigate method is invoked with expected parameters`()
     {
@@ -54,11 +89,21 @@ class AppNavigatorTests
     fun `When navigate invoked with Stats AppRoute - the injected AppModalRepresentable setContent method is invoked passing in GetStatsModal use case`()
     {
         // given
+        statsModalRepository.getStatsModalToReturn = StatsModal(
+            stats = listOf(Stat(headline = "10", description = "SOME STAT")),
+            guessDistribution = GuessDistribution(
+                title = "Guess Distribution",
+                rows = listOf(GuessDistribution.Row(round = 1, correctGuessesCount = 11))
+            )
+        )
+        val expectedAppModalContent = StatsUseCase().getStatsModal()
+        val sut = AppNavigator()
 
         // when
+        sut.navigate(route = AppRoute.STATS)
 
         // then
-        assertTrue(false)
+        assertEquals(expectedAppModalContent, appModal.contentToReturn)
     }
 
     @Test

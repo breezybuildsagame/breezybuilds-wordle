@@ -6,5 +6,15 @@ class AppModal: AppModalRepresentable
 
     override fun content(): AppModalContentRepresentable? = this.content
 
-    fun setContent(newContent: AppModalContentRepresentable?) { this.content = newContent }
+    override fun handler(): AppModalViewHandleable?
+    {
+        TODO("Not yet implemented")
+    }
+
+    override fun setContent(newContent: AppModalContentRepresentable?) { this.content = newContent }
+
+    override fun setHandler(newHandler: AppModalViewHandleable?)
+    {
+        TODO("Not yet implemented")
+    }
 }
