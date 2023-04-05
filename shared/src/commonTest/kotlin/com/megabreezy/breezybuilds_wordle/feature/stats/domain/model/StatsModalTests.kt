@@ -72,4 +72,35 @@ class StatsModalTests
         // then
         assertTrue(clickDidInvoke)
     }
+
+    @Test
+    fun `When entity initialized with playAgainButton - the playAgainButton method returns expected button`()
+    {
+        // given
+        var clickDidInvoke = false
+        val button = StatsModal.Button { clickDidInvoke = true }
+
+        // when
+        val sut = StatsModal(playAgainButton = button)
+        runBlocking { sut.playAgainButton().click() }
+
+        // then
+        assertTrue(clickDidInvoke)
+    }
+
+    @Test
+    fun `When setPlayAgainButton method invoked with newPlayAgainButton and button is clicked - expected function is invoked`()
+    {
+        // given
+        var clickDidInvoke = false
+        val button = StatsModal.Button { clickDidInvoke = true }
+
+        // when
+        val sut = StatsModal()
+        sut.setPlayAgainButton(newPlayAgainButton = button)
+        runBlocking { sut.playAgainButton().click() }
+
+        // then
+        assertTrue(clickDidInvoke)
+    }
 }

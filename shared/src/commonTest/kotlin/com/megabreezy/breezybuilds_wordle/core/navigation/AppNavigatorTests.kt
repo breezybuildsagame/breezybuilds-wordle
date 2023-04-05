@@ -72,6 +72,28 @@ class AppNavigatorTests
         assertTrue(false)
     }
 
+    @Test
+    fun `When the StatsModal playAgain button is clicked - the AppModalViewHandler onModalShouldHide method is invoked`()
+    {
+        // given
+
+        // when
+
+        // then
+        assertTrue(false)
+    }
+
+    @Test
+    fun `When the StatsModal playAgain button is clicked - the current route is set to GAME and the sceneNavigator's navigate method is invoked`()
+    {
+        // given
+
+        // when
+
+        // then
+        assertTrue(false)
+    }
+
     class MockSceneNavigator(): SceneNavigationHandleable
     {
         var navigatedRoute: AppRoute? = null

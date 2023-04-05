@@ -6,14 +6,19 @@ import com.megabreezy.breezybuilds_wordle.core.ui.button.ButtonRepresentable
 class StatsModal(
     private var closeButton: ButtonRepresentable = Button { },
     private val stats: List<Stat> = listOf(),
-    private val guessDistribution: GuessDistribution = GuessDistribution()
+    private val guessDistribution: GuessDistribution = GuessDistribution(),
+    private var playAgainButton: ButtonRepresentable = Button { }
 ): AppModalContentRepresentable
 {
     fun stats(): List<Stat> = this.stats
 
     fun guessDistribution(): GuessDistribution = this.guessDistribution
 
+    fun playAgainButton() = playAgainButton
+
     fun setCloseButton(newCloseButton: Button) { this.closeButton = newCloseButton }
+
+    fun setPlayAgainButton(newPlayAgainButton: Button) { this.playAgainButton = newPlayAgainButton }
 
     override fun closeButton(): ButtonRepresentable = closeButton
 
