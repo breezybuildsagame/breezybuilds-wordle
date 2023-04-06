@@ -82,7 +82,7 @@ class StatsModalTests
 
         // when
         val sut = StatsModal(playAgainButton = button)
-        runBlocking { sut.playAgainButton().click() }
+        runBlocking { sut.playAgainButton()?.click() }
 
         // then
         assertTrue(clickDidInvoke)
@@ -98,7 +98,7 @@ class StatsModalTests
         // when
         val sut = StatsModal()
         sut.setPlayAgainButton(newPlayAgainButton = button)
-        runBlocking { sut.playAgainButton().click() }
+        runBlocking { sut.playAgainButton()?.click() }
 
         // then
         assertTrue(clickDidInvoke)

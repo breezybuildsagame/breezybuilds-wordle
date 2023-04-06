@@ -1,5 +1,6 @@
 package com.megabreezy.breezybuilds_wordle.core.navigation
 
+import com.megabreezy.breezybuilds_wordle.core.data.source.guess.GuessLocalDataManageable
 import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.AppModalRepresentable
 import com.megabreezy.breezybuilds_wordle.feature.stats.domain.model.StatsModal
 import com.megabreezy.breezybuilds_wordle.feature.stats.domain.use_case.StatsUseCase
@@ -13,6 +14,7 @@ class AppNavigator(
 ): AppNavigationHandleable, KoinComponent
 {
     private val appModal: AppModalRepresentable by inject()
+    private val guessLocalDataSource: GuessLocalDataManageable by inject()
     private var routes = mutableListOf<AppRoute>()
     private var sceneNavigator: SceneNavigationHandleable? = null
 
@@ -32,15 +34,19 @@ class AppNavigator(
             AppRoute.STATS ->
             {
                 val modalContent = StatsUseCase().getStatsModal()
-                modalContent.setPlayAgainButton(
-                    newPlayAgainButton = StatsModal.Button(label = "Play Again")
-                    {
-                        appModal.handler()?.onModalShouldHide(animationDuration = this.modalAnimationDuration)
-                        delay(this.modalAnimationDuration)
-                        routes().clear()
-                        navigate(route = AppRoute.GAME)
-                    }
-                )
+
+                if (guessLocalDataSource.getAll().isEmpty())
+                {
+                    modalContent.setPlayAgainButton(
+                        newPlayAgainButton = StatsModal.Button(label = "Play Again")
+                        {
+                            appModal.handler()?.onModalShouldHide(animationDuration = this.modalAnimationDuration)
+                            delay(this.modalAnimationDuration)
+                            routes().clear()
+                            navigate(route = AppRoute.GAME)
+                        }
+                    )
+                }
                 appModal.setContent(newContent = modalContent)
                 appModal.handler()?.onModalShouldShow(animationDuration = this.modalAnimationDuration)
             }

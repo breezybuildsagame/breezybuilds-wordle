@@ -4,6 +4,7 @@ import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.AppModalRepresentabl
 import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.mock.AppModalCommonMock
 import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.mock.AppModalViewHandlerCommonMock
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
+import com.megabreezy.breezybuilds_wordle.core.util.Scenario
 import com.megabreezy.breezybuilds_wordle.feature.stats.data.gateway.mock.StatsModalRepositoryCommonMock
 import com.megabreezy.breezybuilds_wordle.feature.stats.domain.gateway.StatsModalGateway
 import com.megabreezy.breezybuilds_wordle.feature.stats.domain.model.GuessDistribution
@@ -127,6 +128,31 @@ class AppNavigatorTests
     }
 
     @Test
+    fun `When a game is in progress and the StatsModal is presented - the playAgainButton method returns null`()
+    {
+        // given
+        stopKoin()
+        startKoin()
+        {
+            modules(
+                CoreKoinModule(listOf(Scenario.GUESSES_FOUND)).mockModule(),
+                StatsKoinModule().module(),
+                module { single<AppModalRepresentable> { appModal } },
+                module { single<StatsModalGateway> { statsModalRepository } }
+            )
+        }
+        val mockModalViewHandler = AppModalViewHandlerCommonMock()
+        appModal.setHandler(newHandler = mockModalViewHandler)
+        val sut = AppNavigator()
+
+        // when
+        sut.navigate(route = AppRoute.STATS)
+
+        // then
+        assertNull((appModal.content() as StatsModal).playAgainButton())
+    }
+
+    @Test
     fun `When the StatsModal playAgain button is clicked - the AppModalViewHandler onModalShouldHide method is invoked`()
     {
         // given
@@ -139,10 +165,10 @@ class AppNavigatorTests
         {
             // when
             val playAgainButton = (appModal.content() as StatsModal).playAgainButton()
-            runBlocking { playAgainButton.click() }
+            runBlocking { playAgainButton?.click() }
 
             // then
-            assertEquals("Play Again", playAgainButton.label())
+            assertEquals("Play Again", playAgainButton?.label())
             assertEquals(300L, mockModalViewHandler.onModalShouldHidePassedInAnimationDuration)
         }
         else
@@ -171,7 +197,7 @@ class AppNavigatorTests
             val playAgainButton = (appModal.content() as StatsModal).playAgainButton()
             val processingTime = measureTime()
             {
-                runBlocking { playAgainButton.click() }
+                runBlocking { playAgainButton?.click() }
             }
 
             // then

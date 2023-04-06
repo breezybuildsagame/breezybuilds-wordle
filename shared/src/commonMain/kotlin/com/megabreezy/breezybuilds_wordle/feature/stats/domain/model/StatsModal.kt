@@ -7,7 +7,7 @@ class StatsModal(
     private var closeButton: ButtonRepresentable = Button { },
     private val stats: List<Stat> = listOf(),
     private val guessDistribution: GuessDistribution = GuessDistribution(),
-    private var playAgainButton: ButtonRepresentable = Button { }
+    private var playAgainButton: ButtonRepresentable? = null
 ): AppModalContentRepresentable
 {
     fun stats(): List<Stat> = this.stats
