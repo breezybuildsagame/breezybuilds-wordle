@@ -2,6 +2,7 @@ package com.megabreezy.breezybuilds_wordle.core.navigation
 
 import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.AppModalRepresentable
 import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.mock.AppModalCommonMock
+import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.mock.AppModalViewHandlerCommonMock
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
 import com.megabreezy.breezybuilds_wordle.feature.stats.data.gateway.mock.StatsModalRepositoryCommonMock
 import com.megabreezy.breezybuilds_wordle.feature.stats.domain.gateway.StatsModalGateway
@@ -11,11 +12,15 @@ import com.megabreezy.breezybuilds_wordle.feature.stats.domain.model.StatsModal
 import com.megabreezy.breezybuilds_wordle.feature.stats.domain.use_case.StatsUseCase
 import com.megabreezy.breezybuilds_wordle.feature.stats.domain.use_case.getStatsModal
 import com.megabreezy.breezybuilds_wordle.feature.stats.util.StatsKoinModule
+import kotlinx.coroutines.runBlocking
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import kotlin.test.*
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
+@OptIn(ExperimentalTime::class)
 class AppNavigatorTests
 {
     private lateinit var appModal: AppModalCommonMock
@@ -110,36 +115,79 @@ class AppNavigatorTests
     fun `When navigate invoked with Stats AppRoute - the AppModalViewHandler onModalShouldShow is invoked with expected animation duration`()
     {
         // given
+        val mockModalViewHandler = AppModalViewHandlerCommonMock()
+        appModal.setHandler(newHandler = mockModalViewHandler)
+        val sut = AppNavigator()
 
         // when
+        sut.navigate(route = AppRoute.STATS)
 
         // then
-        assertTrue(false)
+        assertEquals(300L, mockModalViewHandler.onModalShouldShowPassedInAnimationDuration)
     }
 
     @Test
     fun `When the StatsModal playAgain button is clicked - the AppModalViewHandler onModalShouldHide method is invoked`()
     {
         // given
+        val mockModalViewHandler = AppModalViewHandlerCommonMock()
+        appModal.setHandler(newHandler = mockModalViewHandler)
+        val sut = AppNavigator()
+        sut.navigate(route = AppRoute.STATS)
 
-        // when
+        if (appModal.content() is StatsModal)
+        {
+            // when
+            val playAgainButton = (appModal.content() as StatsModal).playAgainButton()
+            runBlocking { playAgainButton.click() }
 
-        // then
-        assertTrue(false)
+            // then
+            assertEquals("Play Again", playAgainButton.label())
+            assertEquals(300L, mockModalViewHandler.onModalShouldHidePassedInAnimationDuration)
+        }
+        else
+        {
+            fail(message = "Expected modal content not found.")
+        }
     }
 
     @Test
     fun `When the StatsModal playAgain button is clicked - the current route is set to GAME and the sceneNavigator's navigate method is invoked`()
     {
         // given
+        val mockSceneNavigator = MockSceneNavigator()
+        val mockModalViewHandler = AppModalViewHandlerCommonMock()
+        appModal.setHandler(newHandler = mockModalViewHandler)
+        val sut = AppNavigator(modalAnimationDuration = 100L)
+        sut.navigate(route = AppRoute.GAME)
+        sut.navigate(route = AppRoute.STATS)
+        sut.setSceneNavigator(newSceneNavigator = mockSceneNavigator)
+        mockSceneNavigator.navigatedRoute = null
+        mockSceneNavigator.navigatedDirection = null
 
-        // when
+        if (appModal.content() is StatsModal)
+        {
+            // when
+            val playAgainButton = (appModal.content() as StatsModal).playAgainButton()
+            val processingTime = measureTime()
+            {
+                runBlocking { playAgainButton.click() }
+            }
 
-        // then
-        assertTrue(false)
+            // then
+            assertTrue(processingTime.inWholeMilliseconds > 90L)
+            assertEquals(AppRoute.GAME, sut.currentRoute())
+            assertEquals(AppRoute.GAME, mockSceneNavigator.navigatedRoute)
+            assertEquals(NavigationDirection.INSTANT, mockSceneNavigator.navigatedDirection)
+            assertEquals(1, sut.routes().count())
+        }
+        else
+        {
+            fail(message = "Expected modal content not found.")
+        }
     }
 
-    class MockSceneNavigator(): SceneNavigationHandleable
+    class MockSceneNavigator: SceneNavigationHandleable
     {
         var navigatedRoute: AppRoute? = null
         var navigatedDirection: NavigationDirection? = null

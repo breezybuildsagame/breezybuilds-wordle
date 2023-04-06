@@ -8,17 +8,13 @@ class AppModalCommonMock: AppModalRepresentable
 {
     var contentToReturn: AppModalContentRepresentable? = null
 
+    var viewHandler: AppModalViewHandleable? = null
+
     override fun content(): AppModalContentRepresentable? = this.contentToReturn
 
-    override fun handler(): AppModalViewHandleable?
-    {
-        TODO("Not yet implemented")
-    }
+    override fun handler(): AppModalViewHandleable? = viewHandler
 
     override fun setContent(newContent: AppModalContentRepresentable?) { this.contentToReturn = newContent }
 
-    override fun setHandler(newHandler: AppModalViewHandleable?)
-    {
-        TODO("Not yet implemented")
-    }
+    override fun setHandler(newHandler: AppModalViewHandleable?) { this.viewHandler = newHandler }
 }

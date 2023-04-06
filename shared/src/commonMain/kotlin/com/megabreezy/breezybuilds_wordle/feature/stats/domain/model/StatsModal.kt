@@ -34,8 +34,13 @@ class StatsModal(
         return result
     }
 
-    class Button(private val onClick: suspend () -> Unit): ButtonRepresentable
+    class Button(
+        private val label: String? = null,
+        private val onClick: suspend () -> Unit
+    ): ButtonRepresentable
     {
+        override fun label(): String? = this.label
+
         override suspend fun click() = onClick()
     }
 }
