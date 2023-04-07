@@ -89,4 +89,21 @@ class GetGameAnswerTests
         // then
         assertEquals(expectedExceptionMessage, actualException.message)
     }
+
+    @Test
+    fun `When attemptCreateOnFailure flag set to false - expected exception is thrown`()
+    {
+        // given
+        val expectedExceptionMessage = repository.getExceptionMessage
+        repository.getShouldFail = true
+
+        // when
+        val actualException = assertFailsWith<GameUseCase.GetGameAnswerFailedException>()
+        {
+            runBlocking { GameUseCase().getGameAnswer(attemptCreateOnFailure = false) }
+        }
+
+        // then
+        assertEquals(expectedExceptionMessage, actualException.message)
+    }
 }

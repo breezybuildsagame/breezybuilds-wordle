@@ -6,7 +6,7 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswer
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameAnswer
 import org.koin.core.component.inject
 
-suspend fun GameUseCase.getGameAnswer(): GameAnswer
+suspend fun GameUseCase.getGameAnswer(attemptCreateOnFailure: Boolean = true): GameAnswer
 {
     val repository: GameAnswerGateway by inject()
 
@@ -16,6 +16,8 @@ suspend fun GameUseCase.getGameAnswer(): GameAnswer
     }
     catch (e: GameAnswerNotFoundRepositoryException)
     {
+        if (!attemptCreateOnFailure) throw GameUseCase.GetGameAnswerFailedException(message = e.message)
+
         try
         {
             repository.create()
