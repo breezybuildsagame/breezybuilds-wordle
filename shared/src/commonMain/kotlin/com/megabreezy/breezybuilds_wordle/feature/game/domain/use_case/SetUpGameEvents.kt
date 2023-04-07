@@ -24,119 +24,116 @@ suspend fun GameUseCase.setUpGameEvents(
     getGameKeyboard().reset()
     getAnnouncement().setMessage(newMessage = null)
 
-    for (row in getGameKeyboard().rows())
+    for (key in getGameKeyboard().rows().flatten())
     {
-        for (key in row)
+        key.setOnClick()
         {
-            key.setOnClick()
+            val tileToSet = getGameBoard().activeRow()?.firstOrNull()
             {
-                val tileToSet = getGameBoard().activeRow()?.firstOrNull()
-                {
-                    it.letter() == null && key.letter() != null && key.letters() != "ENTER"
-                }
-                val tileToBackspace = getGameBoard().activeRow()?.lastOrNull()
-                {
-                    it.letter() != null && key.letters() == "BACKSPACE"
-                }
+                it.letter() == null && key.letter() != null && key.letters() != "ENTER"
+            }
+            val tileToBackspace = getGameBoard().activeRow()?.lastOrNull()
+            {
+                it.letter() != null && key.letters() == "BACKSPACE"
+            }
 
-                tileToBackspace?.let()
-                { tile ->
-                    tile.setLetter(newLetter = null)
-                    sceneHandler?.onRevealNextTile()
-                }
-                ?: tileToSet?.let()
-                { tile ->
-                    tile.setLetter(newLetter = key.letter())
-                    sceneHandler?.onRevealNextTile()
-                }
-                ?: if (key.letters() == "ENTER")
+            tileToBackspace?.let()
+            { tile ->
+                tile.setLetter(newLetter = null)
+                sceneHandler?.onRevealNextTile()
+            }
+            ?: tileToSet?.let()
+            { tile ->
+                tile.setLetter(newLetter = key.letter())
+                sceneHandler?.onRevealNextTile()
+            }
+            ?: if (key.letters() == "ENTER")
+            {
+                try
                 {
+                    guessWord()
+
+                    answerRepository.updateAnswerGuessed(existingAnswer = getGameAnswer())
+                    savedGameRepository.create()
+                    guessRepository.clear()
+                    getAnnouncement().setMessage(newMessage = "Correct! Thanks for playing!")
+                    sceneHandler?.onGameOver()
+                    delay(timeMillis = announcementDelay)
+                    gameNavigationHandler.onGameOver()
+                }
+                catch(e: GameUseCase.GuessWordInvalidGuessException)
+                {
+                    println(e)
+                }
+                catch(e: GameUseCase.GuessWordFailedMismatchException)
+                {
+                    println(e)
+
+                    finalizeActiveGameBoardRow()
+
+                    getGameBoard().activeRow()?.forEachIndexed()
+                    { index, tile ->
+
+                        for (keyRow in getGameKeyboard().rows())
+                        {
+                            for (currentKey in keyRow)
+                            {
+                                if (currentKey.backgroundColor() == GameKeyboard.Key.BackgroundColor.CORRECT) continue
+
+                                if (
+                                    currentKey.letter() == tile.letter()
+                                    && !getGameAnswer().word().contains(currentKey.letter()!!)
+                                )
+                                {
+                                    currentKey.setBackgroundColor(newBackgroundColor = GameKeyboard.Key.BackgroundColor.NOT_FOUND)
+                                }
+                                else if
+                                (
+                                    currentKey.letter() == tile.letter()
+                                    && getGameAnswer().word().contains(currentKey.letter()!!)
+                                    && currentKey.letter() !=  getGameAnswer().word()[index]
+                                )
+                                {
+                                    currentKey.setBackgroundColor(newBackgroundColor = GameKeyboard.Key.BackgroundColor.NEARBY)
+                                }
+
+                                if (currentKey.letter() == tile.letter() && tile.letter() == getGameAnswer().word()[index])
+                                {
+                                    currentKey.setBackgroundColor(newBackgroundColor = GameKeyboard.Key.BackgroundColor.CORRECT)
+                                }
+                            }
+                        }
+                    }
+
                     try
                     {
-                        guessWord()
-
-                        answerRepository.updateAnswerGuessed(existingAnswer = getGameAnswer())
+                        getGameBoard().setNewActiveRow()
+                        sceneHandler?.onRoundCompleted()
+                    }
+                    catch (e: GameBoard.SetNewActiveRowFailedException)
+                    {
+                        answerRepository.updateAnswerNotGuessed(existingAnswer = getGameAnswer())
                         savedGameRepository.create()
                         guessRepository.clear()
-                        getAnnouncement().setMessage(newMessage = "Correct! Thanks for playing!")
+                        getAnnouncement().setMessage(newMessage = "Game Over")
                         sceneHandler?.onGameOver()
                         delay(timeMillis = announcementDelay)
                         gameNavigationHandler.onGameOver()
                     }
-                    catch(e: GameUseCase.GuessWordInvalidGuessException)
-                    {
-                        println(e)
+                }
+                catch (e: GameUseCase.GuessWordFailedNotInWordsListException)
+                {
+                    println(e)
+                    getAnnouncement().setMessage(newMessage = e.message)
+                    sceneHandler?.let()
+                    { handler ->
+                        handler.onAnnouncementShouldShow()
+                        delay(timeMillis = announcementDelay)
+                        getAnnouncement().setMessage(newMessage = null)
+                        handler.onAnnouncementShouldHide()
                     }
-                    catch(e: GameUseCase.GuessWordFailedMismatchException)
-                    {
-                        println(e)
-
-                        finalizeActiveGameBoardRow()
-
-                        getGameBoard().activeRow()?.forEachIndexed()
-                        { index, tile ->
-
-                            for (keyRow in getGameKeyboard().rows())
-                            {
-                                for (currentKey in keyRow)
-                                {
-                                    if (currentKey.backgroundColor() == GameKeyboard.Key.BackgroundColor.CORRECT) continue
-
-                                    if (
-                                        currentKey.letter() == tile.letter()
-                                        && !getGameAnswer().word().contains(currentKey.letter()!!)
-                                    )
-                                    {
-                                        currentKey.setBackgroundColor(newBackgroundColor = GameKeyboard.Key.BackgroundColor.NOT_FOUND)
-                                    }
-                                    else if
-                                    (
-                                        currentKey.letter() == tile.letter()
-                                        && getGameAnswer().word().contains(currentKey.letter()!!)
-                                        && currentKey.letter() !=  getGameAnswer().word()[index]
-                                    )
-                                    {
-                                        currentKey.setBackgroundColor(newBackgroundColor = GameKeyboard.Key.BackgroundColor.NEARBY)
-                                    }
-
-                                    if (currentKey.letter() == tile.letter() && tile.letter() == getGameAnswer().word()[index])
-                                    {
-                                        currentKey.setBackgroundColor(newBackgroundColor = GameKeyboard.Key.BackgroundColor.CORRECT)
-                                    }
-                                }
-                            }
-                        }
-
-                        try
-                        {
-                            getGameBoard().setNewActiveRow()
-                            sceneHandler?.onRoundCompleted()
-                        }
-                        catch (e: GameBoard.SetNewActiveRowFailedException)
-                        {
-                            answerRepository.updateAnswerNotGuessed(existingAnswer = getGameAnswer())
-                            savedGameRepository.create()
-                            guessRepository.clear()
-                            getAnnouncement().setMessage(newMessage = "Game Over")
-                            sceneHandler?.onGameOver()
-                            delay(timeMillis = announcementDelay)
-                            gameNavigationHandler.onGameOver()
-                        }
-                    }
-                    catch (e: GameUseCase.GuessWordFailedNotInWordsListException)
-                    {
-                        println(e)
-                        getAnnouncement().setMessage(newMessage = e.message)
-                        sceneHandler?.let()
-                        { handler ->
-                            handler.onAnnouncementShouldShow()
-                            delay(timeMillis = announcementDelay)
-                            getAnnouncement().setMessage(newMessage = null)
-                            handler.onAnnouncementShouldHide()
-                        }
-                    }
-                } else Unit
-            }
+                }
+            } else Unit
         }
     }
 }
