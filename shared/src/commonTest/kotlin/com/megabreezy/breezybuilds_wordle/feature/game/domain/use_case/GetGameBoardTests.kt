@@ -1,10 +1,14 @@
 package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 
 import com.megabreezy.breezybuilds_wordle.core.data.source.answer.AnswerLocalDataManageable
+import com.megabreezy.breezybuilds_wordle.core.data.source.answer.mock.AnswerLocalDataSourceCommonMock
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Answer
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Word
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
+import com.megabreezy.breezybuilds_wordle.feature.game.data.gateway.mock.GameGuessRepositoryCommonMock
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessGateway
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameGuess
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
@@ -16,19 +20,25 @@ import kotlin.test.*
 
 class GetGameBoardTests: KoinComponent
 {
-    private lateinit var answerLocalDataSource: MockAnswerLocalDataSource
+    private lateinit var answerLocalDataSource: AnswerLocalDataSourceCommonMock
+    private lateinit var guessRepository: GameGuessRepositoryCommonMock
 
     @BeforeTest
     fun setUp()
     {
-        answerLocalDataSource = MockAnswerLocalDataSource()
+        answerLocalDataSource = AnswerLocalDataSourceCommonMock()
+        guessRepository = GameGuessRepositoryCommonMock()
 
         startKoin()
         {
             modules(
                 CoreKoinModule().mockModule(),
                 GameKoinModule().module(),
-                module { single<AnswerLocalDataManageable> { answerLocalDataSource } }
+                module()
+                {
+                    single<AnswerLocalDataManageable> { answerLocalDataSource }
+                    single<GameGuessGateway> { guessRepository }
+                }
             )
         }
     }
@@ -70,14 +80,14 @@ class GetGameBoardTests: KoinComponent
         runBlocking { GameUseCase().getGameBoard() }
 
         // then
-        assertTrue(answerLocalDataSource.getDidInvoke)
+        assertNotNull(answerLocalDataSource.getCurrentAnswerToReturn)
     }
 
     @Test
     fun `when use case is invoked - each row contains tile count matching current answer`()
     {
         // given
-        val expectedRowTileCount = answerLocalDataSource.expectedAnswer.word().toString().count()
+        val expectedRowTileCount = answerLocalDataSource.getCurrent().word().toString().count()
 
         // when
         val actualGameBoard = runBlocking { GameUseCase().getGameBoard() }
@@ -86,18 +96,38 @@ class GetGameBoardTests: KoinComponent
         assertEquals(expectedRowTileCount, actualGameBoard.rows().first().size)
     }
 
-    class MockAnswerLocalDataSource: AnswerLocalDataManageable
+    @Test
+    fun `When use case invoked reloadIfNecessary set true and current game answer found and guesses found - gameBoard matches in progress state`()
     {
-        var getDidInvoke = false
-        val expectedAnswer = Answer(word = Word(word = "HELLO"))
+        // given
+        answerLocalDataSource.getCurrentAnswerToReturn = Answer(word = Word("SLAPS"))
+        guessRepository.getAllGuessesToReturn = listOf(
+            GameGuess(word = "STOPS"),
+            GameGuess(word = "TARPS")
+        )
+        val expectedGameBoardRows = listOf(
+            listOf(GameBoard.Tile(letter = 'S', state = GameBoard.Tile.State.CORRECT),
+                   GameBoard.Tile(letter = 'T', state = GameBoard.Tile.State.INCORRECT),
+                   GameBoard.Tile(letter = 'O', state = GameBoard.Tile.State.INCORRECT),
+                   GameBoard.Tile(letter = 'P', state = GameBoard.Tile.State.CORRECT),
+                   GameBoard.Tile(letter = 'S', state = GameBoard.Tile.State.CORRECT)),
+            listOf(GameBoard.Tile(letter = 'T', state = GameBoard.Tile.State.INCORRECT),
+                   GameBoard.Tile(letter = 'A', state = GameBoard.Tile.State.CLOSE),
+                   GameBoard.Tile(letter = 'R', state = GameBoard.Tile.State.INCORRECT),
+                   GameBoard.Tile(letter = 'P', state = GameBoard.Tile.State.CORRECT),
+                   GameBoard.Tile(letter = 'S', state = GameBoard.Tile.State.CORRECT)),
+            listOf(GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile()),
+            listOf(GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile()),
+            listOf(GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile()),
+            listOf(GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile())
+        )
+        val expectedActiveGameRow = expectedGameBoardRows[2]
 
-        override fun getCurrent(): Answer
-        {
-            getDidInvoke = true
-            return expectedAnswer
-        }
-        override fun getPrevious(): List<Answer> = listOf()
-        override suspend fun insert(newAnswer: Answer) = newAnswer
-        override suspend fun update(existingAnswer: Answer, updatedAnswer: Answer) = updatedAnswer
+        // when
+        val actualGameBoard = runBlocking { GameUseCase().getGameBoard(resetIfNecessary = true, reloadIfNecessary = true) }
+
+        // then
+        assertEquals(expectedGameBoardRows, actualGameBoard.rows())
+        assertEquals(expectedActiveGameRow, actualGameBoard.activeRow())
     }
 }

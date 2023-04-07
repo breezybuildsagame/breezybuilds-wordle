@@ -35,7 +35,7 @@ class GameBoard(private var rows: List<List<Tile>> = listOf())
         activeRow = if (rows.isNotEmpty()) 0 else null
     }
 
-    class Tile(
+    data class Tile(
         private var letter: Char? = null,
         private var state: State = State.HIDDEN
     )

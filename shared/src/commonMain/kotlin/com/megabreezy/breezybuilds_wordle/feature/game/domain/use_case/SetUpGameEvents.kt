@@ -20,7 +20,7 @@ suspend fun GameUseCase.setUpGameEvents(
     val savedGameRepository: SavedGameGateway by inject()
     val gameNavigationHandler: GameNavigationHandleable by inject()
 
-    getGameBoard().reset()
+    getGameBoard(resetIfNecessary = true, reloadIfNecessary = true)
     getGameKeyboard().reset()
     getAnnouncement().setMessage(newMessage = null)
 
