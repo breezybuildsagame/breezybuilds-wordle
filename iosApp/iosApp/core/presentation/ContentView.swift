@@ -26,7 +26,10 @@ struct ContentView: View
         .environmentObject(sceneDimensions)
         .onReceive(sizer.$content)
         { contentSize in
-            sceneDimensions.setDimensions(width: contentSize.width, height: contentSize.height)
+            sceneDimensions.setDimensions(
+                width: sizer.scaled(w: sizer.idealSize.width).width,
+                height: sizer.scaled(h: sizer.idealSize.height).height
+            )
         }
         .animation(.easeInOut, value: navigator.path)
 	}
