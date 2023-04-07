@@ -31,19 +31,25 @@ final class SceneDimensionsTests: XCTestCase
         // given
         let expectation = XCTestExpectation(description: "Waiting to set dimensions")
         let sut = SceneDimensions()
-        sut.setDimensions(width: 100, height: 100)
+        let expectedScreenSize = CGSize(width: mockScreen().width, height: mockScreen().height)
+        sut.setDimensions(width: 100, height: 100, screenSize: CGSize(width: 100, height: 100))
         
         let mockView = MockView(expectation: expectation).environmentObject(sut)
         
         // when
         defer { ViewHosting.expel() }
         ViewHosting.host(view: mockView)
-        sut.setDimensions(width: mockFrame().width, height: mockFrame().height)
+        sut.setDimensions(
+            width: mockFrame().width,
+            height: mockFrame().height,
+            screenSize: expectedScreenSize
+        )
     
         // then
         wait(for: [expectation], timeout: 2)
         XCTAssertEqual(mockFrame().width, sut.width)
         XCTAssertEqual(mockFrame().height, sut.height)
+        XCTAssertEqual("\(Int(mockScreen().width)) / \(Int(mockScreen().height))", try mockView.inspect().zStack().text(0).string())
     }
     
     func test_when_setDimensions_provides_dimensions_matching_current__dimensionsHaveReset_does_not_publish()
@@ -72,18 +78,22 @@ final class SceneDimensionsTests: XCTestCase
         
         var body: some View
         {
-            ZStack {}
-                .onReceive(sut.objectWillChange)
-                { change in
-                    timesSutHasPublished += 1
-                    
-                    if (timesSutHasPublished > maxTimesSutShouldPublish && failIfPublishedOverMax) {
-                        XCTFail()
-                    }
-                    else if (timesSutHasPublished == maxTimesSutShouldPublish) {
-                        expectation.fulfill()
-                    }
+            ZStack {
+                Text("\(Int(sut.screenSize.width)) / \(Int(sut.screenSize.height))")
+            }
+            .onReceive(sut.objectWillChange)
+            { change in
+                timesSutHasPublished += 1
+                
+                print("publishing \(sut.screenSize)")
+                
+                if (timesSutHasPublished > maxTimesSutShouldPublish && failIfPublishedOverMax) {
+                    XCTFail()
                 }
+                else if (timesSutHasPublished == maxTimesSutShouldPublish) {
+                    expectation.fulfill()
+                }
+            }
         }
     }
 }

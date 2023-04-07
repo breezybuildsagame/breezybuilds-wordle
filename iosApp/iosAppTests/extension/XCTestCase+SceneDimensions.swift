@@ -14,4 +14,6 @@ extension XCTestCase
     func idealFrame() -> (width: CGFloat, height: CGFloat) { (390, 844) }
     
     func mockFrame() -> (width: CGFloat, height: CGFloat) { (300, 700) }
+    
+    func mockScreen() -> (width: CGFloat, height: CGFloat) { (400, 700) }
 }

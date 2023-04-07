@@ -98,7 +98,7 @@ extension GameSceneKeyboard
                     }
                 }
                 .frame(
-                    width: sceneDimensions.width * (keyWidth / idealFrameWidth()),
+                    width: sceneDimensions.screenSize.width * (keyWidth / idealFrameWidth()),
                     height: sceneDimensions.height * (56.0 / idealFrameHeight())
                 )
                 .cornerRadius(sceneDimensions.width * (4 / idealFrameWidth()))

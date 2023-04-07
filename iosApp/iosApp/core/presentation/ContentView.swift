@@ -28,7 +28,8 @@ struct ContentView: View
         { contentSize in
             sceneDimensions.setDimensions(
                 width: sizer.scaled(w: sizer.idealSize.width).width,
-                height: sizer.scaled(h: sizer.idealSize.height).height
+                height: sizer.scaled(h: sizer.idealSize.height).height,
+                screenSize: CGSize(width: contentSize.width, height: contentSize.height)
             )
         }
         .animation(.easeInOut, value: navigator.path)
