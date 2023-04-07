@@ -1,6 +1,7 @@
 package com.megabreezy.breezybuilds_wordle.core.util
 
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
+import com.megabreezy.breezybuilds_wordle.feature.stats.util.StatsKoinModule
 import org.koin.core.KoinApplication
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
@@ -18,7 +19,8 @@ fun initKoin(
     modules(
         //CoreKoinModule(scenarios = scenarios).mockModule(),
         CoreKoinModule().module(),
-        GameKoinModule().module()
+        GameKoinModule().module(),
+        StatsKoinModule().module()
     )
 
     KoinPlatformManager.setApp(newApp = this)
@@ -39,8 +41,10 @@ object KoinPlatformManager
         catch (e: Throwable)
         {
             loadKoinModules(
-                listOf(CoreKoinModule(scenarios = scenarios).mockModule(),
-                       GameKoinModule().module()
+                listOf(
+                    CoreKoinModule(scenarios = scenarios).mockModule(),
+                    GameKoinModule().module(),
+                    StatsKoinModule().module()
                 )
             )
         }

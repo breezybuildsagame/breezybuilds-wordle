@@ -4,7 +4,10 @@ import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
 import com.megabreezy.breezybuilds_wordle.core.util.Scenario
 import com.megabreezy.breezybuilds_wordle.feature.game.data.gateway.mock.GameAnswerRepositoryCommonMock
 import com.megabreezy.breezybuilds_wordle.feature.game.data.gateway.mock.GameGuessRepositoryCommonMock
+import com.megabreezy.breezybuilds_wordle.feature.game.data.gateway.mock.SavedGameRepositoryCommonMock
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.GameNavigationHandleable
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.*
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.mock.GameNavigationHandlerCommonMock
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.*
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.mock.GameSceneHandlerCommonMock
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
@@ -15,13 +18,19 @@ import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import kotlin.test.*
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
+@OptIn(ExperimentalTime::class)
 class SetUpGameEventsTests: KoinComponent
 {
     private lateinit var answerRepository: GameAnswerRepositoryCommonMock
     private lateinit var guessRepository: GameGuessRepositoryCommonMock
+    private lateinit var savedGameRepository: SavedGameRepositoryCommonMock
     private lateinit var sceneHandler: GameSceneHandlerCommonMock
     private lateinit var announcement: MockAnnouncement
+    private lateinit var gameNavigationHandler: GameNavigationHandlerCommonMock
 
     private val gameBoard: GameBoard by inject()
     private val keyboard: GameKeyboard by inject()
@@ -31,8 +40,10 @@ class SetUpGameEventsTests: KoinComponent
     {
         answerRepository = GameAnswerRepositoryCommonMock()
         guessRepository = GameGuessRepositoryCommonMock()
+        savedGameRepository = SavedGameRepositoryCommonMock()
         sceneHandler = GameSceneHandlerCommonMock()
         announcement = MockAnnouncement()
+        gameNavigationHandler = GameNavigationHandlerCommonMock()
 
         startKoin()
         {
@@ -43,7 +54,9 @@ class SetUpGameEventsTests: KoinComponent
                 {
                     single<GameAnswerGateway> { answerRepository }
                     single<GameGuessGateway> { guessRepository }
+                    single<GameNavigationHandleable> { gameNavigationHandler }
                     single<AnnouncementRepresentable> { announcement }
+                    single<SavedGameGateway> { savedGameRepository }
                 }
             )
         }
@@ -60,7 +73,7 @@ class SetUpGameEventsTests: KoinComponent
         keyboard.rows().first().forEach { it.setBackgroundColor(GameKeyboard.Key.BackgroundColor.NOT_FOUND) }
 
         // when
-        runBlocking { GameUseCase().setUpGameEvents() }
+        runBlocking { GameUseCase().setUpGameEvents(announcementDelay = 0L) }
 
         // then
         keyboard.rows().first().forEach { assertEquals(GameKeyboard.Key.BackgroundColor.DEFAULT, it.backgroundColor()) }
@@ -79,7 +92,7 @@ class SetUpGameEventsTests: KoinComponent
         gameBoard.setNewActiveRow()
 
         // when
-        runBlocking { GameUseCase().setUpGameEvents() }
+        runBlocking { GameUseCase().setUpGameEvents(announcementDelay = 0L) }
 
         // then
         for (row in gameBoard.rows())
@@ -101,7 +114,7 @@ class SetUpGameEventsTests: KoinComponent
         announcement.setMessage(newMessage = "My Urgent Message!")
 
         // when
-        runBlocking { GameUseCase().setUpGameEvents() }
+        runBlocking { GameUseCase().setUpGameEvents(announcementDelay = 0L) }
 
         // then
         assertNull(announcement.message())
@@ -114,7 +127,7 @@ class SetUpGameEventsTests: KoinComponent
         val expectedLetter = 'B'
 
         // when
-        runBlocking { GameUseCase().setUpGameEvents() }
+        runBlocking { GameUseCase().setUpGameEvents(announcementDelay = 0L) }
         for (row in keyboard.rows()) { for (key in row) { if (key.letter() == expectedLetter) runBlocking { key.click() } } }
 
         // then
@@ -125,7 +138,7 @@ class SetUpGameEventsTests: KoinComponent
     fun `when use case is invoked and letter Key is clicked - handler onRevealNextTile method is invoked`()
     {
         // when
-        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
         for (row in keyboard.rows()) { for (key in row) { if (key.letter() == 'Z') runBlocking { key.click() } } }
 
         // then
@@ -136,7 +149,7 @@ class SetUpGameEventsTests: KoinComponent
     fun `when use case is invoked and letter Key is clicked and GameBoard activeRow is unchanged - handler onRevealNextTile method is not invoked`()
     {
         // given
-        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
         for (row in gameBoard.rows()) { for (tile in row) { runBlocking { getKey(letters = "C")?.click() } } }
         sceneHandler.onRevealNextTileDidInvoke = false
 
@@ -153,7 +166,7 @@ class SetUpGameEventsTests: KoinComponent
         // given
         runBlocking()
         {
-            GameUseCase().setUpGameEvents(sceneHandler = sceneHandler)
+            GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L)
             getKey(letters = "C")?.click()
         }
         sceneHandler.onRevealNextTileDidInvoke = false
@@ -170,7 +183,7 @@ class SetUpGameEventsTests: KoinComponent
     fun `when use case is invoked and GameBoard activeRow contains no letters and backspace Key is clicked - activeRow remains empty`()
     {
         // given
-        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
 
         // when
         runBlocking { getKey(letters = "BACKSPACE")?.click() }
@@ -184,7 +197,7 @@ class SetUpGameEventsTests: KoinComponent
     fun `when use case is invoked and enter Key is clicked - guessWord use case is invoked`()
     {
         // given
-        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
         for (row in gameBoard.rows()) { for (tile in row) { runBlocking { getKey(letters = "C")?.click() } } }
 
         // when
@@ -199,7 +212,7 @@ class SetUpGameEventsTests: KoinComponent
     fun `when use case is invoked and enter Key is clicked and GameGuess is invalid - no exception is thrown`()
     {
         // given
-        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
         runBlocking { getKey(letters = "C")?.click() }
         guessRepository.guessIsInvalid = true
 
@@ -214,7 +227,7 @@ class SetUpGameEventsTests: KoinComponent
     fun `when use case invoked and enter Key is clicked and GameGuess contains an incorrect letter - GameKeyboard Key background colors are updated accordingly`()
     {
         // given
-        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
         val keysInUse = listOf(
             getKey(letters = "P"), getKey(letters = "L"), getKey(letters = "A"), getKey(letters = "Y"), getKey(letters = "S")
         )
@@ -247,7 +260,7 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         answerRepository.guessContainsCloseLetter = true
-        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
         val keysInUse = listOf(
             getKey(letters = "P"), getKey(letters = "L"), getKey(letters = "A"), getKey(letters = "Y"), getKey(letters = "S")
         )
@@ -269,7 +282,7 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         guessRepository.guessContainsMatchingLetters = true
-        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
         val keysInUse = listOf(
             getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
         )
@@ -316,7 +329,7 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         answerRepository.guessContainsCloseLetter = true  // Answer: SPEAR
-        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
         val initialActiveGameBoardRow = gameBoard.activeRow()
         val keysInUse = listOf(
             getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
@@ -341,7 +354,7 @@ class SetUpGameEventsTests: KoinComponent
     fun `when use case invoked and enter Key is clicked and GameGuess is incorrect - GameBoard setNewActiveRow method is invoked`()
     {
         // given
-        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
         val initialActiveGameBoardRow = gameBoard.activeRow()
         val keysInUse = listOf(
             getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
@@ -359,7 +372,7 @@ class SetUpGameEventsTests: KoinComponent
     fun `when use case invoked and enter Key is clicked and GameGuess is incorrect - handler onRoundCompleted method is invoked`()
     {
         // given
-        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
         val keysInUse = listOf(
             getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
         )
@@ -373,9 +386,29 @@ class SetUpGameEventsTests: KoinComponent
     }
 
     @Test
+    fun `when GameBoard setNewActiveRow throws an exception - injected CompletedGameGateway's put method is invoked`()
+    {
+        // given
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
+        val keysInUse = listOf(
+            getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
+        )
+
+        // when
+        for (round in gameBoard.rows())
+        {
+            for (key in keysInUse) runBlocking { key?.click() }
+            runBlocking { getKey(letters = "ENTER")?.click() }
+        }
+
+        // then
+        assertNotNull(savedGameRepository.savedGameToReturn)
+    }
+
+    @Test
     fun `when GameBoard setNewActiveRow throws an exception - injected GameGuessGateway's clear method is invoked`()
     {
-        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
         val keysInUse = listOf(
             getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
         )
@@ -395,7 +428,7 @@ class SetUpGameEventsTests: KoinComponent
     fun `when GameBoard setNewActiveRow throws an exception - expected announcement is set`()
     {
         // given
-        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
         val keysInUse = listOf(
             getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
         )
@@ -413,10 +446,38 @@ class SetUpGameEventsTests: KoinComponent
     }
 
     @Test
+    fun `When onGameOver invoked after unsuccessful game - injected GameNavigationHandleable onGameOver method is invoked`()
+    {
+        // given
+        val expectedDelay = 10L
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = expectedDelay) }
+        val keysInUse = listOf(
+            getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
+        )
+        val expectedAnnouncementMessage = "Game Over"
+        var actualTime = Duration.ZERO
+
+        // when
+        for (round in gameBoard.rows())
+        {
+            actualTime = Duration.ZERO
+            for (key in keysInUse) runBlocking { key?.click() }
+
+            actualTime = measureTime()
+            {
+                runBlocking { getKey(letters = "ENTER")?.click() }
+            }
+        }
+
+        assertTrue(gameNavigationHandler.onGameOverDidInvoke)
+        assertTrue(actualTime.inWholeMilliseconds > expectedDelay - 1)
+    }
+
+    @Test
     fun `when GameBoard setNewActiveRow throws an exception - Answer is updated to expected state`()
     {
         // given
-        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
         val keysInUse = listOf(
             getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
         )
@@ -438,7 +499,7 @@ class SetUpGameEventsTests: KoinComponent
     fun `when GameBoard setNewActiveRow throws an exception - handler onGameOver method is invoked`()
     {
         // given
-        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
         val keysInUse = listOf(
             getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
         )
@@ -459,7 +520,7 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         answerRepository.guessMatchesAnswer = true
-        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
         val keysInUse = listOf(
             getKey(letters = "P"), getKey(letters = "L"), getKey(letters = "A"), getKey(letters = "Y"), getKey(letters = "S")
         )
@@ -475,11 +536,29 @@ class SetUpGameEventsTests: KoinComponent
     }
 
     @Test
+    fun `when use case invoked and enter Key is clicked and GameGuess is correct - injected CompletedGameGateway's put method is invoked`()
+    {
+        // given
+        answerRepository.guessMatchesAnswer = true
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
+        val keysInUse = listOf(
+            getKey(letters = "P"), getKey(letters = "L"), getKey(letters = "A"), getKey(letters = "Y"), getKey(letters = "S")
+        )
+
+        // when
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
+
+        // then
+        assertNotNull(savedGameRepository.savedGameToReturn)
+    }
+
+    @Test
     fun `when use case invoked and enter Key is clicked and GameGuess is correct - injected GameGuessGateway's clear method is invoked`()
     {
         // given
         answerRepository.guessMatchesAnswer = true
-        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
         val keysInUse = listOf(
             getKey(letters = "P"), getKey(letters = "L"), getKey(letters = "A"), getKey(letters = "Y"), getKey(letters = "S")
         )
@@ -497,7 +576,7 @@ class SetUpGameEventsTests: KoinComponent
     {
         // given
         answerRepository.guessMatchesAnswer = true
-        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler) }
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
         val keysInUse = listOf(
             getKey(letters = "P"), getKey(letters = "L"), getKey(letters = "A"), getKey(letters = "Y"), getKey(letters = "S")
         )
@@ -509,6 +588,29 @@ class SetUpGameEventsTests: KoinComponent
         // then
         assertEquals("Correct! Thanks for playing!", announcement.message())
         assertTrue(sceneHandler.onGameOverDidInvoke)
+    }
+
+    @Test
+    fun `When onGameOver invoked after successful game - injected GameNavigationHandleable onGameOver method is invoked`()
+    {
+        // given
+        val expectedDelay = 10L
+        answerRepository.guessMatchesAnswer = true
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = expectedDelay) }
+        val keysInUse = listOf(
+            getKey(letters = "P"), getKey(letters = "L"), getKey(letters = "A"), getKey(letters = "Y"), getKey(letters = "S")
+        )
+
+        // when
+        for (key in keysInUse) runBlocking { key?.click() }
+        val actualTime = measureTime()
+        {
+            runBlocking { getKey(letters = "ENTER")?.click() }
+        }
+
+        // then
+        assertTrue(gameNavigationHandler.onGameOverDidInvoke)
+        assertTrue(actualTime.inWholeMilliseconds > expectedDelay - 1)
     }
 
     data class MockAnnouncement(private var message: String? = null): AnnouncementRepresentable

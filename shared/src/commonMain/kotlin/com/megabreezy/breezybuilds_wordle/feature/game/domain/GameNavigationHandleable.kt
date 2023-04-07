@@ -5,4 +5,5 @@ interface GameNavigationHandleable
     fun onHelpOptionClicked()
     fun onStatsOptionClicked()
     fun onSettingsOptionClicked()
+    fun onGameOver()
 }

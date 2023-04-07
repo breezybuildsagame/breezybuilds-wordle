@@ -23,4 +23,9 @@ class GameNavigationHandler: GameNavigationHandleable, KoinComponent
     {
         appNavigator.navigate(route = AppRoute.SETTINGS)
     }
+
+    override fun onGameOver()
+    {
+        appNavigator.navigate(route = AppRoute.STATS)
+    }
 }
