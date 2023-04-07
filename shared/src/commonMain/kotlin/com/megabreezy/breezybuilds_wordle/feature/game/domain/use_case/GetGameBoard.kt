@@ -36,21 +36,7 @@ suspend fun GameUseCase.getGameBoard(
         {
             gameBoard.activeRow()?.forEachIndexed { index, tile -> tile.setLetter(newLetter = guess.word()[index]) }
 
-            for (row in getGameKeyboard().rows())
-            {
-                for (key in row)
-                {
-                    gameBoard.activeRow()?.forEachIndexed()
-                    { index, tile ->
-                        tile.setLetter(newLetter = guess.word()[index])
-                        if (tile.letter() == answer.word()[index])
-                            tile.setState(newState = GameBoard.Tile.State.CORRECT)
-                        else if (answer.word().contains("${tile.letter()}"))
-                            tile.setState(newState = GameBoard.Tile.State.CLOSE)
-                        else tile.setState(newState = GameBoard.Tile.State.INCORRECT)
-                    }
-                }
-            }
+            finalizeActiveGameBoardRow()
 
             gameBoard.setNewActiveRow()
         }

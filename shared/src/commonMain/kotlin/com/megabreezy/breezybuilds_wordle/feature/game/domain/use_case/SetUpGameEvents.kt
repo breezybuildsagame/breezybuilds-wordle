@@ -70,13 +70,11 @@ suspend fun GameUseCase.setUpGameEvents(
                     catch(e: GameUseCase.GuessWordFailedMismatchException)
                     {
                         println(e)
+
+                        finalizeActiveGameBoardRow()
+
                         getGameBoard().activeRow()?.forEachIndexed()
                         { index, tile ->
-                            if (tile.letter() == getGameAnswer().word()[index])
-                                tile.setState(newState = GameBoard.Tile.State.CORRECT)
-                            else if (getGameAnswer().word().contains("${tile.letter()}"))
-                                tile.setState(newState = GameBoard.Tile.State.CLOSE)
-                            else tile.setState(newState = GameBoard.Tile.State.INCORRECT)
 
                             for (keyRow in getGameKeyboard().rows())
                             {
