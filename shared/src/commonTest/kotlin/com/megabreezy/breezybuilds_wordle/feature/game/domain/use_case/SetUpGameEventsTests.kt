@@ -648,6 +648,36 @@ class SetUpGameEventsTests: KoinComponent
         assertEquals(expectedGameBoardRows[1], actualGameBoard.activeRow())
     }
 
+    @Test
+    fun `When use case invoked and game in progress - GameKeyboard matches expected state`()
+    {
+        // given
+        answerRepository.getShouldFail = false
+        answerRepository.gameAnswer = GameAnswer(word = "STARS")
+        guessRepository.getAllGuessesToReturn = listOf(
+            GameGuess(word = "SLAYS")
+        )
+
+        // when
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
+
+        // then
+        val keys = GameUseCase().getGameKeyboard().rows().flatten().filter { it.backgroundColor() != GameKeyboard.Key.BackgroundColor.DEFAULT }
+
+        // then
+        assertEquals(4, keys.count()) // 4 = unique letters guessed
+        for (key in keys)
+        {
+            when (key.letter())
+            {
+                'S' -> assertEquals(GameKeyboard.Key.BackgroundColor.CORRECT, key.backgroundColor())
+                'L' -> assertEquals(GameKeyboard.Key.BackgroundColor.NOT_FOUND, key.backgroundColor())
+                'A' -> assertEquals(GameKeyboard.Key.BackgroundColor.CORRECT, key.backgroundColor())
+                'Y' -> assertEquals(GameKeyboard.Key.BackgroundColor.NOT_FOUND, key.backgroundColor())
+            }
+        }
+    }
+
     data class MockAnnouncement(private var message: String? = null): AnnouncementRepresentable
     {
         var previouslySetMessages: MutableList<String> = mutableListOf()

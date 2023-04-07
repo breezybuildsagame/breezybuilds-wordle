@@ -5,7 +5,6 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswer
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessGateway
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.SavedGameGateway
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneHandleable
 import kotlinx.coroutines.delay
 import org.koin.core.component.inject
@@ -20,8 +19,8 @@ suspend fun GameUseCase.setUpGameEvents(
     val savedGameRepository: SavedGameGateway by inject()
     val gameNavigationHandler: GameNavigationHandleable by inject()
 
+    getGameKeyboard(resetIfNecessary = true)
     getGameBoard(resetIfNecessary = true, reloadIfNecessary = true)
-    getGameKeyboard().reset()
     getAnnouncement().setMessage(newMessage = null)
 
     for (key in getGameKeyboard().rows().flatten())
@@ -71,39 +70,7 @@ suspend fun GameUseCase.setUpGameEvents(
 
                     finalizeActiveGameBoardRow()
 
-                    getGameBoard().activeRow()?.forEachIndexed()
-                    { index, tile ->
-
-                        for (keyRow in getGameKeyboard().rows())
-                        {
-                            for (currentKey in keyRow)
-                            {
-                                if (currentKey.backgroundColor() == GameKeyboard.Key.BackgroundColor.CORRECT) continue
-
-                                if (
-                                    currentKey.letter() == tile.letter()
-                                    && !getGameAnswer().word().contains(currentKey.letter()!!)
-                                )
-                                {
-                                    currentKey.setBackgroundColor(newBackgroundColor = GameKeyboard.Key.BackgroundColor.NOT_FOUND)
-                                }
-                                else if
-                                (
-                                    currentKey.letter() == tile.letter()
-                                    && getGameAnswer().word().contains(currentKey.letter()!!)
-                                    && currentKey.letter() !=  getGameAnswer().word()[index]
-                                )
-                                {
-                                    currentKey.setBackgroundColor(newBackgroundColor = GameKeyboard.Key.BackgroundColor.NEARBY)
-                                }
-
-                                if (currentKey.letter() == tile.letter() && tile.letter() == getGameAnswer().word()[index])
-                                {
-                                    currentKey.setBackgroundColor(newBackgroundColor = GameKeyboard.Key.BackgroundColor.CORRECT)
-                                }
-                            }
-                        }
-                    }
+                    updateGameKeyboardHints()
 
                     try
                     {

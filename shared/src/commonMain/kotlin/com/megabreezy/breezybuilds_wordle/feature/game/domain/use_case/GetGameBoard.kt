@@ -38,6 +38,8 @@ suspend fun GameUseCase.getGameBoard(
 
             finalizeActiveGameBoardRow()
 
+            updateGameKeyboardHints()
+
             gameBoard.setNewActiveRow()
         }
     }

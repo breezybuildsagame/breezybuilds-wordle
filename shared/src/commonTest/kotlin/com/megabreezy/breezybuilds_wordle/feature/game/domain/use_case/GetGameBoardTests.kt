@@ -9,6 +9,7 @@ import com.megabreezy.breezybuilds_wordle.feature.game.data.gateway.mock.GameGue
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessGateway
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameGuess
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
@@ -97,7 +98,7 @@ class GetGameBoardTests: KoinComponent
     }
 
     @Test
-    fun `When use case invoked reloadIfNecessary set true and current game answer found and guesses found - gameBoard matches in progress state`()
+    fun `When use case invoked reloadIfNecessary set true and current game answer found and guesses found - GameBoard matches in progress state`()
     {
         // given
         answerLocalDataSource.getCurrentAnswerToReturn = Answer(word = Word("SLAPS"))
@@ -129,5 +130,36 @@ class GetGameBoardTests: KoinComponent
         // then
         assertEquals(expectedGameBoardRows, actualGameBoard.rows())
         assertEquals(expectedActiveGameRow, actualGameBoard.activeRow())
+    }
+
+    @Test
+    fun `When use case invoked reloadIfNecessary set true and current game answer found and guesses found - GameKeyboard matches in progress state`()
+    {
+        // given
+        val answer = Answer(word = Word("SLAPS"))
+        answerLocalDataSource.getCurrentAnswerToReturn = answer
+        guessRepository.getAllGuessesToReturn = listOf(
+            GameGuess(word = "STOPS"),
+            GameGuess(word = "TARPS")
+        )
+
+        // when
+        runBlocking { GameUseCase().getGameBoard(resetIfNecessary = true, reloadIfNecessary = true) }
+        val keys = GameUseCase().getGameKeyboard().rows().flatten().filter { it.backgroundColor() != GameKeyboard.Key.BackgroundColor.DEFAULT }
+
+        // then
+        assertEquals(6, keys.count()) // 6 = unique letters guessed (S, T, O, P, A, R)
+        for (key in keys)
+        {
+            when (key.letter())
+            {
+                'S' -> assertEquals(GameKeyboard.Key.BackgroundColor.CORRECT, key.backgroundColor())
+                'T' -> assertEquals(GameKeyboard.Key.BackgroundColor.NOT_FOUND, key.backgroundColor())
+                'O' -> assertEquals(GameKeyboard.Key.BackgroundColor.NOT_FOUND, key.backgroundColor())
+                'P' -> assertEquals(GameKeyboard.Key.BackgroundColor.CORRECT, key.backgroundColor())
+                'A' -> assertEquals(GameKeyboard.Key.BackgroundColor.NEARBY, key.backgroundColor())
+                'R' -> assertEquals(GameKeyboard.Key.BackgroundColor.NOT_FOUND, key.backgroundColor())
+            }
+        }
     }
 }
