@@ -619,11 +619,33 @@ class SetUpGameEventsTests: KoinComponent
     fun `When use case invoked and game in progress - GameBoard matches expected state`()
     {
         // given
+        answerRepository.getShouldFail = false
+        answerRepository.gameAnswer = GameAnswer(word = "STARS")
+        guessRepository.getAllGuessesToReturn = listOf(
+            GameGuess(word = "SLAYS")
+        )
+        val expectedGameBoardRows = listOf(
+            listOf(
+                GameBoard.Tile(letter = 'S', state = GameBoard.Tile.State.CORRECT),
+                GameBoard.Tile(letter = 'L', state = GameBoard.Tile.State.INCORRECT),
+                GameBoard.Tile(letter = 'A', state = GameBoard.Tile.State.CORRECT),
+                GameBoard.Tile(letter = 'Y', state = GameBoard.Tile.State.INCORRECT),
+                GameBoard.Tile(letter = 'S', state = GameBoard.Tile.State.CORRECT)
+            ),
+            listOf(GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile()),
+            listOf(GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile()),
+            listOf(GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile()),
+            listOf(GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile()),
+            listOf(GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile())
+        )
 
         // when
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
+        val actualGameBoard = runBlocking { GameUseCase().getGameBoard() }
 
         // then
-        assertTrue(false)
+        assertEquals(expectedGameBoardRows, actualGameBoard.rows())
+        assertEquals(expectedGameBoardRows[1], actualGameBoard.activeRow())
     }
 
     data class MockAnnouncement(private var message: String? = null): AnnouncementRepresentable
