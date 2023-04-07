@@ -24,9 +24,9 @@ import kotlin.test.*
 
 class SavedGameRepositoryTests
 {
-    lateinit var completedGameLocalDataSource: CompletedGameLocalDataSourceCommonMock
-    lateinit var gameAnswerRepository: GameAnswerRepositoryCommonMock
-    lateinit var gameGuessRepository: GameGuessRepositoryCommonMock
+    private lateinit var completedGameLocalDataSource: CompletedGameLocalDataSourceCommonMock
+    private lateinit var gameAnswerRepository: GameAnswerRepositoryCommonMock
+    private lateinit var gameGuessRepository: GameGuessRepositoryCommonMock
 
     @BeforeTest
     fun setUp()
@@ -60,7 +60,7 @@ class SavedGameRepositoryTests
         runBlocking { sut.create() }
 
         // then
-        assertNotNull(gameAnswerRepository.createdGameAnswer)
+        assertNotNull(gameAnswerRepository.gameAnswer)
     }
 
     @Test

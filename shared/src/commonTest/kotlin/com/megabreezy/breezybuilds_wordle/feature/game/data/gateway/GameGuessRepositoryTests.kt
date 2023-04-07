@@ -78,6 +78,8 @@ class GameGuessRepositoryTests: KoinComponent
         val sut = GameGuessRepository()
         val expectedErrorMessage = "Failed to save new Guess."
         guessLocalDataSource.saveShouldFail = true
+        println(gameBoard.rows())
+        println(gameBoard.activeRow())
 
         // when
         val actualException = assertFailsWith<GameGuessCreateFailedRepositoryException> { runBlocking { sut.create() } }

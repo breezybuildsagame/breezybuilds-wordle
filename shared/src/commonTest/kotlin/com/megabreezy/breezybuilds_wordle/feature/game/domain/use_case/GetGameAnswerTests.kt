@@ -1,10 +1,8 @@
 package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
+import com.megabreezy.breezybuilds_wordle.feature.game.data.gateway.mock.GameAnswerRepositoryCommonMock
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerGateway
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotCreatedRepositoryException
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotFoundRepositoryException
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerNotUpdatedRepositoryException
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameAnswer
 import com.megabreezy.breezybuilds_wordle.feature.game.util.GameKoinModule
 import kotlinx.coroutines.runBlocking
@@ -15,12 +13,12 @@ import kotlin.test.*
 
 class GetGameAnswerTests
 {
-    private lateinit var repository: MockRepository
+    private lateinit var repository: GameAnswerRepositoryCommonMock
 
     @BeforeTest
     fun setUp()
     {
-        repository = MockRepository()
+        repository = GameAnswerRepositoryCommonMock()
 
         startKoin()
         {
@@ -42,7 +40,7 @@ class GetGameAnswerTests
         runBlocking { GameUseCase().getGameAnswer() }
 
         // then
-        assertNotNull(repository.gameAnswerToReturn)
+        assertNotNull(repository.gameAnswer)
     }
 
     @Test
@@ -50,6 +48,7 @@ class GetGameAnswerTests
     {
         // given
         val expectedGameAnswer = GameAnswer(word = "AWESOME")
+        repository.gameAnswer = expectedGameAnswer
 
         // when
         val actualGameAnswer = runBlocking { GameUseCase().getGameAnswer() }
@@ -64,6 +63,7 @@ class GetGameAnswerTests
         // given
         repository.getShouldFail = true
         val expectedGameAnswer = GameAnswer(word = "AWESOME")
+        repository.createdGameAnswer = expectedGameAnswer
 
         // when
         val actualGameAnswer = runBlocking { GameUseCase().getGameAnswer() }
@@ -76,7 +76,7 @@ class GetGameAnswerTests
     fun `when gateway create method throws an exception - expected exception is thrown`()
     {
         // given
-        val expectedExceptionMessage = "Not found."
+        val expectedExceptionMessage = repository.createExceptionMessage
         repository.getShouldFail = true
         repository.createShouldFail = true
 
@@ -90,48 +90,20 @@ class GetGameAnswerTests
         assertEquals(expectedExceptionMessage, actualException.message)
     }
 
-    class MockRepository: GameAnswerGateway
+    @Test
+    fun `When attemptCreateOnFailure flag set to false - expected exception is thrown`()
     {
-        var gameAnswerToReturn: GameAnswer? = null
-        var updatedGameAnswerToReturn: GameAnswer? = null
-        var createShouldFail = false
-        var getShouldFail = false
-        var updateShouldFail = false
+        // given
+        val expectedExceptionMessage = repository.getExceptionMessage
+        repository.getShouldFail = true
 
-        override suspend fun create(): GameAnswer
+        // when
+        val actualException = assertFailsWith<GameUseCase.GetGameAnswerFailedException>()
         {
-            if (createShouldFail) throw GameAnswerNotCreatedRepositoryException("Not found.")
-
-            gameAnswerToReturn = GameAnswer(word = "AWESOME")
-
-            return gameAnswerToReturn!!
+            runBlocking { GameUseCase().getGameAnswer(attemptCreateOnFailure = false) }
         }
 
-        override fun get(): GameAnswer
-        {
-            if (getShouldFail) throw GameAnswerNotFoundRepositoryException("Not found.")
-
-            gameAnswerToReturn = GameAnswer(word = "AWESOME")
-
-            return gameAnswerToReturn!!
-        }
-
-        override suspend fun updateAnswerGuessed(existingAnswer: GameAnswer): GameAnswer
-        {
-            if (updateShouldFail) throw GameAnswerNotUpdatedRepositoryException("Not updated.")
-
-            updatedGameAnswerToReturn = existingAnswer
-
-            return existingAnswer
-        }
-
-        override suspend fun updateAnswerNotGuessed(existingAnswer: GameAnswer): GameAnswer
-        {
-            if (updateShouldFail) throw GameAnswerNotUpdatedRepositoryException("Not updated.")
-
-            updatedGameAnswerToReturn = existingAnswer
-
-            return existingAnswer
-        }
+        // then
+        assertEquals(expectedExceptionMessage, actualException.message)
     }
 }

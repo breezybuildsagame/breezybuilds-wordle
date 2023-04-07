@@ -26,8 +26,10 @@ class GameAnswerRepositoryCommonMock: GameAnswerGateway
 
     override suspend fun create(): GameAnswer
     {
-        if (getShouldFail) throw GameAnswerNotFoundRepositoryException(getExceptionMessage)
         if (createShouldFail) throw GameAnswerNotCreatedRepositoryException(createExceptionMessage)
+
+        createdGameAnswer?.let { return it }
+
         createdGameAnswer = if (guessMatchesAnswer) GameAnswer(word = "PLAYS")
         else if (guessContainsCloseLetter) GameAnswer(word = "SPEAR")
         else GameAnswer(word = "TESTS")
@@ -35,14 +37,14 @@ class GameAnswerRepositoryCommonMock: GameAnswerGateway
         return createdGameAnswer!!
     }
 
-    override fun get(): GameAnswer = createdGameAnswer?.let()
+    override fun get(): GameAnswer
     {
         if (getShouldFail) throw GameAnswerNotFoundRepositoryException(getExceptionMessage)
 
-        gameAnswer = createdGameAnswer
+        gameAnswer = gameAnswer ?: createdGameAnswer ?: GameAnswer(word = "SLAYS")
 
         return gameAnswer!!
-    } ?: runBlocking { create() }
+    }
 
     override suspend fun updateAnswerGuessed(existingAnswer: GameAnswer): GameAnswer
     {

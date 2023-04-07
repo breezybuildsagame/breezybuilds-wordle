@@ -60,6 +60,7 @@ class SetUpGameEventsTests: KoinComponent
                 }
             )
         }
+        answerRepository.getShouldFail = true
     }
 
     @AfterTest
@@ -197,6 +198,7 @@ class SetUpGameEventsTests: KoinComponent
     fun `when use case is invoked and enter Key is clicked - guessWord use case is invoked`()
     {
         // given
+        answerRepository.getShouldFail = false
         runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
         for (row in gameBoard.rows()) { for (tile in row) { runBlocking { getKey(letters = "C")?.click() } } }
 
@@ -454,13 +456,11 @@ class SetUpGameEventsTests: KoinComponent
         val keysInUse = listOf(
             getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
         )
-        val expectedAnnouncementMessage = "Game Over"
         var actualTime = Duration.ZERO
 
         // when
         for (round in gameBoard.rows())
         {
-            actualTime = Duration.ZERO
             for (key in keysInUse) runBlocking { key?.click() }
 
             actualTime = measureTime()
@@ -541,9 +541,10 @@ class SetUpGameEventsTests: KoinComponent
         // given
         answerRepository.guessMatchesAnswer = true
         runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
-        val keysInUse = listOf(
-            getKey(letters = "P"), getKey(letters = "L"), getKey(letters = "A"), getKey(letters = "Y"), getKey(letters = "S")
-        )
+        val keysInUse = answerRepository.createdGameAnswer!!.word().indices.map()
+        {
+            getKey(letters = "${answerRepository.createdGameAnswer!!.word()[it]}" )
+        }
 
         // when
         for (key in keysInUse) runBlocking { key?.click() }
@@ -559,9 +560,10 @@ class SetUpGameEventsTests: KoinComponent
         // given
         answerRepository.guessMatchesAnswer = true
         runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
-        val keysInUse = listOf(
-            getKey(letters = "P"), getKey(letters = "L"), getKey(letters = "A"), getKey(letters = "Y"), getKey(letters = "S")
-        )
+        val keysInUse = answerRepository.createdGameAnswer!!.word().indices.map()
+        {
+            getKey(letters = "${answerRepository.createdGameAnswer!!.word()[it]}" )
+        }
 
         // when
         for (key in keysInUse) runBlocking { key?.click() }
@@ -611,6 +613,69 @@ class SetUpGameEventsTests: KoinComponent
         // then
         assertTrue(gameNavigationHandler.onGameOverDidInvoke)
         assertTrue(actualTime.inWholeMilliseconds > expectedDelay - 1)
+    }
+
+    @Test
+    fun `When use case invoked and game in progress - GameBoard matches expected state`()
+    {
+        // given
+        answerRepository.getShouldFail = false
+        answerRepository.gameAnswer = GameAnswer(word = "STARS")
+        guessRepository.getAllGuessesToReturn = listOf(
+            GameGuess(word = "SLAYS")
+        )
+        val expectedGameBoardRows = listOf(
+            listOf(
+                GameBoard.Tile(letter = 'S', state = GameBoard.Tile.State.CORRECT),
+                GameBoard.Tile(letter = 'L', state = GameBoard.Tile.State.INCORRECT),
+                GameBoard.Tile(letter = 'A', state = GameBoard.Tile.State.CORRECT),
+                GameBoard.Tile(letter = 'Y', state = GameBoard.Tile.State.INCORRECT),
+                GameBoard.Tile(letter = 'S', state = GameBoard.Tile.State.CORRECT)
+            ),
+            listOf(GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile()),
+            listOf(GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile()),
+            listOf(GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile()),
+            listOf(GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile()),
+            listOf(GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile())
+        )
+
+        // when
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
+        val actualGameBoard = runBlocking { GameUseCase().getGameBoard() }
+
+        // then
+        assertEquals(expectedGameBoardRows, actualGameBoard.rows())
+        assertEquals(expectedGameBoardRows[1], actualGameBoard.activeRow())
+    }
+
+    @Test
+    fun `When use case invoked and game in progress - GameKeyboard matches expected state`()
+    {
+        // given
+        answerRepository.getShouldFail = false
+        answerRepository.gameAnswer = GameAnswer(word = "STARS")
+        guessRepository.getAllGuessesToReturn = listOf(
+            GameGuess(word = "SLAYS")
+        )
+
+        // when
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
+
+        // then
+        val keys = GameUseCase().getGameKeyboard().rows().flatten().filter { it.backgroundColor() != GameKeyboard.Key.BackgroundColor.DEFAULT }
+
+        // then
+        assertEquals(4, keys.count()) // 4 = unique letters guessed
+        for (key in keys)
+        {
+            when (key.letter())
+            {
+                'S' -> assertEquals(GameKeyboard.Key.BackgroundColor.CORRECT, key.backgroundColor())
+                'L' -> assertEquals(GameKeyboard.Key.BackgroundColor.NOT_FOUND, key.backgroundColor())
+                'A' -> assertEquals(GameKeyboard.Key.BackgroundColor.CORRECT, key.backgroundColor())
+                'Y' -> assertEquals(GameKeyboard.Key.BackgroundColor.NOT_FOUND, key.backgroundColor())
+            }
+        }
     }
 
     data class MockAnnouncement(private var message: String? = null): AnnouncementRepresentable
