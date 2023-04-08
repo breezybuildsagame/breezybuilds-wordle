@@ -17,6 +17,8 @@
 		9D3C4B0229E19DA000D365BA /* StatsGuessDistributionRowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3C4B0129E19DA000D365BA /* StatsGuessDistributionRowTests.swift */; };
 		9D3C4B0729E19E8400D365BA /* StatsGuessDistribution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3C4B0629E19E8400D365BA /* StatsGuessDistribution.swift */; };
 		9D3C4B0929E1CECB00D365BA /* StatsGuessDistributionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3C4B0829E1CECB00D365BA /* StatsGuessDistributionTests.swift */; };
+		9D3C4B0B29E1DE0200D365BA /* StatsModalContentStatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3C4B0A29E1DE0200D365BA /* StatsModalContentStatTests.swift */; };
+		9D3C4B0D29E1DFD800D365BA /* StatsModalContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3C4B0C29E1DFD800D365BA /* StatsModalContent.swift */; };
 		9D3DBD49296F9A0A00FA8FDE /* GameSceneHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3DBD48296F9A0A00FA8FDE /* GameSceneHandlerTests.swift */; };
 		9D3DBD4B296F9B2400FA8FDE /* GameSceneHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3DBD4A296F9B2400FA8FDE /* GameSceneHandler.swift */; };
 		9D64C1732974613E00305AF7 /* GameSceneKeyboardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D64C1722974613E00305AF7 /* GameSceneKeyboardTests.swift */; };
@@ -78,6 +80,8 @@
 		9D3C4B0129E19DA000D365BA /* StatsGuessDistributionRowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsGuessDistributionRowTests.swift; sourceTree = "<group>"; };
 		9D3C4B0629E19E8400D365BA /* StatsGuessDistribution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsGuessDistribution.swift; sourceTree = "<group>"; };
 		9D3C4B0829E1CECB00D365BA /* StatsGuessDistributionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsGuessDistributionTests.swift; sourceTree = "<group>"; };
+		9D3C4B0A29E1DE0200D365BA /* StatsModalContentStatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsModalContentStatTests.swift; sourceTree = "<group>"; };
+		9D3C4B0C29E1DFD800D365BA /* StatsModalContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsModalContent.swift; sourceTree = "<group>"; };
 		9D3DBD3C296F98D100FA8FDE /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		9D3DBD3D296F98D100FA8FDE /* Roboto-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-MediumItalic.ttf"; sourceTree = "<group>"; };
 		9D3DBD3E296F98D100FA8FDE /* Roboto-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-ThinItalic.ttf"; sourceTree = "<group>"; };
@@ -207,6 +211,7 @@
 			children = (
 				9D3C4B0129E19DA000D365BA /* StatsGuessDistributionRowTests.swift */,
 				9D3C4B0829E1CECB00D365BA /* StatsGuessDistributionTests.swift */,
+				9D3C4B0A29E1DE0200D365BA /* StatsModalContentStatTests.swift */,
 			);
 			path = component;
 			sourceTree = "<group>";
@@ -231,6 +236,7 @@
 			isa = PBXGroup;
 			children = (
 				9D3C4B0629E19E8400D365BA /* StatsGuessDistribution.swift */,
+				9D3C4B0C29E1DFD800D365BA /* StatsModalContent.swift */,
 			);
 			path = component;
 			sourceTree = "<group>";
@@ -619,6 +625,7 @@
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				9D756F9E2970460A005C7705 /* GameSceneBoard.swift in Sources */,
 				9DC3B693296C393400D90945 /* SceneDimensions.swift in Sources */,
+				9D3C4B0D29E1DFD800D365BA /* StatsModalContent.swift in Sources */,
 				9DC3B68B296C370200D90945 /* AppDelegate.swift in Sources */,
 				9DC3B6A8296C565600D90945 /* GameSceneHeader.swift in Sources */,
 				9DC3B686296C352300D90945 /* Sizer.swift in Sources */,
@@ -631,6 +638,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D3C4B0B29E1DE0200D365BA /* StatsModalContentStatTests.swift in Sources */,
 				9D3DBD49296F9A0A00FA8FDE /* GameSceneHandlerTests.swift in Sources */,
 				9D64C1732974613E00305AF7 /* GameSceneKeyboardTests.swift in Sources */,
 				9DC3B696296C3BBD00D90945 /* XCTestCase+SceneDimensions.swift in Sources */,
