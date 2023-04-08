@@ -39,6 +39,7 @@ final class StatsGuessDistributionRowTests: XCTestCase
         
         // then
         XCTAssertEqual(mockFrame().width * (5 / idealFrame().width), try sut.inspect().hStack().spacing())
+        XCTAssertEqual(.center, try sut.inspect().hStack().alignment())
         XCTAssertNoThrow(try sut.inspect().hStack().text(0))
         XCTAssertEqual("1", try sut.inspect().hStack().text(0).string())
     }
@@ -67,27 +68,51 @@ final class StatsGuessDistributionRowTests: XCTestCase
         XCTAssertEqual(.trailing, try displayedRow.hStack().text(0).multilineTextAlignment())
     }
     
-    func test_when_view_appears_with_correctGuessCount__the_HStack_contains_an_HStack_at_index_1()
+    func test_when_view_appears_with_correctGuessCount__the_HStack_contains_a_Text_view_at_index_1()
     {
+        // given
+        let sut = StatsGuessDistribution.Row(mockCorrectGuessCount: "99")
         
+        // when
+        defer { ViewHosting.expel() }
+        ViewHosting.host(view: sut.environmentObject(SceneDimensions()))
+        
+        // then
+        XCTAssertNoThrow(try sut.inspect().hStack().text(1))
+        XCTAssertEqual("99", try sut.inspect().hStack().text(1).string())
     }
     
-    func test_when_view_appears_with_correctGuessCount__the_nested_HStack_contains_a_Text_view()
+    func test_when_view_appears_with_correctGuessCount__the_Text_view_matches_design_requirements() throws
     {
-        // dev note: should align content trailing (so the text stays right aligned within the grey bar)
-    }
-    
-    func test_when_view_appears_with_correctGuessCount__the_Text_view_matches_design_requirements()
-    {
-        // text align: trailing, color onSurface, font = roboto regular, 20, padding left + right = 5
+        // given
+        let expectedFont = Font.custom(
+            "Roboto-Regular",
+            size: mockFrame().height * (20 / idealFrame().height)
+        )
+        let expectedHorizontalPadding = mockFrame().width * (5 / idealFrame().width)
+        let sut = StatsGuessDistribution.Row(mockCorrectGuessCount: "99")
+        let dimensions = SceneDimensions()
         
+        // when
+        defer { ViewHosting.expel() }
+        ViewHosting.host(view: sut.environmentObject(dimensions))
+        dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
+        let displayedRow = try sut.inspect().find(StatsGuessDistribution.Row.self)
+        let displayedTextAttributes = try displayedRow.hStack().text(1).attributes()
+        
+        // then
+        XCTAssertEqual(try expectedFont.name(), try displayedTextAttributes.font().name())
+        XCTAssertEqual(try expectedFont.size(), try displayedTextAttributes.font().size())
+        XCTAssertEqual(.trailing, try displayedRow.hStack().text(1).multilineTextAlignment())
+        XCTAssertEqual(expectedHorizontalPadding, try displayedRow.hStack().text(1).padding(.horizontal))
+        XCTAssertEqual(.ui.error, try displayedRow.hStack().text(1).background().color().value())
     }
 }
 
 extension StatsGuessDistribution.Row
 {
-    init(mockRound: String = "")
+    init(mockRound: String = "", mockCorrectGuessCount: String = "")
     {
-        self.init(round: mockRound)
+        self.init(round: mockRound, correctGuessCount: mockCorrectGuessCount)
     }
 }

@@ -25,14 +25,22 @@ extension StatsGuessDistribution
         @EnvironmentObject private var dimensions: SceneDimensions
         
         var round: String
+        var correctGuessCount: String
         
         var body: some View
         {
-            HStack(spacing: dimensions.width * (5 / idealFrameWidth()))
+            HStack( alignment: .center, spacing: dimensions.width * (5 / idealFrameWidth()))
             {
                 Text(round)
                     .font(Font.custom("Roboto-Regular", size: dimensions.height * (20 / idealFrameHeight())))
                     .multilineTextAlignment(.trailing)
+                
+                Text(correctGuessCount)
+                    .font(Font.custom("Roboto-Regular", size: dimensions.height * (20 / idealFrameHeight())))
+                    .multilineTextAlignment(.trailing)
+                    .padding(.horizontal, dimensions.width * (5 / idealFrameWidth()))
+                    .background(Color.ui.error)
+                    
             }
             .foregroundColor(.ui.onSurface)
         }
