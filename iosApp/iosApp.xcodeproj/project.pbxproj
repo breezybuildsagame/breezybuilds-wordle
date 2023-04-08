@@ -14,6 +14,8 @@
 		97938403D6D336375F950A15 /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17C0F794CA2046006F879E89 /* Pods_iosApp.framework */; };
 		9D1D2ECD29781323003A491E /* GameSceneAnnouncementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D1D2ECC29781323003A491E /* GameSceneAnnouncementTests.swift */; };
 		9D1D2ECF29781453003A491E /* GameSceneAnnouncement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D1D2ECE29781453003A491E /* GameSceneAnnouncement.swift */; };
+		9D3C4B0229E19DA000D365BA /* StatsGuessDistributionRowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3C4B0129E19DA000D365BA /* StatsGuessDistributionRowTests.swift */; };
+		9D3C4B0729E19E8400D365BA /* StatsGuessDistribution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3C4B0629E19E8400D365BA /* StatsGuessDistribution.swift */; };
 		9D3DBD49296F9A0A00FA8FDE /* GameSceneHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3DBD48296F9A0A00FA8FDE /* GameSceneHandlerTests.swift */; };
 		9D3DBD4B296F9B2400FA8FDE /* GameSceneHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3DBD4A296F9B2400FA8FDE /* GameSceneHandler.swift */; };
 		9D64C1732974613E00305AF7 /* GameSceneKeyboardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D64C1722974613E00305AF7 /* GameSceneKeyboardTests.swift */; };
@@ -72,6 +74,8 @@
 		9903C30BBA4B2B467814F334 /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
 		9D1D2ECC29781323003A491E /* GameSceneAnnouncementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneAnnouncementTests.swift; sourceTree = "<group>"; };
 		9D1D2ECE29781453003A491E /* GameSceneAnnouncement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneAnnouncement.swift; sourceTree = "<group>"; };
+		9D3C4B0129E19DA000D365BA /* StatsGuessDistributionRowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsGuessDistributionRowTests.swift; sourceTree = "<group>"; };
+		9D3C4B0629E19E8400D365BA /* StatsGuessDistribution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsGuessDistribution.swift; sourceTree = "<group>"; };
 		9D3DBD3C296F98D100FA8FDE /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		9D3DBD3D296F98D100FA8FDE /* Roboto-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-MediumItalic.ttf"; sourceTree = "<group>"; };
 		9D3DBD3E296F98D100FA8FDE /* Roboto-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-ThinItalic.ttf"; sourceTree = "<group>"; };
@@ -159,12 +163,13 @@
 		7555FF7D242A565900829871 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
-				2152FB032600AC8F00CF470E /* iOSApp.swift */,
 				7555FF8C242A565B00829871 /* Info.plist */,
+				2152FB032600AC8F00CF470E /* iOSApp.swift */,
 				9DC3B687296C368F00D90945 /* assets */,
 				9DC3B689296C36F100D90945 /* config */,
 				9DC3B683296C350B00D90945 /* core */,
 				9D8C9C2A2969C12500761DA2 /* feature_game */,
+				9D3C4B0329E19E6300D365BA /* feature_stats */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
 			);
 			path = iosApp;
@@ -179,12 +184,61 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		9D3C4AFE29E19D5700D365BA /* feature_stats */ = {
+			isa = PBXGroup;
+			children = (
+				9D3C4AFF29E19D6200D365BA /* presentation */,
+			);
+			path = feature_stats;
+			sourceTree = "<group>";
+		};
+		9D3C4AFF29E19D6200D365BA /* presentation */ = {
+			isa = PBXGroup;
+			children = (
+				9D3C4B0029E19D6F00D365BA /* component */,
+			);
+			path = presentation;
+			sourceTree = "<group>";
+		};
+		9D3C4B0029E19D6F00D365BA /* component */ = {
+			isa = PBXGroup;
+			children = (
+				9D3C4B0129E19DA000D365BA /* StatsGuessDistributionRowTests.swift */,
+			);
+			path = component;
+			sourceTree = "<group>";
+		};
+		9D3C4B0329E19E6300D365BA /* feature_stats */ = {
+			isa = PBXGroup;
+			children = (
+				9D3C4B0429E19E6900D365BA /* presentation */,
+			);
+			path = feature_stats;
+			sourceTree = "<group>";
+		};
+		9D3C4B0429E19E6900D365BA /* presentation */ = {
+			isa = PBXGroup;
+			children = (
+				9D3C4B0529E19E7100D365BA /* component */,
+			);
+			path = presentation;
+			sourceTree = "<group>";
+		};
+		9D3C4B0529E19E7100D365BA /* component */ = {
+			isa = PBXGroup;
+			children = (
+				9D3C4B0629E19E8400D365BA /* StatsGuessDistribution.swift */,
+			);
+			path = component;
+			sourceTree = "<group>";
+		};
 		9D6098552948B75C00F2D7C9 /* iosAppTests */ = {
 			isa = PBXGroup;
 			children = (
-				9DC3B694296C3B7600D90945 /* extension */,
 				9DC3B68C296C382900D90945 /* core */,
+				9DC3B694296C3B7600D90945 /* extension */,
 				9D8C9C392969C44F00761DA2 /* feature_game */,
+				9D3C4AFE29E19D5700D365BA /* feature_stats */,
 			);
 			path = iosAppTests;
 			sourceTree = "<group>";
@@ -555,6 +609,7 @@
 				9DC3B6AC296C59F400D90945 /* View+Frame.swift in Sources */,
 				9D8C9C2E2969C15000761DA2 /* GameScene.swift in Sources */,
 				9DC3B6A2296C545300D90945 /* UIColor+RGBA.swift in Sources */,
+				9D3C4B0729E19E8400D365BA /* StatsGuessDistribution.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 				9DC3B69D296C506000D90945 /* Color+UI.swift in Sources */,
 				9D3DBD4B296F9B2400FA8FDE /* GameSceneHandler.swift in Sources */,
@@ -583,6 +638,7 @@
 				9DC3B691296C384B00D90945 /* SceneDimensionsTests.swift in Sources */,
 				9D1D2ECD29781323003A491E /* GameSceneAnnouncementTests.swift in Sources */,
 				9DC3B6A6296C558300D90945 /* GameSceneHeaderTests.swift in Sources */,
+				9D3C4B0229E19DA000D365BA /* StatsGuessDistributionRowTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
