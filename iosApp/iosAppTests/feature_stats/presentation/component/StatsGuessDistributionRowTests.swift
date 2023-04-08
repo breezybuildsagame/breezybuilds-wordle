@@ -89,6 +89,7 @@ final class StatsGuessDistributionRowTests: XCTestCase
             "Roboto-Regular",
             size: mockFrame().height * (20 / idealFrame().height)
         )
+        let expectedLineHeight = mockFrame().height * (25 / idealFrame().height)
         let expectedHorizontalPadding = mockFrame().width * (5 / idealFrame().width)
         let sut = StatsGuessDistribution.Row(mockCorrectGuessCount: "99")
         let dimensions = SceneDimensions()
@@ -103,6 +104,7 @@ final class StatsGuessDistributionRowTests: XCTestCase
         // then
         XCTAssertEqual(try expectedFont.name(), try displayedTextAttributes.font().name())
         XCTAssertEqual(try expectedFont.size(), try displayedTextAttributes.font().size())
+        XCTAssertEqual(expectedLineHeight, try displayedRow.hStack().text(1).lineSpacing())
         XCTAssertEqual(.trailing, try displayedRow.hStack().text(1).multilineTextAlignment())
         XCTAssertEqual(expectedHorizontalPadding, try displayedRow.hStack().text(1).padding(.horizontal))
         XCTAssertEqual(.ui.error, try displayedRow.hStack().text(1).background().color().value())

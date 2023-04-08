@@ -16,6 +16,7 @@
 		9D1D2ECF29781453003A491E /* GameSceneAnnouncement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D1D2ECE29781453003A491E /* GameSceneAnnouncement.swift */; };
 		9D3C4B0229E19DA000D365BA /* StatsGuessDistributionRowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3C4B0129E19DA000D365BA /* StatsGuessDistributionRowTests.swift */; };
 		9D3C4B0729E19E8400D365BA /* StatsGuessDistribution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3C4B0629E19E8400D365BA /* StatsGuessDistribution.swift */; };
+		9D3C4B0929E1CECB00D365BA /* StatsGuessDistributionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3C4B0829E1CECB00D365BA /* StatsGuessDistributionTests.swift */; };
 		9D3DBD49296F9A0A00FA8FDE /* GameSceneHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3DBD48296F9A0A00FA8FDE /* GameSceneHandlerTests.swift */; };
 		9D3DBD4B296F9B2400FA8FDE /* GameSceneHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3DBD4A296F9B2400FA8FDE /* GameSceneHandler.swift */; };
 		9D64C1732974613E00305AF7 /* GameSceneKeyboardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D64C1722974613E00305AF7 /* GameSceneKeyboardTests.swift */; };
@@ -76,6 +77,7 @@
 		9D1D2ECE29781453003A491E /* GameSceneAnnouncement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneAnnouncement.swift; sourceTree = "<group>"; };
 		9D3C4B0129E19DA000D365BA /* StatsGuessDistributionRowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsGuessDistributionRowTests.swift; sourceTree = "<group>"; };
 		9D3C4B0629E19E8400D365BA /* StatsGuessDistribution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsGuessDistribution.swift; sourceTree = "<group>"; };
+		9D3C4B0829E1CECB00D365BA /* StatsGuessDistributionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsGuessDistributionTests.swift; sourceTree = "<group>"; };
 		9D3DBD3C296F98D100FA8FDE /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		9D3DBD3D296F98D100FA8FDE /* Roboto-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-MediumItalic.ttf"; sourceTree = "<group>"; };
 		9D3DBD3E296F98D100FA8FDE /* Roboto-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-ThinItalic.ttf"; sourceTree = "<group>"; };
@@ -204,6 +206,7 @@
 			isa = PBXGroup;
 			children = (
 				9D3C4B0129E19DA000D365BA /* StatsGuessDistributionRowTests.swift */,
+				9D3C4B0829E1CECB00D365BA /* StatsGuessDistributionTests.swift */,
 			);
 			path = component;
 			sourceTree = "<group>";
@@ -639,6 +642,7 @@
 				9D1D2ECD29781323003A491E /* GameSceneAnnouncementTests.swift in Sources */,
 				9DC3B6A6296C558300D90945 /* GameSceneHeaderTests.swift in Sources */,
 				9D3C4B0229E19DA000D365BA /* StatsGuessDistributionRowTests.swift in Sources */,
+				9D3C4B0929E1CECB00D365BA /* StatsGuessDistributionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
