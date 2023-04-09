@@ -19,6 +19,7 @@
 		9D3C4B0929E1CECB00D365BA /* StatsGuessDistributionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3C4B0829E1CECB00D365BA /* StatsGuessDistributionTests.swift */; };
 		9D3C4B0B29E1DE0200D365BA /* StatsModalContentStatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3C4B0A29E1DE0200D365BA /* StatsModalContentStatTests.swift */; };
 		9D3C4B0D29E1DFD800D365BA /* StatsModalContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3C4B0C29E1DFD800D365BA /* StatsModalContent.swift */; };
+		9D3C4B0F29E1EA4800D365BA /* StatsModalContentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3C4B0E29E1EA4800D365BA /* StatsModalContentTests.swift */; };
 		9D3DBD49296F9A0A00FA8FDE /* GameSceneHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3DBD48296F9A0A00FA8FDE /* GameSceneHandlerTests.swift */; };
 		9D3DBD4B296F9B2400FA8FDE /* GameSceneHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3DBD4A296F9B2400FA8FDE /* GameSceneHandler.swift */; };
 		9D64C1732974613E00305AF7 /* GameSceneKeyboardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D64C1722974613E00305AF7 /* GameSceneKeyboardTests.swift */; };
@@ -82,6 +83,7 @@
 		9D3C4B0829E1CECB00D365BA /* StatsGuessDistributionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsGuessDistributionTests.swift; sourceTree = "<group>"; };
 		9D3C4B0A29E1DE0200D365BA /* StatsModalContentStatTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsModalContentStatTests.swift; sourceTree = "<group>"; };
 		9D3C4B0C29E1DFD800D365BA /* StatsModalContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsModalContent.swift; sourceTree = "<group>"; };
+		9D3C4B0E29E1EA4800D365BA /* StatsModalContentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsModalContentTests.swift; sourceTree = "<group>"; };
 		9D3DBD3C296F98D100FA8FDE /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		9D3DBD3D296F98D100FA8FDE /* Roboto-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-MediumItalic.ttf"; sourceTree = "<group>"; };
 		9D3DBD3E296F98D100FA8FDE /* Roboto-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-ThinItalic.ttf"; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 				9D3C4B0129E19DA000D365BA /* StatsGuessDistributionRowTests.swift */,
 				9D3C4B0829E1CECB00D365BA /* StatsGuessDistributionTests.swift */,
 				9D3C4B0A29E1DE0200D365BA /* StatsModalContentStatTests.swift */,
+				9D3C4B0E29E1EA4800D365BA /* StatsModalContentTests.swift */,
 			);
 			path = component;
 			sourceTree = "<group>";
@@ -639,6 +642,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9D3C4B0B29E1DE0200D365BA /* StatsModalContentStatTests.swift in Sources */,
+				9D3C4B0F29E1EA4800D365BA /* StatsModalContentTests.swift in Sources */,
 				9D3DBD49296F9A0A00FA8FDE /* GameSceneHandlerTests.swift in Sources */,
 				9D64C1732974613E00305AF7 /* GameSceneKeyboardTests.swift in Sources */,
 				9DC3B696296C3BBD00D90945 /* XCTestCase+SceneDimensions.swift in Sources */,

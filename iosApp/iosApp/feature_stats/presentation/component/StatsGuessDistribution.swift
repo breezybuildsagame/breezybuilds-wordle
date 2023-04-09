@@ -8,10 +8,11 @@
 
 import SwiftUI
 
-struct StatsGuessDistribution: View
+struct StatsGuessDistribution: View, Identifiable, Equatable
 {
     @EnvironmentObject private var dimensions: SceneDimensions
     
+    internal var id: String = UUID().uuidString
     var title: String
     var rows: [StatsGuessDistribution.Row]
     
@@ -28,6 +29,11 @@ struct StatsGuessDistribution: View
             ForEach(rows, id: \.id) { $0 }
         }
         .padding(.bottom, dimensions.height * (40 / idealFrameHeight()))
+    }
+    
+    static func == (lhs: StatsGuessDistribution, rhs: StatsGuessDistribution) -> Bool
+    {
+        lhs.title == rhs.title && lhs.rows == rhs.rows
     }
 }
 
