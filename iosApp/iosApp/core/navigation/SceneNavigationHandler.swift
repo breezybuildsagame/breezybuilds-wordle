@@ -33,6 +33,6 @@ class SceneNavigationHandler: SceneNavigationHandleable
     func navigate(route: AppRoute, direction: NavigationDirection)
     {
         print("Navigating to \(route)")
-        iOSNavigator?.navigate(route.name)
+        Task { await MainActor.run {iOSNavigator?.navigate(route.name) } }
     }
 }
