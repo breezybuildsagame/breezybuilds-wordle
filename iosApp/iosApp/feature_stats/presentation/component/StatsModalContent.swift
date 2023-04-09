@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import shared
 
 struct StatsModalContent: View
 {
