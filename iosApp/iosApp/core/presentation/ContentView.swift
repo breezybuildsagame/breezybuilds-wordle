@@ -16,6 +16,10 @@ struct ContentView: View
             SizerView()
             SwitchRoutes
             {
+                Route(AppRoute.game.name)
+                {
+                    GameScene()
+                }
                 Route
                 {
                     GameScene()
@@ -23,6 +27,7 @@ struct ContentView: View
             }
             .transition(.opacity)
         }
+        .onAppear() { SceneNavigationHandler.shared.setUp() }
         .environmentObject(sceneDimensions)
         .onReceive(sizer.$content)
         { contentSize in

@@ -13,6 +13,7 @@ struct iOSApp: App
             Router
             {
                 ContentView()
+                
             }
         }
 	}

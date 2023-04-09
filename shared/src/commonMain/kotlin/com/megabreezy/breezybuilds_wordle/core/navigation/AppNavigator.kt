@@ -20,7 +20,7 @@ class AppNavigator(
 
     fun routes() = this.routes
 
-    fun setSceneNavigator(newSceneNavigator: SceneNavigationHandleable)
+    override fun setSceneNavigator(newSceneNavigator: SceneNavigationHandleable)
     {
         sceneNavigator = newSceneNavigator
     }
@@ -61,4 +61,11 @@ class AppNavigator(
     {
         TODO("Not yet implemented")
     }
+}
+
+class NavHelper: KoinComponent
+{
+    private val appNavigator: AppNavigationHandleable by inject()
+
+    fun appNavigator() = this.appNavigator
 }
