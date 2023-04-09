@@ -11,6 +11,8 @@ import shared
 
 class AppModalViewHandler: ObservableObject, AppModalViewHandleable
 {
+    static let shared: AppModalViewHandler = AppModalViewHandler()
+    
     var appModalIsShowing = false
     {
         willSet { Task { await MainActor.run { objectWillChange.send() } } }
@@ -42,14 +44,25 @@ class AppModalViewHandler: ObservableObject, AppModalViewHandleable
             if let content = appModal.content() as? StatsModal
             {
                 StatsModalContent(
-                    stats: [],
+                    stats: content.stats().map {
+                        StatsModalContent.Stat(
+                            headline: $0.headline(),
+                            description: $0.description()
+                        )
+                    },
                     guessDistribution: StatsGuessDistribution(
-                        title: "",
-                        rows: []
+                        title: content.guessDistribution().title(),
+                        rows: content.guessDistribution().rows().map
+                        {
+                            StatsGuessDistribution.Row(
+                                round: "\($0.round())",
+                                correctGuessCount: "\($0.correctGuessesCount())"
+                            )
+                        }
                     ),
                     playAgainButton: StatsModalContent.PlayAgainButton(
-                        label: "",
-                        tapped: { }
+                        label: content.playAgainButton()?.label() ?? "",
+                        tapped: { content.playAgainButton()?.click() { _ in } }
                     )
                 )
             }

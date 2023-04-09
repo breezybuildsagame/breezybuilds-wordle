@@ -12,7 +12,7 @@ import shared
 
 class SceneNavigationHandler: SceneNavigationHandleable
 {
-    @EnvironmentObject var iOSNavigator: Navigator
+    var iOSNavigator: Navigator?
     
     static let shared: SceneNavigationHandler = SceneNavigationHandler()
     
@@ -24,11 +24,15 @@ class SceneNavigationHandler: SceneNavigationHandleable
         self.appNavigator = appNavigator ?? NavHelper().appNavigator()
     }
     
-    func setUp() { appNavigator.setSceneNavigator(newSceneNavigator: self) }
+    func setUp(navigator: Navigator? = nil)
+    {
+        self.iOSNavigator = navigator
+        appNavigator.setSceneNavigator(newSceneNavigator: self)
+    }
     
     func navigate(route: AppRoute, direction: NavigationDirection)
     {
         print("Navigating to \(route)")
-        iOSNavigator.navigate(route.name)
+        iOSNavigator?.navigate(route.name)
     }
 }

@@ -52,8 +52,8 @@ suspend fun GameUseCase.setUpGameEvents(
                 {
                     guessWord()
 
-                    answerRepository.updateAnswerGuessed(existingAnswer = getGameAnswer())
                     savedGameRepository.create()
+                    answerRepository.updateAnswerGuessed(existingAnswer = getGameAnswer())
                     guessRepository.clear()
                     getAnnouncement().setMessage(newMessage = "Correct! Thanks for playing!")
                     sceneHandler?.onGameOver()
@@ -79,8 +79,8 @@ suspend fun GameUseCase.setUpGameEvents(
                     }
                     catch (e: GameBoard.SetNewActiveRowFailedException)
                     {
-                        answerRepository.updateAnswerNotGuessed(existingAnswer = getGameAnswer())
                         savedGameRepository.create()
+                        answerRepository.updateAnswerNotGuessed(existingAnswer = getGameAnswer())
                         guessRepository.clear()
                         getAnnouncement().setMessage(newMessage = "Game Over")
                         sceneHandler?.onGameOver()

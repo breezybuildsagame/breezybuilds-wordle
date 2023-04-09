@@ -30,20 +30,39 @@ final class AppModalViewHandlerTests: XCTestCase
     func test_when_onModalShouldShow_invoked__expected_view_is_displayed() throws
     {
         //given
+        let modalHelper = MockSharedModalHelper()
         let mockModal = AppModalCommonMock()
-        let expectedModalContent = MockSharedModalHelper().mockStatsModal()
+        let expectedModalContent = modalHelper.mockStatsModal()
         let sut = AppModalViewHandler(appModal: mockModal)
         mockModal.contentToReturn = expectedModalContent
         let mockView = MockView(handler: sut)
+        let expectedModalStats = expectedModalContent.stats().map
+        { commonStat in
+            StatsModalContent.Stat(headline: commonStat.headline(), description: commonStat.description())
+        }
+        let expectedGuessDistribution = StatsGuessDistribution(
+            title: expectedModalContent.guessDistribution().title(),
+            rows: expectedModalContent.guessDistribution().rows().map
+            {
+                StatsGuessDistribution.Row(
+                    round: "\($0.round())", correctGuessCount: "\($0.correctGuessesCount())"
+                )
+            }
+        )
         
         // when
         defer { ViewHosting.expel() }
         ViewHosting.host(view: mockView.environmentObject(SceneDimensions()))
         mockModal.handler()?.onModalShouldShow(animationDuration: 0)
         let displayedMockView = try mockView.inspect().find(MockView.self)
+        let displayedModalView = try displayedMockView.zStack().find(StatsModalContent.self)
+        try displayedModalView.find(StatsModalContent.PlayAgainButton.self).button().tap()
         
         // then
-        XCTAssertNoThrow(try displayedMockView.zStack().find(StatsModalContent.self))
+        XCTAssertEqual(expectedModalStats, try displayedModalView.actualView().stats)
+        XCTAssertEqual(expectedGuessDistribution, try displayedModalView.actualView().guessDistribution)
+        XCTAssertEqual(modalHelper.playAgainButtonLabel, try displayedModalView.actualView().playAgainButton.label)
+        XCTAssertTrue(modalHelper.playAgainButtonClicked)
     }
     
     func test_when_onModalShouldHide_invoked__expected_view_is_not_displayed() throws
@@ -84,6 +103,20 @@ final class AppModalViewHandlerTests: XCTestCase
     {
         var closeButtonClicked = false
         var playAgainButtonClicked = false
+        var closeButton: Button!
+        var playAgainButton: Button!
+        var closeButtonResourceId = "fake_close_img"
+        var playAgainButtonLabel = "play"
+        
+        init(closeButtonClicked: Bool = false, playAgainButtonClicked: Bool = false)
+        {
+            self.closeButtonClicked = closeButtonClicked
+            self.playAgainButtonClicked = playAgainButtonClicked
+            self.closeButton = Button(mockResourceId: closeButtonResourceId)
+                { _ in self.closeButtonClicked = true }
+            self.playAgainButton = Button(mockLabel: playAgainButtonLabel)
+                { _ in self.playAgainButtonClicked = true }
+        }
         
         var statsToReturn: [Stat] = [
             Stat(headline: "10", description: "Something"),
@@ -99,9 +132,6 @@ final class AppModalViewHandlerTests: XCTestCase
         
         func mockStatsModal() -> StatsModal
         {
-            var closeButton = Button { _ in self.closeButtonClicked = true }
-            var playAgainButton = Button { _ in self.playAgainButtonClicked = true }
-            
             return StatsModal(
                 closeButton: closeButton,
                 stats: statsToReturn,

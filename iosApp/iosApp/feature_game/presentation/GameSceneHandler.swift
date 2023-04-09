@@ -29,7 +29,7 @@ class GameSceneHandler: ObservableObject
     
     func setUp()
     {
-        if activeView == .EMPTY { viewModel.setUp(handler: self) { _ in self.getGameBoard() } }
+        viewModel.setUp(handler: self) { _ in self.getGameBoard() }
     }
     
     private func getGameBoard()

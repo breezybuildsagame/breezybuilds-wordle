@@ -5,6 +5,7 @@ import shared
 struct ContentView: View
 {
     @ObservedObject private var sizer = Sizer.shared
+    @ObservedObject private var appModalHandler = AppModalViewHandler.shared
     @EnvironmentObject private var navigator: Navigator
     
     @StateObject private var sceneDimensions = SceneDimensions.shared
@@ -14,6 +15,7 @@ struct ContentView: View
         ZStack
         {
             SizerView()
+            
             SwitchRoutes
             {
                 Route(AppRoute.game.name)
@@ -26,8 +28,22 @@ struct ContentView: View
                 }
             }
             .transition(.opacity)
+            
+            if (appModalHandler.appModalIsShowing)
+            {
+                ZStack(alignment: .center)
+                {
+                    Color.clear
+                    
+                    appModalHandler.modalContent()
+                }
+            }
         }
-        .onAppear() { SceneNavigationHandler.shared.setUp() }
+        .onAppear()
+        {
+            SceneNavigationHandler.shared.setUp(navigator: navigator)
+            appModalHandler.setUp()
+        }
         .environmentObject(sceneDimensions)
         .onReceive(sizer.$content)
         { contentSize in

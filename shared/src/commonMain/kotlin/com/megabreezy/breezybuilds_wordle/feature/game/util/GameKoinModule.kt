@@ -1,11 +1,15 @@
 package com.megabreezy.breezybuilds_wordle.feature.game.util
 
+import com.megabreezy.breezybuilds_wordle.core.data.source.completed_game.CompletedGameLocalDataManageable
+import com.megabreezy.breezybuilds_wordle.core.data.source.completed_game.CompletedGameLocalDataSource
 import com.megabreezy.breezybuilds_wordle.feature.game.data.gateway.GameAnswerRepository
 import com.megabreezy.breezybuilds_wordle.feature.game.data.gateway.GameGuessRepository
+import com.megabreezy.breezybuilds_wordle.feature.game.data.gateway.SavedGameRepository
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.GameNavigationHandleable
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.GameNavigationHandler
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswerGateway
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessGateway
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.SavedGameGateway
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.Announcement
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.AnnouncementRepresentable
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
@@ -24,8 +28,12 @@ class GameKoinModule
 
         single<GameNavigationHandleable> { GameNavigationHandler() }
 
+        single<CompletedGameLocalDataManageable> { CompletedGameLocalDataSource() }
+
         single<GameAnswerGateway> { GameAnswerRepository() }
 
         single<GameGuessGateway> { GameGuessRepository() }
+
+        single<SavedGameGateway> { SavedGameRepository() }
     }
 }
