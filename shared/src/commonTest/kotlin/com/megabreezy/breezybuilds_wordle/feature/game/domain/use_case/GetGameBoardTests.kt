@@ -193,7 +193,7 @@ class GetGameBoardTests: KoinComponent
 
         // then
         gameBoard.rows().forEachIndexed()
-        { index, row ->
+        { index, _ ->
             assertEquals(expectedGameboardRow, gameBoard.rows()[index])
         }
     }
@@ -202,10 +202,33 @@ class GetGameBoardTests: KoinComponent
     fun `When use case invoked resetIfNecessary set true and one gameboard row is correct - GameBoard is reset`()
     {
         // given
+        val expectedGameBoardRow = listOf(
+            GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile()
+        )
+        answerLocalDataSource.getCurrentAnswerToReturn = Answer(word = Word("SLAPS"))
+        guessRepository.getAllGuessesToReturn = listOf()
+        val gameBoard: GameBoard by inject()
+        gameBoard.setRows(
+            newRows = listOf(
+                listOf(
+                    GameBoard.Tile(letter = 'B', state = GameBoard.Tile.State.CORRECT),
+                    GameBoard.Tile(letter = 'B', state = GameBoard.Tile.State.CORRECT),
+                    GameBoard.Tile(letter = 'B', state = GameBoard.Tile.State.CORRECT),
+                    GameBoard.Tile(letter = 'B', state = GameBoard.Tile.State.CORRECT),
+                    GameBoard.Tile(letter = 'B', state = GameBoard.Tile.State.CORRECT)
+                ),
+                expectedGameBoardRow, expectedGameBoardRow,
+                expectedGameBoardRow, expectedGameBoardRow, expectedGameBoardRow
+            )
+        )
 
         // when
+        runBlocking { GameUseCase().getGameBoard(resetIfNecessary = true) }
 
         // then
-        assertTrue(false)
+        gameBoard.rows().forEachIndexed()
+        { index, _ ->
+            assertEquals(expectedGameBoardRow, gameBoard.rows()[index])
+        }
     }
 }

@@ -2,7 +2,6 @@ package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessGateway
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
 import org.koin.core.component.inject
 
 suspend fun GameUseCase.getGameBoard(
@@ -13,9 +12,10 @@ suspend fun GameUseCase.getGameBoard(
     val gameBoard: GameBoard by inject()
     val gameInProgress: Boolean = try { getGameAnswer(attemptCreateOnFailure = false); true } catch(_: Throwable) { false }
     val answer = GameUseCase().getGameAnswer()
-
     val gameBoardIsFull = gameBoard.rows().flatten().none { it.state() == GameBoard.Tile.State.HIDDEN } &&
             !gameBoard.rows().flatten().none { it.state() != GameBoard.Tile.State.HIDDEN }
+    val gameBoardContainsCorrectAnswer = gameBoard.rows().firstOrNull ()
+        { row -> row.all { it.state() == GameBoard.Tile.State.CORRECT } } != null
 
     if (gameBoard.rows().count() < 6)
     {
@@ -48,7 +48,7 @@ suspend fun GameUseCase.getGameBoard(
         }
     }
 
-    if (resetIfNecessary && (!gameInProgress || gameBoardIsFull)) gameBoard.reset()
+    if (resetIfNecessary && (!gameInProgress || gameBoardIsFull || gameBoardContainsCorrectAnswer)) gameBoard.reset()
 
     return gameBoard
 }
