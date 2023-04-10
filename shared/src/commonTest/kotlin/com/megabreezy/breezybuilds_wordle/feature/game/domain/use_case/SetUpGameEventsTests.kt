@@ -536,6 +536,29 @@ class SetUpGameEventsTests: KoinComponent
     }
 
     @Test
+    fun `when use case invoked and enter Key is clicked and GameGuess is correct - the FinalizeActiveGameBoardRow use case is invoked`()
+    {
+        // given
+        val gameBoard: GameBoard by inject()
+        answerRepository.guessMatchesAnswer = true
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
+        val keysInUse = answerRepository.createdGameAnswer!!.word().indices.map()
+        {
+            getKey(letters = "${answerRepository.createdGameAnswer!!.word()[it]}" )
+        }
+
+        // when
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
+
+        // then
+        gameBoard.rows().first().forEach()
+        {
+            assertEquals(GameBoard.Tile.State.CORRECT, it.state())
+        }
+    }
+
+    @Test
     fun `when use case invoked and enter Key is clicked and GameGuess is correct - injected CompletedGameGateway's put method is invoked`()
     {
         // given

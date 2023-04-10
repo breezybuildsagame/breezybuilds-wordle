@@ -21,10 +21,11 @@ suspend fun GameUseCase.setUpGameEvents(
     val savedGameRepository: SavedGameGateway by inject()
     val gameNavigationHandler: GameNavigationHandleable by inject()
     val getTileByLetters: (String?, GameKeyboard.Key) -> GameBoard.Tile? = { letters, key ->
-        gameBoard.activeRow()?.firstOrNull()
+        when(key.letters())
         {
-            if (letters == null) it.letter() == null && key.letter() != null && key.letters() != "ENTER"
-            else it.letter() != null && key.letters() == letters
+            "BACKSPACE"  -> gameBoard.activeRow()?.lastOrNull { it.letter() != null && key.letters() == "BACKSPACE" }
+            "ENTER" -> gameBoard.activeRow()?.firstOrNull { it.letter() != null && key.letters() == letters }
+            else -> gameBoard.activeRow()?.firstOrNull { it.letter() == null && key.letter() != null }
         }
     }
 
@@ -36,12 +37,7 @@ suspend fun GameUseCase.setUpGameEvents(
     {
         key.setOnClick()
         {
-            getTileByLetters("BACKSPACE", key)?.let()
-            { tile ->
-                tile.setLetter(newLetter = null)
-                sceneHandler?.onRevealNextTile()
-            }
-            ?: getTileByLetters(null, key)?.let()
+            getTileByLetters(null, key)?.let()
             { tile ->
                 tile.setLetter(newLetter = key.letter())
                 sceneHandler?.onRevealNextTile()
@@ -52,6 +48,7 @@ suspend fun GameUseCase.setUpGameEvents(
                 {
                     guessWord()
 
+                    finalizeActiveGameBoardRow()
                     savedGameRepository.create()
                     answerRepository.updateAnswerGuessed(existingAnswer = getGameAnswer())
                     guessRepository.clear()
@@ -100,6 +97,11 @@ suspend fun GameUseCase.setUpGameEvents(
                         handler.onAnnouncementShouldHide()
                     }
                 }
+            }
+            getTileByLetters("BACKSPACE", key)?.let()
+            { tile ->
+                tile.setLetter(newLetter = null)
+                sceneHandler?.onRevealNextTile()
             }
         }
     }
