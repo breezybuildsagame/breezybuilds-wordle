@@ -36,6 +36,7 @@ final class StatsModalContentStatTests: XCTestCase
         // then
         XCTAssertNoThrow(try sut.inspect().vStack())
         XCTAssertEqual(expectedBottomPadding, try sut.inspect().vStack().padding(.bottom))
+        XCTAssertEqual(.infinity, try sut.inspect().vStack().flexFrame().maxWidth)
     }
     
     func test_when_view_appears_with_headline__the_first_element_inside_the_VStack_is_a_Text_view()

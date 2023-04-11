@@ -24,6 +24,7 @@ final class StatsModalContentTests: XCTestCase
         let expectedWidth = mockFrame().width * (315.0 / idealFrame().width)
         let expectedBoarderRadius = mockFrame().height * (8 / idealFrame().height)
         let expectedHorizontalPadding = mockFrame().width * (20 / idealFrame().width)
+        let expectedVerticalPadding = mockFrame().height * (40.0 / idealFrame().height)
         
         // when
         defer { ViewHosting.expel() }
@@ -39,13 +40,13 @@ final class StatsModalContentTests: XCTestCase
         XCTAssertEqual(expectedWidth, try sut.inspect().vStack().fixedWidth())
         XCTAssertEqual(expectedBoarderRadius, try sut.inspect().vStack().cornerRadius())
         XCTAssertEqual(expectedHorizontalPadding, try sut.inspect().vStack().padding(.horizontal))
+        XCTAssertEqual(expectedVerticalPadding, try sut.inspect().vStack().padding(.vertical))
         XCTAssertEqual(.ui.surface, try sut.inspect().vStack().background().color().value())
     }
     
     func test_when_view_appears__a_Text_view_matching_design_requirements_is_displayed_in_the_VStack_index_1() throws
     {
         // given
-        let expectedTopPadding = mockFrame().height * (40.0 / idealFrame().height)
         let expectedFont = Font.custom("Roboto-Black", size: mockFrame().height * (20 / idealFrame().height))
         let expectedText = "STATISTICS"
         let sut = StatsModalContent()
@@ -65,7 +66,6 @@ final class StatsModalContentTests: XCTestCase
         XCTAssertEqual(try expectedFont.name(), try displayedText.attributes().font().name())
         XCTAssertEqual(try expectedFont.size(), try displayedText.attributes().font().size())
         XCTAssertEqual(.ui.onSurface, try displayedText.attributes().foregroundColor())
-        XCTAssertEqual(expectedTopPadding, try sut.inspect().vStack().text(0).padding(.top))
     }
     
     func test_when_view_appears_with_stats__an_HStack_matching_design_requirements_is_displayed_in_the_VStack_at_index_1() throws
@@ -89,6 +89,7 @@ final class StatsModalContentTests: XCTestCase
         )
         
         // then
+        XCTAssertEqual(.top, try sut.inspect().vStack().hStack(1).alignment())
         XCTAssertEqual(expectedSpacing, try sut.inspect().vStack().hStack(1).spacing())
         XCTAssertEqual(expectedBottomPadding, try sut.inspect().vStack().hStack(1).padding(.bottom))
         XCTAssertEqual(expectedStats.count, try sut.inspect().vStack().hStack(1).forEach(0).count)
@@ -122,7 +123,7 @@ final class StatsModalContentTests: XCTestCase
         var tapDidInvoke = false
         let expectedPlayAgainButton = StatsModalContent.PlayAgainButton(mockLabel: "Test Button")
             { tapDidInvoke = true }
-        let expectedButtonWidth = mockFrame().width * (375 / idealFrame().width)
+        let expectedButtonWidth = mockFrame().width * (275 / idealFrame().width)
         let expectedButtonHeight = mockFrame().height * (50 / idealFrame().height)
         let expectedCornerRadius = mockFrame().width * (4 / idealFrame().width)
         let expectedButtonFont = Font.custom("Roboto-Black", size: mockFrame().height * (14 / idealFrame().height))
@@ -143,10 +144,10 @@ final class StatsModalContentTests: XCTestCase
         
         // then
         XCTAssertEqual(expectedPlayAgainButton, try displayedButton.actualView())
-        XCTAssertEqual(expectedButtonWidth, try displayedButton.button().fixedWidth())
-        XCTAssertEqual(expectedButtonHeight, try displayedButton.button().fixedHeight())
-        XCTAssertEqual(.ui.secondary, try displayedButton.button().background().color().value())
-        XCTAssertEqual(expectedCornerRadius, try displayedButton.button().cornerRadius())
+        XCTAssertEqual(expectedButtonWidth, try displayedButton.button().labelView().fixedWidth())
+        XCTAssertEqual(expectedButtonHeight, try displayedButton.button().labelView().fixedHeight())
+        XCTAssertEqual(.ui.secondary, try displayedButton.button().labelView().background().color().value())
+        XCTAssertEqual(expectedCornerRadius, try displayedButton.button().labelView().cornerRadius())
         XCTAssertEqual("Test Button", try displayedButton.button().labelView().text().string())
         XCTAssertEqual(.center, try displayedButton.button().labelView().text().multilineTextAlignment())
         XCTAssertEqual(.ui.surface, try displayedButton.button().labelView().text().attributes().foregroundColor())

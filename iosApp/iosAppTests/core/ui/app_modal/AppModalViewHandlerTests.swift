@@ -38,7 +38,7 @@ final class AppModalViewHandlerTests: XCTestCase
         let mockView = MockView(handler: sut)
         let expectedModalStats = expectedModalContent.stats().map
         { commonStat in
-            StatsModalContent.Stat(headline: commonStat.headline(), description: commonStat.description())
+            StatsModalContent.Stat(headline: commonStat.headline(), description: commonStat.description_())
         }
         let expectedGuessDistribution = StatsGuessDistribution(
             title: expectedModalContent.guessDistribution().title(),

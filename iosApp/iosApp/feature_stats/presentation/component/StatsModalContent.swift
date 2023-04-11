@@ -27,9 +27,8 @@ struct StatsModalContent: View
                     size: dimensions.height * (20 / idealFrameHeight())
                 ))
                 .foregroundColor(.ui.onSurface)
-                .padding(.top, dimensions.height * (40 / idealFrameHeight()))
             
-            HStack(spacing: dimensions.width * (5 / idealFrameWidth()))
+            HStack(alignment: .top, spacing: dimensions.width * (5 / idealFrameWidth()))
             {
                 ForEach(stats, id: \.id) { $0 }
             }
@@ -41,6 +40,7 @@ struct StatsModalContent: View
         }
         .frame(width: dimensions.width * (315.0 / idealFrameWidth()))
         .padding(.horizontal, dimensions.width * (20.0 / idealFrameWidth()))
+        .padding(.vertical, dimensions.height * (40 / idealFrameHeight()))
         .cornerRadius(dimensions.height * (8 / idealFrameHeight()))
         .background(Color.ui.surface)
     }
@@ -78,6 +78,7 @@ extension StatsModalContent
                     .foregroundColor(.ui.onSurface)
             }
             .padding(.bottom, dimensions.height * (15 / idealFrameHeight()))
+            .frame(maxWidth: .infinity)
         }
         
         static func == (lhs: StatsModalContent.Stat, rhs: StatsModalContent.Stat) -> Bool
@@ -108,13 +109,13 @@ extension StatsModalContent
                     ))
                     .multilineTextAlignment(.center)
                     .foregroundColor(.ui.surface)
+                    .frame(
+                        width: dimensions.width * (275 / idealFrameWidth()),
+                        height: dimensions.height * (50 / idealFrameHeight())
+                    )
+                    .background(Color.ui.secondary)
+                    .cornerRadius(dimensions.width * (4 / idealFrameWidth()))
             }
-            .frame(
-                width: dimensions.width * (375 / idealFrameWidth()),
-                height: dimensions.height * (50 / idealFrameHeight())
-            )
-            .background(Color.ui.secondary)
-            .cornerRadius(dimensions.width * (4 / idealFrameWidth()))
         }
         
         static func == (lhs: StatsModalContent.PlayAgainButton, rhs: StatsModalContent.PlayAgainButton) -> Bool

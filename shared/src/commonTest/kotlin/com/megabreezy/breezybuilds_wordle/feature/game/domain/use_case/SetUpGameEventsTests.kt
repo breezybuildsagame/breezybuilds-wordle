@@ -169,14 +169,20 @@ class SetUpGameEventsTests: KoinComponent
         {
             GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L)
             getKey(letters = "C")?.click()
+            getKey(letters = "C")?.click()
+            getKey(letters = "C")?.click()
         }
+        val expectedActiveGameboardRow = listOf(
+            GameBoard.Tile(letter = 'C', state = GameBoard.Tile.State.HIDDEN), GameBoard.Tile(letter = 'C', state = GameBoard.Tile.State.HIDDEN),
+            GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile()
+        )
         sceneHandler.onRevealNextTileDidInvoke = false
 
         // when
         runBlocking { getKey(letters = "BACKSPACE")?.click() }
 
         // then
-        assertNull(gameBoard.activeRow()?.firstOrNull { tile -> tile.letter() != null })
+        assertEquals(expectedActiveGameboardRow, gameBoard.activeRow())
         assertTrue(sceneHandler.onRevealNextTileDidInvoke)
     }
 

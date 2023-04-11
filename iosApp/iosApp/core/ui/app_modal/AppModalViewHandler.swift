@@ -47,7 +47,7 @@ class AppModalViewHandler: ObservableObject, AppModalViewHandleable
                     stats: content.stats().map {
                         StatsModalContent.Stat(
                             headline: $0.headline(),
-                            description: $0.description()
+                            description: $0.description_()
                         )
                     },
                     guessDistribution: StatsGuessDistribution(

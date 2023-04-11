@@ -98,7 +98,7 @@ suspend fun GameUseCase.setUpGameEvents(
                     }
                 }
             }
-            getTileByLetters("BACKSPACE", key)?.let()
+            ?: getTileByLetters("BACKSPACE", key)?.let()
             { tile ->
                 tile.setLetter(newLetter = null)
                 sceneHandler?.onRevealNextTile()
