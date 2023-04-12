@@ -4,6 +4,8 @@ import com.megabreezy.breezybuilds_wordle.core.domain.model.Answer
 import com.megabreezy.breezybuilds_wordle.core.domain.model.CompletedGame
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Guess
 import com.megabreezy.breezybuilds_wordle.core.domain.model.Word
+import io.realm.kotlin.ext.realmListOf
+import io.realm.kotlin.types.RealmList
 import io.realm.kotlin.types.RealmObject
 import io.realm.kotlin.types.RealmUUID
 import io.realm.kotlin.types.annotations.Index
@@ -22,13 +24,16 @@ class CachedCompletedGame(): RealmObject
     var answer: Answer = Answer(word = Word(word = this.word), isCurrent = false)
     var isCurrent = false
     var playerGuessedCorrectly = false
-    var playerGuesses: List<String> = listOf()
+    var playerGuesses: RealmList<String> = realmListOf()
 
     constructor(game: CompletedGame): this()
     {
+        val guessesList = realmListOf<String>()
+        game.playerGuesses().forEach { guessesList.add("${it.word()}") }
+
         this.answer = game.answer()
         this.date = game.date()
-        this.playerGuesses = game.playerGuesses().map { "${it.word()}" }
+        this.playerGuesses = guessesList
         this.playerGuessedCorrectly = game.answer().playerGuessedCorrectly() ?: false
         this.isCurrent = game.answer().isCurrent()
         this.word = game.answer().word().toString()
