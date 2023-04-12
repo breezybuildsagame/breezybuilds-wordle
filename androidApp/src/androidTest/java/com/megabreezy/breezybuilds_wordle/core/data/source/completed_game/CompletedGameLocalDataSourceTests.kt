@@ -19,7 +19,6 @@ import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.ext.realmListOf
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.runner.RunWith

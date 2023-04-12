@@ -33,7 +33,7 @@ struct ContentView: View
             {
                 ZStack(alignment: .center)
                 {
-                    Color.clear
+                    Color.black.opacity(0.8)
                     
                     appModalHandler.modalContent()
                 }

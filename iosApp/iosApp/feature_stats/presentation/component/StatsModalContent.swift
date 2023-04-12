@@ -41,8 +41,15 @@ struct StatsModalContent: View
         .frame(width: dimensions.width * (315.0 / idealFrameWidth()))
         .padding(.horizontal, dimensions.width * (20.0 / idealFrameWidth()))
         .padding(.vertical, dimensions.height * (40 / idealFrameHeight()))
-        .cornerRadius(dimensions.height * (8 / idealFrameHeight()))
-        .background(Color.ui.surface)
+        .background(
+            RoundedRectangle(cornerRadius: dimensions.height * (8 / idealFrameHeight()))
+                .stroke(Color.ui.error, lineWidth: dimensions.height * (1 / idealFrameHeight()))
+                .background(
+                    RoundedRectangle(cornerRadius: dimensions.height * (8 / idealFrameHeight()))
+                        .fill(Color.ui.surface)
+                )
+        )
+        .shadow(color: Color.black.opacity(0.25), radius: dimensions.height * (10 / idealFrameHeight()))
     }
 }
 

@@ -37,6 +37,8 @@ final class StatsGuessDistributionTests: XCTestCase
         XCTAssertNoThrow(try sut.inspect().vStack())
         XCTAssertEqual(expectedStackSpacing, try sut.inspect().vStack().spacing())
         XCTAssertEqual(expectedBottomPadding, try sut.inspect().vStack().padding(.bottom))
+        XCTAssertEqual(.leading, try sut.inspect().vStack().alignment())
+        XCTAssertEqual(.infinity, try sut.inspect().vStack().flexFrame().maxWidth)
     }
     
     func test_when_view_appears_with_title__a_Text_view_the_first_view_within_the_VStack()

@@ -38,10 +38,10 @@ final class StatsModalContentTests: XCTestCase
         // then
         XCTAssertNoThrow(try sut.inspect().vStack())
         XCTAssertEqual(expectedWidth, try sut.inspect().vStack().fixedWidth())
-        XCTAssertEqual(expectedBoarderRadius, try sut.inspect().vStack().cornerRadius())
         XCTAssertEqual(expectedHorizontalPadding, try sut.inspect().vStack().padding(.horizontal))
         XCTAssertEqual(expectedVerticalPadding, try sut.inspect().vStack().padding(.vertical))
-        XCTAssertEqual(.ui.surface, try sut.inspect().vStack().background().color().value())
+        XCTAssertEqual(mockFrame().height * (10 / idealFrame().height), try sut.inspect().vStack().shadow().radius)
+        XCTAssertEqual(Color.black.opacity(0.25), try sut.inspect().vStack().shadow().color)
     }
     
     func test_when_view_appears__a_Text_view_matching_design_requirements_is_displayed_in_the_VStack_index_1() throws

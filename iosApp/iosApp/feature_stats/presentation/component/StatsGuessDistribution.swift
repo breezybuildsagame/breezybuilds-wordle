@@ -18,7 +18,7 @@ struct StatsGuessDistribution: View, Identifiable, Equatable
     
     var body: some View
     {
-        VStack(spacing: dimensions.height * (5 / idealFrameHeight()))
+        VStack(alignment: .leading, spacing: dimensions.height * (5 / idealFrameHeight()))
         {
             Text(title)
                 .font(Font.custom("Roboto-Black", size: dimensions.height * (20 / idealFrameHeight())))
@@ -28,6 +28,7 @@ struct StatsGuessDistribution: View, Identifiable, Equatable
             
             ForEach(rows, id: \.id) { $0 }
         }
+        .frame(maxWidth: .infinity)
         .padding(.bottom, dimensions.height * (40 / idealFrameHeight()))
     }
     
