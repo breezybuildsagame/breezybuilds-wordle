@@ -169,14 +169,20 @@ class SetUpGameEventsTests: KoinComponent
         {
             GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L)
             getKey(letters = "C")?.click()
+            getKey(letters = "C")?.click()
+            getKey(letters = "C")?.click()
         }
+        val expectedActiveGameboardRow = listOf(
+            GameBoard.Tile(letter = 'C', state = GameBoard.Tile.State.HIDDEN), GameBoard.Tile(letter = 'C', state = GameBoard.Tile.State.HIDDEN),
+            GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile()
+        )
         sceneHandler.onRevealNextTileDidInvoke = false
 
         // when
         runBlocking { getKey(letters = "BACKSPACE")?.click() }
 
         // then
-        assertNull(gameBoard.activeRow()?.firstOrNull { tile -> tile.letter() != null })
+        assertEquals(expectedActiveGameboardRow, gameBoard.activeRow())
         assertTrue(sceneHandler.onRevealNextTileDidInvoke)
     }
 
@@ -533,6 +539,29 @@ class SetUpGameEventsTests: KoinComponent
         assertTrue(answerRepository.updateAnswerGuessedDidInvoke)
         assertFalse(answerRepository.updateAnswerNotGuessedDidInvoke)
         assertEquals(answerRepository.createdGameAnswer, answerRepository.updatedGameAnswerToReturn)
+    }
+
+    @Test
+    fun `when use case invoked and enter Key is clicked and GameGuess is correct - the FinalizeActiveGameBoardRow use case is invoked`()
+    {
+        // given
+        val gameBoard: GameBoard by inject()
+        answerRepository.guessMatchesAnswer = true
+        runBlocking { GameUseCase().setUpGameEvents(sceneHandler = sceneHandler, announcementDelay = 0L) }
+        val keysInUse = answerRepository.createdGameAnswer!!.word().indices.map()
+        {
+            getKey(letters = "${answerRepository.createdGameAnswer!!.word()[it]}" )
+        }
+
+        // when
+        for (key in keysInUse) runBlocking { key?.click() }
+        runBlocking { getKey(letters = "ENTER")?.click() }
+
+        // then
+        gameBoard.rows().first().forEach()
+        {
+            assertEquals(GameBoard.Tile.State.CORRECT, it.state())
+        }
     }
 
     @Test

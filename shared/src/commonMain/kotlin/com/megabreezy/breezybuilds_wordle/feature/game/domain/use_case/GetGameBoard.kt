@@ -12,6 +12,10 @@ suspend fun GameUseCase.getGameBoard(
     val gameBoard: GameBoard by inject()
     val gameInProgress: Boolean = try { getGameAnswer(attemptCreateOnFailure = false); true } catch(_: Throwable) { false }
     val answer = GameUseCase().getGameAnswer()
+    val gameBoardIsFull = gameBoard.rows().flatten().none { it.state() == GameBoard.Tile.State.HIDDEN } &&
+            !gameBoard.rows().flatten().none { it.state() != GameBoard.Tile.State.HIDDEN }
+    val gameBoardContainsCorrectAnswer = gameBoard.rows().firstOrNull ()
+        { row -> row.all { it.state() == GameBoard.Tile.State.CORRECT } } != null
 
     if (gameBoard.rows().count() < 6)
     {
@@ -44,7 +48,7 @@ suspend fun GameUseCase.getGameBoard(
         }
     }
 
-    if (resetIfNecessary && !gameInProgress) gameBoard.reset()
+    if (resetIfNecessary && (!gameInProgress || gameBoardIsFull || gameBoardContainsCorrectAnswer)) gameBoard.reset()
 
     return gameBoard
 }

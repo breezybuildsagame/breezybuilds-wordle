@@ -32,14 +32,18 @@ final class GameSceneKeyboardTests: XCTestCase
     {
         // given
         let expectedCornerRadius = mockFrame().width * (4.0 / idealFrame().width)
-        let expectedFrameWidth = mockFrame().width * (33.0 / idealFrame().width)
+        let expectedFrameWidth = mockScreen().width * (33.0 / idealFrame().width)
         let expectedFrameHeight = mockFrame().height * (56.0 / idealFrame().height)
         let sut = GameSceneKeyboard.Key()
         
         // when
         defer { ViewHosting.expel() }
         ViewHosting.host(view: sut.environmentObject(dimensions))
-        dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
+        dimensions.setDimensions(
+            width: mockFrame().width,
+            height: mockFrame().height,
+            screenSize: CGSize(width: mockScreen().width, height: mockScreen().height)
+        )
         
         // then
         XCTAssertEqual(expectedCornerRadius, try sut.inspect().button().labelView().zStack().cornerRadius())
@@ -68,14 +72,18 @@ final class GameSceneKeyboardTests: XCTestCase
     func test_when_enter_key_appears__shape_matches_design_requirements()
     {
         // given
-        let expectedFrameWidth = mockFrame().width * (52.0 / idealFrame().width)
+        let expectedFrameWidth = mockScreen().width * (52.0 / idealFrame().width)
         let expectedFrameHeight = mockFrame().height * (56.0 / idealFrame().height)
         let sut = GameSceneKeyboard.Key(letters: "ENTER")
         
         // when
         defer { ViewHosting.expel() }
         ViewHosting.host(view: sut.environmentObject(dimensions))
-        dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
+        dimensions.setDimensions(
+            width: mockFrame().width,
+            height: mockFrame().height,
+            screenSize: CGSize(width: mockScreen().width, height: mockScreen().height)
+        )
         
         // then
         XCTAssertEqual(expectedFrameWidth, try sut.inspect().button().labelView().zStack().fixedWidth())
@@ -85,7 +93,7 @@ final class GameSceneKeyboardTests: XCTestCase
     func test_when_backspace_key_appears__shape_matches_design_requirements()
     {
         // given
-        let expectedFrameWidth = mockFrame().width * (52.0 / idealFrame().width)
+        let expectedFrameWidth = mockScreen().width * (52.0 / idealFrame().width)
         let expectedFrameHeight = mockFrame().height * (56.0 / idealFrame().height)
         let expectedImageSize = mockFrame().width * (23.0 / idealFrame().width)
         let sut = GameSceneKeyboard.Key(resourceId: "game_image_backspace")
@@ -94,7 +102,11 @@ final class GameSceneKeyboardTests: XCTestCase
         // when
         defer { ViewHosting.expel() }
         ViewHosting.host(view: sut.environmentObject(dimensions))
-        dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
+        dimensions.setDimensions(
+            width: mockFrame().width,
+            height: mockFrame().height,
+            screenSize: CGSize(width: mockScreen().width, height: mockScreen().height)
+        )
         
         // then
         XCTAssertEqual(expectedFrameWidth, try sut.inspect().button().labelView().zStack().fixedWidth())

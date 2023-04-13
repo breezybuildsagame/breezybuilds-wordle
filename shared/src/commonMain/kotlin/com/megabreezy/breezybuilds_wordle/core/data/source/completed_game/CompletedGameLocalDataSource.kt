@@ -4,6 +4,7 @@ import com.megabreezy.breezybuilds_wordle.core.domain.model.CompletedGame
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 import io.realm.kotlin.ext.query
+import io.realm.kotlin.ext.realmListOf
 
 class CompletedGameLocalDataSource(private var realm: Realm? = null): CompletedGameLocalDataManageable
 {
@@ -21,6 +22,9 @@ class CompletedGameLocalDataSource(private var realm: Realm? = null): CompletedG
 
     override suspend fun put(newCompletedGame: CompletedGame): CompletedGame
     {
+        val guessesToAdd = realmListOf<String>()
+        newCompletedGame.playerGuesses().forEach { guessesToAdd.add("${it.word()}") }
+
         realm?.write()
         {
             copyToRealm(
@@ -28,7 +32,7 @@ class CompletedGameLocalDataSource(private var realm: Realm? = null): CompletedG
                 {
                     answer = newCompletedGame.answer()
                     date = newCompletedGame.date()
-                    playerGuesses = newCompletedGame.playerGuesses().map { "${it.word()}" }
+                    playerGuesses = guessesToAdd
                     playerGuessedCorrectly = newCompletedGame.answer().playerGuessedCorrectly() ?: false
                     word = "${newCompletedGame.answer().word()}"
                 }

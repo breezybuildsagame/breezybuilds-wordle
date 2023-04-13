@@ -1,10 +1,14 @@
 package com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case
 
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
+import org.koin.core.component.inject
 
 suspend fun GameUseCase.updateGameKeyboardHints()
 {
-    getGameBoard().activeRow()?.forEachIndexed()
+    val gameBoard: GameBoard by inject()
+
+    gameBoard.activeRow()?.forEachIndexed()
     { index, tile ->
         for (currentKey in getGameKeyboard().rows().flatten())
         {

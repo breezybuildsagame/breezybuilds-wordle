@@ -16,13 +16,15 @@ class SceneDimensions: ObservableObject
     
     var width: CGFloat = 0
     var height: CGFloat = 0
+    var screenSize: CGSize = .zero
     
-    func setDimensions(width: CGFloat, height: CGFloat)
+    func setDimensions(width: CGFloat, height: CGFloat, screenSize: CGSize = .zero)
     {
         if (self.width != width && self.height != height)
         {
             self.width = width
             self.height = height
+            self.screenSize = screenSize
             
             dimensionsHaveReset = true
         }

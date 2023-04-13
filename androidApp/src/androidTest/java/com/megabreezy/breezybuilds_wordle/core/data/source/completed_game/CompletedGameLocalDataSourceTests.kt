@@ -18,7 +18,8 @@ import com.megabreezy.breezybuilds_wordle.core.ui.SceneMock
 import io.realm.kotlin.Realm
 import io.realm.kotlin.RealmConfiguration
 import io.realm.kotlin.ext.query
-import io.realm.kotlin.internal.platform.epochInSeconds
+import io.realm.kotlin.ext.realmListOf
+import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.runner.RunWith
 
@@ -30,7 +31,7 @@ class CompletedGameLocalDataSourceTests
     private val mockGamesList = listOf(
         CompletedGame(
             answer = Answer(word = Word("TOAST"), playerGuessedCorrectly = true),
-            date = epochInSeconds(),
+            date = 1680315545,
             playerGuesses = listOf(
                 Guess(word = Word(word = "TASTE")),
                 Guess(word = Word(word = "TRITE")),
@@ -39,7 +40,7 @@ class CompletedGameLocalDataSourceTests
         ),
         CompletedGame(
             answer = Answer(word = Word("SLAPS"), playerGuessedCorrectly = false),
-            date = epochInSeconds(),
+            date = 1680325545,
             playerGuesses = listOf(
                 Guess(word = Word(word = "TEARS")),
                 Guess(word = Word(word = "TRITE")),
@@ -82,11 +83,14 @@ class CompletedGameLocalDataSourceTests
         {
             expectedCompletedGames.forEach()
             {
+                val guessesToSave = realmListOf<String>()
+                it.playerGuesses().forEach { guess -> guessesToSave.add("${guess.word()}") }
+
                 copyToRealm(
                     CachedCompletedGame().apply {
                         answer = it.answer()
                         date = it.date()
-                        playerGuesses = it.playerGuesses().map { "${it.word()}" }
+                        playerGuesses = guessesToSave
                         playerGuessedCorrectly = it.answer().playerGuessedCorrectly() ?: false
                         word = "${it.answer().word()}"
                     }
@@ -104,6 +108,7 @@ class CompletedGameLocalDataSourceTests
         val gamesList = composeTestRule.onNodeWithContentDescription("COLUMN").onChildren()
 
         // then
+        composeTestRule.onRoot(useUnmergedTree = true).printToLog("TAG")
         gamesList.assertCountEquals(expectedCompletedGames.count())
         expectedCompletedGames.forEachIndexed()
         { index, game ->
@@ -140,12 +145,14 @@ class CompletedGameLocalDataSourceTests
         composeTestRule.setContent()
         {
             localDataSource = CompletedGameLocalDataSource(realm = realm)
+            runBlocking { localDataSource.put(newCompletedGame = expectedCompletedGame) }
 
-            SceneMock.display { MockView.Component(localDataSource = localDataSource, newCompletedGame = expectedCompletedGame) }
+            SceneMock.display { MockView.Component(localDataSource = localDataSource) }
         }
-        val gamesList = composeTestRule.onAllNodesWithContentDescription("${expectedCompletedGame.date()}")
+        val gamesList = composeTestRule.onNodeWithContentDescription("COLUMN").onChildren()
 
         // then
+        composeTestRule.onRoot(useUnmergedTree = true).printToLog("TAG")
         gamesList.assertCountEquals(1)
         gamesList.onFirst().assertContentDescriptionEquals("${expectedCompletedGame.date()}")
         gamesList.onFirst().assertTextEquals("${expectedCompletedGame.answer().word()}")
@@ -160,13 +167,13 @@ class CompletedGameLocalDataSourceTests
         )
         {
             var completedGames by remember { mutableStateOf<List<CompletedGame>>(listOf()) }
-            var updatedCompletedGame by remember { mutableStateOf(CompletedGame(answer = Answer(Word(word = "")))) }
+            var updatedCompletedGames by remember { mutableStateOf<List<CompletedGame>>(listOf()) }
 
             LaunchedEffect(Unit)
             {
-                completedGames = localDataSource.getAll()
+                updatedCompletedGames = newCompletedGame?.let { listOf(localDataSource.put(newCompletedGame = it)) } ?: listOf()
 
-                newCompletedGame?.let { updatedCompletedGame = localDataSource.put(newCompletedGame = it) }
+                completedGames = localDataSource.getAll()
             }
 
             Column(modifier = Modifier.fillMaxSize().semantics { contentDescription = "COLUMN" })
@@ -178,14 +185,6 @@ class CompletedGameLocalDataSourceTests
                         modifier = Modifier.semantics { contentDescription = "${it.date()}" }
                     )
                 }
-            }
-
-            updatedCompletedGame?.let()
-            {
-                Text(
-                    text = "${it.answer().word()}",
-                    modifier = Modifier.semantics { contentDescription = "${it.date()}" }
-                )
             }
         }
     }

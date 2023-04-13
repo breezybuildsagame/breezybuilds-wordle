@@ -162,4 +162,73 @@ class GetGameBoardTests: KoinComponent
             }
         }
     }
+
+    @Test
+    fun `When use case invoked resetIfNecessary set true and all gameBoard row tiles are unhidden - GameBoard is reset`()
+    {
+        // given
+        val expectedGameboardRow = listOf(
+            GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile()
+        )
+        val filledGameboardRow = listOf(
+            GameBoard.Tile(letter = 'B', state = GameBoard.Tile.State.INCORRECT),
+            GameBoard.Tile(letter = 'B', state = GameBoard.Tile.State.INCORRECT),
+            GameBoard.Tile(letter = 'B', state = GameBoard.Tile.State.INCORRECT),
+            GameBoard.Tile(letter = 'B', state = GameBoard.Tile.State.INCORRECT),
+            GameBoard.Tile(letter = 'B', state = GameBoard.Tile.State.INCORRECT)
+        )
+        val answer = Answer(word = Word("SLAPS"))
+        answerLocalDataSource.getCurrentAnswerToReturn = answer
+        guessRepository.getAllGuessesToReturn = listOf()
+        val gameBoard: GameBoard by inject()
+        gameBoard.setRows(
+            newRows = listOf(
+                filledGameboardRow, filledGameboardRow, filledGameboardRow,
+                filledGameboardRow, filledGameboardRow, filledGameboardRow
+            )
+        )
+
+        // when
+        runBlocking { GameUseCase().getGameBoard(resetIfNecessary = true) }
+
+        // then
+        gameBoard.rows().forEachIndexed()
+        { index, _ ->
+            assertEquals(expectedGameboardRow, gameBoard.rows()[index])
+        }
+    }
+
+    @Test
+    fun `When use case invoked resetIfNecessary set true and one gameboard row is correct - GameBoard is reset`()
+    {
+        // given
+        val expectedGameBoardRow = listOf(
+            GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile(), GameBoard.Tile()
+        )
+        answerLocalDataSource.getCurrentAnswerToReturn = Answer(word = Word("SLAPS"))
+        guessRepository.getAllGuessesToReturn = listOf()
+        val gameBoard: GameBoard by inject()
+        gameBoard.setRows(
+            newRows = listOf(
+                listOf(
+                    GameBoard.Tile(letter = 'B', state = GameBoard.Tile.State.CORRECT),
+                    GameBoard.Tile(letter = 'B', state = GameBoard.Tile.State.CORRECT),
+                    GameBoard.Tile(letter = 'B', state = GameBoard.Tile.State.CORRECT),
+                    GameBoard.Tile(letter = 'B', state = GameBoard.Tile.State.CORRECT),
+                    GameBoard.Tile(letter = 'B', state = GameBoard.Tile.State.CORRECT)
+                ),
+                expectedGameBoardRow, expectedGameBoardRow,
+                expectedGameBoardRow, expectedGameBoardRow, expectedGameBoardRow
+            )
+        )
+
+        // when
+        runBlocking { GameUseCase().getGameBoard(resetIfNecessary = true) }
+
+        // then
+        gameBoard.rows().forEachIndexed()
+        { index, _ ->
+            assertEquals(expectedGameBoardRow, gameBoard.rows()[index])
+        }
+    }
 }

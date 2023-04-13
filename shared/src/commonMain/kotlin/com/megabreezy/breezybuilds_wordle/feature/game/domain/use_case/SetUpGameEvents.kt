@@ -5,6 +5,7 @@ import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameAnswer
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.GameGuessGateway
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.gateway.SavedGameGateway
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
+import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameKeyboard
 import com.megabreezy.breezybuilds_wordle.feature.game.presentation.GameSceneHandleable
 import kotlinx.coroutines.delay
 import org.koin.core.component.inject
@@ -15,9 +16,18 @@ suspend fun GameUseCase.setUpGameEvents(
 )
 {
     val answerRepository: GameAnswerGateway by inject()
+    val gameBoard: GameBoard by inject()
     val guessRepository: GameGuessGateway by inject()
     val savedGameRepository: SavedGameGateway by inject()
     val gameNavigationHandler: GameNavigationHandleable by inject()
+    val getTileByLetters: (String?, GameKeyboard.Key) -> GameBoard.Tile? = { letters, key ->
+        when(key.letters())
+        {
+            "BACKSPACE"  -> gameBoard.activeRow()?.lastOrNull { it.letter() != null && key.letters() == "BACKSPACE" }
+            "ENTER" -> gameBoard.activeRow()?.firstOrNull { it.letter() != null && key.letters() == letters }
+            else -> gameBoard.activeRow()?.firstOrNull { it.letter() == null && key.letter() != null }
+        }
+    }
 
     getGameKeyboard(resetIfNecessary = true)
     getGameBoard(resetIfNecessary = true, reloadIfNecessary = true)
@@ -27,33 +37,20 @@ suspend fun GameUseCase.setUpGameEvents(
     {
         key.setOnClick()
         {
-            val tileToSet = getGameBoard().activeRow()?.firstOrNull()
-            {
-                it.letter() == null && key.letter() != null && key.letters() != "ENTER"
-            }
-            val tileToBackspace = getGameBoard().activeRow()?.lastOrNull()
-            {
-                it.letter() != null && key.letters() == "BACKSPACE"
-            }
-
-            tileToBackspace?.let()
-            { tile ->
-                tile.setLetter(newLetter = null)
-                sceneHandler?.onRevealNextTile()
-            }
-            ?: tileToSet?.let()
+            getTileByLetters(null, key)?.let()
             { tile ->
                 tile.setLetter(newLetter = key.letter())
                 sceneHandler?.onRevealNextTile()
             }
-            ?: if (key.letters() == "ENTER")
+            ?: getTileByLetters("ENTER", key)?.let()
             {
                 try
                 {
                     guessWord()
 
-                    answerRepository.updateAnswerGuessed(existingAnswer = getGameAnswer())
+                    finalizeActiveGameBoardRow()
                     savedGameRepository.create()
+                    answerRepository.updateAnswerGuessed(existingAnswer = getGameAnswer())
                     guessRepository.clear()
                     getAnnouncement().setMessage(newMessage = "Correct! Thanks for playing!")
                     sceneHandler?.onGameOver()
@@ -79,8 +76,8 @@ suspend fun GameUseCase.setUpGameEvents(
                     }
                     catch (e: GameBoard.SetNewActiveRowFailedException)
                     {
-                        answerRepository.updateAnswerNotGuessed(existingAnswer = getGameAnswer())
                         savedGameRepository.create()
+                        answerRepository.updateAnswerNotGuessed(existingAnswer = getGameAnswer())
                         guessRepository.clear()
                         getAnnouncement().setMessage(newMessage = "Game Over")
                         sceneHandler?.onGameOver()
@@ -100,7 +97,12 @@ suspend fun GameUseCase.setUpGameEvents(
                         handler.onAnnouncementShouldHide()
                     }
                 }
-            } else Unit
+            }
+            ?: getTileByLetters("BACKSPACE", key)?.let()
+            { tile ->
+                tile.setLetter(newLetter = null)
+                sceneHandler?.onRevealNextTile()
+            }
         }
     }
 }
