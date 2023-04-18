@@ -1,9 +1,7 @@
 package com.megabreezy.breezybuilds_wordle.android.stats.presentation.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +21,50 @@ import com.megabreezy.breezybuilds_wordle.android.util.theme.dpToSp
 
 object StatsGuessDistribution
 {
+    @Composable
+    fun Component(options: ComponentOptions = ComponentOptions())
+    {
+        val titleTextStyle = getTitleTextStyle()
+
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier
+                .semantics { contentDescription = "${TagName.COlUMN}" },
+            verticalArrangement = Arrangement.spacedBy(
+                LocalSceneDimensions.current.height.times(5 / Scene.idealFrame().height)
+            )
+        )
+        {
+            options.title?.let()
+            { titleText ->
+                Text(
+                    text = titleText,
+                    modifier = Modifier
+                        .semantics { statsGuessDistributionTitleTextStyle = titleTextStyle },
+                    style = getTitleTextStyle()
+                )
+            }
+
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(LocalSceneDimensions.current.height.times(20 / Scene.idealFrame().height))
+                    .semantics { contentDescription = "spacer" }
+            )
+
+            options.rows?.forEach { it() }
+        }
+    }
+
+    @Composable
+    fun getTitleTextStyle() = TextStyle(
+        color = MaterialTheme.colorScheme.onSurface,
+        fontFamily = ThemeFonts.roboto,
+        fontSize = dpToSp(dp = LocalSceneDimensions.current.height.times(20 / Scene.idealFrame().height)),
+        fontWeight = FontWeight.Black,
+        textAlign = TextAlign.Center
+    )
+
     object GraphRow
     {
         @Composable
@@ -87,5 +129,18 @@ object StatsGuessDistribution
 
             override fun toString(): String = this.id
         }
+    }
+
+    val TitleTextStyleKey = SemanticsPropertyKey<TextStyle>("TitleTextStyle")
+
+    private var SemanticsPropertyReceiver.statsGuessDistributionTitleTextStyle by TitleTextStyleKey
+
+    data class ComponentOptions(val title: String? = null, val rows: (List<@Composable () -> Unit>)? = null)
+
+    enum class TagName(private val id: String)
+    {
+        COlUMN(id = "stats_guess_distribution_component");
+
+        override fun toString(): String = this.id
     }
 }

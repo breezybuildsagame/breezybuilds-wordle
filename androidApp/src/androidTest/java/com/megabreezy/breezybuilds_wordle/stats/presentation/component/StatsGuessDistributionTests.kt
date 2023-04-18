@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.megabreezy.breezybuilds_wordle.android.core.ui.Scene
 import com.megabreezy.breezybuilds_wordle.android.core.util.LocalSceneDimensions
@@ -75,5 +76,80 @@ class StatsGuessDistributionTests
         composeTestRule.onNode(
             SemanticsMatcher.expectValue(StatsGuessDistribution.GraphRow.TextStyleKey, expectedRowTextStyle)
         ).assertExists()
+    }
+
+    @Test
+    fun when_displaying_component__expected_tagName_is_applied()
+    {
+        // given
+        val expectedTagName = "stats_guess_distribution_component"
+
+        // when
+        composeTestRule.setContent { SceneMock.display { StatsGuessDistribution.Component() } }
+
+        // then
+        composeTestRule.onNodeWithContentDescription(expectedTagName).assertExists()
+    }
+
+    @Test
+    fun when_displaying_component_with_title_and_rows__composable_matches_design_requirements()
+    {
+        // given
+        val expectedTitle = "Guess Distribution"
+        lateinit var titleTextStyle: TextStyle
+        val expectedRows = listOf(
+            listOf("10", "101"),
+            listOf("11", "200")
+        )
+        var expectedTitleBottomPadding: Dp? = null
+
+        // when
+        composeTestRule.setContent()
+        {
+            SceneMock.display()
+            {
+                titleTextStyle = TextStyle(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontFamily = ThemeFonts.roboto,
+                    fontSize = dpToSp(dp = LocalSceneDimensions.current.height.times(20 / Scene.idealFrame().height)),
+                    fontWeight = FontWeight.Black,
+                    textAlign = TextAlign.Center
+                )
+                expectedTitleBottomPadding = LocalSceneDimensions.current.height.times(20 / Scene.idealFrame().height)
+
+                StatsGuessDistribution.Component(
+                    options = StatsGuessDistribution.ComponentOptions(
+                        title = expectedTitle,
+                        rows = expectedRows.map()
+                        { row ->
+                            {
+                                StatsGuessDistribution.GraphRow.Component(
+                                    options = StatsGuessDistribution.GraphRow.ComponentOptions(
+                                        round = row[0],
+                                        correctGuessCount = row[1]
+                                    )
+                                )
+                            }
+                        }
+                    )
+                )
+            }
+        }
+        val displayedColumn = composeTestRule.onNodeWithContentDescription("${StatsGuessDistribution.TagName.COlUMN}", useUnmergedTree = true)
+
+        // then
+        displayedColumn.assertIsDisplayed()
+        displayedColumn.onChildAt(index = 0).assertTextEquals(expectedTitle)
+        composeTestRule.onNode(
+            SemanticsMatcher.expectValue(StatsGuessDistribution.TitleTextStyleKey, titleTextStyle)
+        ).assertExists()
+        displayedColumn.onChildAt(index = 1).assertContentDescriptionEquals("spacer")
+        displayedColumn.onChildAt(index = 1).assertHeightIsEqualTo(expectedTitleBottomPadding!!)
+        expectedRows.forEachIndexed()
+        { index, row ->
+            displayedColumn.onChildAt(index = index + 2).assertContentDescriptionEquals("${StatsGuessDistribution.GraphRow.TagName.ROW}")
+            displayedColumn.onChildAt(index = index + 2).onChildAt(index = 0).assertTextEquals(row[0])
+            displayedColumn.onChildAt(index = index + 2).onChildAt(index = 1).assertTextEquals(row[1])
+        }
     }
 }
