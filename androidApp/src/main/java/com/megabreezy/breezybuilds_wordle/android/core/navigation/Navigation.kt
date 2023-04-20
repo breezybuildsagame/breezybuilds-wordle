@@ -20,15 +20,13 @@ fun Navigation()
     val handler = remember()
     {
         SceneNavigationHandler(
+            appNavigator = NavHelper().appNavigator(),
             navController = navController,
             scope = scope
         )
     }
 
-    LaunchedEffect(Unit)
-    {
-        NavHelper().appNavigator().setSceneNavigator(newSceneNavigator = handler)
-    }
+    LaunchedEffect(Unit) { handler.setUp() }
 
     AnimatedNavHost(
         navController = navController,

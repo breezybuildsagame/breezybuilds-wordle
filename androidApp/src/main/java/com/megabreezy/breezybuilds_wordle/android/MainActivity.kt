@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -24,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import com.megabreezy.breezybuilds_wordle.android.core.navigation.Navigation
+import com.megabreezy.breezybuilds_wordle.android.core.ui.app_modal.rememberAppModalViewHandler
 import com.megabreezy.breezybuilds_wordle.android.core.util.LocalSceneDimensions
 import com.megabreezy.breezybuilds_wordle.android.core.util.LocalStageDimensions
 import com.megabreezy.breezybuilds_wordle.android.core.util.rememberGlobalSceneDimensions
@@ -105,6 +108,7 @@ class MainActivity : ComponentActivity() {
         {
             val wordDataSource: WordLocalDataManageable by inject()
             val realWordDataSource = wordDataSource as? WordLocalDataSource
+            val appModalViewHandler = rememberAppModalViewHandler()
 
             realWordDataSource?.let()
             {
@@ -112,6 +116,8 @@ class MainActivity : ComponentActivity() {
             }
 
             val globalSceneDimensions = rememberGlobalSceneDimensions()
+
+            LaunchedEffect(Unit) { appModalViewHandler.setUp() }
 
             MyApplicationTheme()
             {
@@ -127,6 +133,18 @@ class MainActivity : ComponentActivity() {
                         CompositionLocalProvider(LocalSceneDimensions provides globalSceneDimensions.sceneFrame)
                         {
                             Navigation()
+
+                            if (appModalViewHandler.appModalIsShowing)
+                            {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(Color(red = 0f, green = 0f, blue = 0f, alpha = 0.8f))
+                                )
+                                {
+                                    appModalViewHandler.ModalContent()
+                                }
+                            }
                         }
                     }
                 }
