@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,25 +28,42 @@ object StatsModalContent
     @Composable
     fun Component(options: ComponentOptions = ComponentOptions())
     {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            ),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = LocalSceneDimensions.current.height.times(10 / Scene.idealFrame().height)
+            ),
             modifier = Modifier
-                .semantics { contentDescription = "${TagName.CONTAINER}" }
+                .width(LocalSceneDimensions.current.width.times(315 / Scene.idealFrame().width)),
+            shape = RoundedCornerShape(
+                corner = CornerSize(size = LocalSceneDimensions.current.height.times(8 / Scene.idealFrame().height))
+            )
         )
         {
-            val titleTextStyle = getTitleTextStyle()
-            Text(
-                text = "STATISTICS",
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .semantics { statsModalContentTitleTextStyle = titleTextStyle },
-                style = titleTextStyle
+                    .padding(horizontal = LocalSceneDimensions.current.width.times(20 / Scene.idealFrame().width))
+                    .padding(vertical = LocalSceneDimensions.current.height.times(40 / Scene.idealFrame().height))
+                    .semantics { contentDescription = "${TagName.CONTAINER}" }
             )
+            {
+                val titleTextStyle = getTitleTextStyle()
+                Text(
+                    text = "STATISTICS",
+                    modifier = Modifier
+                        .semantics { statsModalContentTitleTextStyle = titleTextStyle },
+                    style = titleTextStyle
+                )
 
-            options.statsRow?.let { it() }
+                options.statsRow?.let { it() }
 
-            options.guessDistribution?.let { it() }
+                options.guessDistribution?.let { it() }
 
-            options.playAgainButton?.let { it() }
+                options.playAgainButton?.let { it() }
+            }
         }
     }
 

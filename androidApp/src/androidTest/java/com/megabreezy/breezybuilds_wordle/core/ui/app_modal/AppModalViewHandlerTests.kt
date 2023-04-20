@@ -3,6 +3,7 @@ package com.megabreezy.breezybuilds_wordle.core.ui.app_modal
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -57,7 +58,7 @@ class AppModalViewHandlerTests
         // when
         composeTestRule.setContent()
         {
-            handler = rememberAppModalViewHandler(appModal = mockModal)
+            handler = rememberAppModalViewHandler(appModal = mockModal, scope = rememberCoroutineScope())
 
             SceneMock.display()
             {
@@ -70,7 +71,7 @@ class AppModalViewHandlerTests
         composeTestRule.onNodeWithContentDescription("${StatsModalContent.PlayAgainButton.TagName.BUTTON}").performClick()
 
         // then
-        displayedMockView.assertContentDescriptionEquals("${StatsModalContent.TagName.CONTAINER}")
+        displayedMockView.onChildAt(index = 0).assertContentDescriptionEquals("${StatsModalContent.TagName.CONTAINER}")
         composeTestRule.onAllNodesWithContentDescription(
             "${StatsModalContent.Stat.TagName.STAT}"
         ).assertCountEquals(modalHelper.statsToReturn().count())
