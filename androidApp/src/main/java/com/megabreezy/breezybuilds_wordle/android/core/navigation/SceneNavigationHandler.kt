@@ -20,11 +20,12 @@ class SceneNavigationHandler(
     {
         try
         {
-            navController?.navigate(route.name) { popUpTo(0) }
+            navController?.navigate("/${route.name}") { popUpTo(0) }
             println("Navigating to $route")
         }
         catch (e: Throwable)
         {
+            println(e.message)
             scope?.launch { appNavigator.popBack(numberOfScreens = 1) }
         }
     }

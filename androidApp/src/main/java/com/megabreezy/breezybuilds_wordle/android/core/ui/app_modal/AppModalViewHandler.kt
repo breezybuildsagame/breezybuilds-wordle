@@ -15,10 +15,12 @@ import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.AppModalHelper
 import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.AppModalRepresentable
 import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.AppModalViewHandleable
 import com.megabreezy.breezybuilds_wordle.feature.stats.domain.model.StatsModal
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class AppModalViewHandler(
-    private val appModal: AppModalRepresentable = AppModalHelper().appModal()
+    private val appModal: AppModalRepresentable = AppModalHelper().appModal(),
+    private val scope: CoroutineScope? = null
 ): AppModalViewHandleable
 {
     var appModalIsShowing by mutableStateOf(false)
@@ -36,7 +38,6 @@ class AppModalViewHandler(
         {
             is StatsModal -> {
                 val statsModal = (appModal.content() as StatsModal)
-                val scope = rememberCoroutineScope()
 
                 StatsModalContent.Component(
                     options = StatsModalContent.ComponentOptions(
@@ -82,7 +83,7 @@ class AppModalViewHandler(
                             StatsModalContent.PlayAgainButton.Component(
                                 options = StatsModalContent.PlayAgainButton.ComponentOptions(
                                     label = statsModal.playAgainButton()?.label(),
-                                    onClick = { scope.launch { statsModal.playAgainButton()?.click() } }
+                                    onClick = { scope?.launch { statsModal.playAgainButton()?.click() } }
                                 )
                             )
                         }
@@ -96,5 +97,6 @@ class AppModalViewHandler(
 
 @Composable
 fun rememberAppModalViewHandler(
-    appModal: AppModalRepresentable = AppModalHelper().appModal()
-) = remember { AppModalViewHandler(appModal = appModal) }
+    appModal: AppModalRepresentable = AppModalHelper().appModal(),
+    scope: CoroutineScope? = null
+) = remember { AppModalViewHandler(appModal = appModal, scope = scope) }

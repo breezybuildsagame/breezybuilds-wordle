@@ -15,6 +15,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -93,14 +94,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         try { get() }
-        catch(e: Throwable) {
-            initKoin(
-                scenarios = listOf(
-                    Scenario.WORD_FOUND,
-                    Scenario.ANSWER_SAVED
-                )
-            )
-        }
+        catch(e: Throwable) { initKoin(scenarios = listOf()) }
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -108,7 +102,7 @@ class MainActivity : ComponentActivity() {
         {
             val wordDataSource: WordLocalDataManageable by inject()
             val realWordDataSource = wordDataSource as? WordLocalDataSource
-            val appModalViewHandler = rememberAppModalViewHandler()
+            val appModalViewHandler = rememberAppModalViewHandler(scope = rememberCoroutineScope())
 
             realWordDataSource?.let()
             {
