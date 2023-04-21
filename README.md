@@ -21,9 +21,9 @@ The Game feature establishes the core game loop by presenting the player with a 
 
 ### Stats
 
-![BreezyBuilds Wordle Stats Screenshot](breezybuildswordle_stats_screen.png)
-
 The Stats feature presents player statistics at the touch of a button and also serves as a prompt for starting a new game (as the one game per day stipulation is not currently in place).
+
+![BreezyBuilds Wordle Stats Screenshot](breezybuildswordle_stats_screen.png)
 
 * [Visual Design Doc](https://www.figma.com/file/zQEo2VR54levonpi5pTd1v/Wordle?node-id=18%3A366&t=J7s3sjvHTIxL951t-1)
 * [Clean Architecture Design Doc](https://www.figma.com/file/MGS6fPuVWmYU5GG0uXIOFH/KMM-by-Example%3A-Wordle-(Clean-Architecture)?node-id=509-2813&t=YkGn25ZxF1OavK9V-4)
