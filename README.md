@@ -1,13 +1,13 @@
 # BreezyBuilds: Wordle
 
-![BreezyBuilds Wordle Cover Image](breezybuildswordle_cover.png)
-
 Welcome! What you're looking at is a clone of the classic "Wordle", built from the ground up for mobile devices. 
 The aim for this project is primarily to serve as inspiration and reference for game developers wishing to learn [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html).
 
 ## Completed Features:
 
 ### Game
+
+![BreezyBuilds Wordle Cover Image](breezybuildswordle_cover.png)
 
 * [Clean Architecture Design Doc](https://www.figma.com/file/MGS6fPuVWmYU5GG0uXIOFH/KMM-by-Example%3A-Wordle-(Clean-Architecture)?node-id=107-1879&t=W1HDPcoXkeuzVBys-4)
 * [Shared Code](https://github.com/breezybuildsagame/breezybuilds-wordle/tree/main/shared/src/commonMain/kotlin/com/megabreezy/breezybuilds_wordle/feature/game)
