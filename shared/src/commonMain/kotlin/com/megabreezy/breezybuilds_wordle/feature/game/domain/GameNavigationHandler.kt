@@ -16,7 +16,7 @@ class GameNavigationHandler: GameNavigationHandleable, KoinComponent
 
     override fun onStatsOptionClicked()
     {
-        appNavigator.navigate(route = AppRoute.STATS)
+        appNavigator.navigate(route = AppRoute.STATS_GAME_IN_PROGRESS)
     }
 
     override fun onSettingsOptionClicked()
@@ -26,6 +26,6 @@ class GameNavigationHandler: GameNavigationHandleable, KoinComponent
 
     override fun onGameOver()
     {
-        appNavigator.navigate(route = AppRoute.STATS)
+        appNavigator.navigate(route = AppRoute.STATS_GAME_OVER)
     }
 }

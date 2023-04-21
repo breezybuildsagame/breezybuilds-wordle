@@ -54,7 +54,7 @@ class GameNavigationHandlerTests
     fun `When the onGameOver method is invoked - the AppNavigationHandler navigate method is invoked - passing in expected route and direction parameters`()
     {
         // given
-        val expectedAppRoute = AppRoute.STATS
+        val expectedAppRoute = AppRoute.STATS_GAME_OVER
         val expectedDirection = NavigationDirection.INSTANT
         val sut = GameNavigationHandler()
 
@@ -70,7 +70,7 @@ class GameNavigationHandlerTests
     fun `When the onStatsOptionClicked method is invoked - the AppNavigationHandler navigate method is invoked - passing in expected route and direction parameters`()
     {
         // given
-        val expectedAppRoute = AppRoute.STATS
+        val expectedAppRoute = AppRoute.STATS_GAME_IN_PROGRESS
         val expectedDirection = NavigationDirection.INSTANT
         val sut = GameNavigationHandler()
 
