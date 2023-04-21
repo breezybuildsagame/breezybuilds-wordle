@@ -1,5 +1,8 @@
 package com.megabreezy.breezybuilds_wordle.android.core.ui.app_modal
 
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.*
@@ -38,6 +41,7 @@ class AppModalViewHandler(
         {
             is StatsModal -> {
                 val statsModal = (appModal.content() as StatsModal)
+                val offset = remember { mutableStateOf(0f) }
 
                 StatsModalContent.Component(
                     options = StatsModalContent.ComponentOptions(
@@ -45,6 +49,13 @@ class AppModalViewHandler(
                             Row(
                                 horizontalArrangement = Arrangement.spacedBy(LocalSceneDimensions.current.width.times(5 / Scene.idealFrame().width)),
                                 modifier = Modifier
+                                    .scrollable(
+                                        orientation = Orientation.Horizontal,
+                                        state = rememberScrollableState { delta ->
+                                            offset.value = offset.value + delta
+                                            delta
+                                        }
+                                    )
                                     .semantics { contentDescription = "${StatsModalContent.TagName.ROW}" },
                                 verticalAlignment = Alignment.Top
                             )
