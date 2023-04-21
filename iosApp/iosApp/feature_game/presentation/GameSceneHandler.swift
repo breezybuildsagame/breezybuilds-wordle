@@ -60,7 +60,17 @@ class GameSceneHandler: ObservableObject
     
     func gameHeader() -> GameSceneHeader
     {
-        GameSceneHeader(title: viewModel.getHeader().title())
+        let optionViews = viewModel.getHeader().options().map { option in
+            GameSceneHeader.Option(
+                resourceId: option.iconResourceId(),
+                onTap: { option.click() }
+            )
+        }
+        
+        return GameSceneHeader(
+            title: viewModel.getHeader().title(),
+            options: optionViews
+        )
     }
     
     func gameKeyboard() -> GameSceneKeyboard

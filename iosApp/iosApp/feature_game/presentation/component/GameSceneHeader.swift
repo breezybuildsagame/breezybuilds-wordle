@@ -17,7 +17,6 @@ struct GameSceneHeader: View
     
     var body: some View
     {
-        
         VStack
         {
             Spacer()
@@ -30,20 +29,40 @@ struct GameSceneHeader: View
             {
                 if let firstOption = options.first { firstOption }
                 
+                Spacer()
+                
                 if let title = title
                 {
                     Text(title)
                         .font(Font.custom("Roboto-Black", size: sceneDimensions.height * (40.0 / idealFrameHeight())))
                         .foregroundColor(Color.ui.onPrimary)
                 }
+                
+                Spacer()
+                
+                ForEach(options.filter { $0.resourceId == "game_image_stats_icon" }, id: \.id) { option in option }
             }
+            .frame(
+                width: sceneDimensions.width * (370.0 / idealFrameWidth()),
+                alignment: Alignment.center
+            )
+            
+            Spacer()
+            
+            Color.ui.error
+                .frame(
+                    width: sceneDimensions.width * (390.0 / idealFrameWidth()),
+                    height: sceneDimensions.height * ( 1.0 / idealFrameHeight())
+                )
         }
+        .frame(height: sceneDimensions.height * (100.0 / idealFrameHeight()))
     }
     
-    struct Option: View
+    struct Option: View, Identifiable
     {
         @EnvironmentObject private var sceneDimensions: SceneDimensions
         
+        var id: String = UUID().uuidString
         var resourceId: String? = nil
         var onTap: () -> () = { }
         

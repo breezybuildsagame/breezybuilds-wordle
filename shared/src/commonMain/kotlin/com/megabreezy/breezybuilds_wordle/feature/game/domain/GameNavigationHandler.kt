@@ -11,12 +11,12 @@ class GameNavigationHandler: GameNavigationHandleable, KoinComponent
 
     override fun onHelpOptionClicked()
     {
-        TODO("Not yet implemented")
+        println("Help feature TBD")
     }
 
     override fun onStatsOptionClicked()
     {
-        TODO("Not yet implemented")
+        appNavigator.navigate(route = AppRoute.STATS)
     }
 
     override fun onSettingsOptionClicked()

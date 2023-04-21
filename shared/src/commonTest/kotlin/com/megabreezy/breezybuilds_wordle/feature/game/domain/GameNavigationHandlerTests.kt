@@ -51,7 +51,7 @@ class GameNavigationHandlerTests
     }
 
     @Test
-    fun `When the onGameOver method is invoked -t he AppNavigationHandler navigate method is invoked - passing in expected route and direction parameters`()
+    fun `When the onGameOver method is invoked - the AppNavigationHandler navigate method is invoked - passing in expected route and direction parameters`()
     {
         // given
         val expectedAppRoute = AppRoute.STATS
@@ -60,6 +60,22 @@ class GameNavigationHandlerTests
 
         // when
         sut.onGameOver()
+
+        // then
+        assertEquals(expectedAppRoute, appNavigator.navigatedRoute)
+        assertEquals(expectedDirection, appNavigator.navigatedDirection)
+    }
+
+    @Test
+    fun `When the onStatsOptionClicked method is invoked - the AppNavigationHandler navigate method is invoked - passing in expected route and direction parameters`()
+    {
+        // given
+        val expectedAppRoute = AppRoute.STATS
+        val expectedDirection = NavigationDirection.INSTANT
+        val sut = GameNavigationHandler()
+
+        // when
+        sut.onStatsOptionClicked()
 
         // then
         assertEquals(expectedAppRoute, appNavigator.navigatedRoute)
