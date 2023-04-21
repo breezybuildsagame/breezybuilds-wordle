@@ -7,6 +7,8 @@ The aim for this project is primarily to serve as inspiration and reference for 
 
 ### Game
 
+The Game feature establishes the core game loop by presenting the player with a Game Board and accepting Keyboard input in order to facilitate gameplay.
+
 ![BreezyBuilds Wordle Cover Image](breezybuildswordle_cover.png)
 
 * [Clean Architecture Design Doc](https://www.figma.com/file/MGS6fPuVWmYU5GG0uXIOFH/KMM-by-Example%3A-Wordle-(Clean-Architecture)?node-id=107-1879&t=W1HDPcoXkeuzVBys-4)
