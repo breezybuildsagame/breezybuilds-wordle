@@ -29,6 +29,7 @@ object StatsGuessDistribution
         Column(
             horizontalAlignment = Alignment.Start,
             modifier = Modifier
+                .padding(bottom = LocalSceneDimensions.current.height.times(35 / Scene.idealFrame().height))
                 .semantics { contentDescription = "${TagName.COlUMN}" },
             verticalArrangement = Arrangement.spacedBy(
                 LocalSceneDimensions.current.height.times(5 / Scene.idealFrame().height)

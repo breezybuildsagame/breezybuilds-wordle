@@ -1,9 +1,6 @@
 package com.megabreezy.breezybuilds_wordle.android.stats.presentation.component
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -17,9 +14,12 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import com.megabreezy.breezybuilds_wordle.android.core.ui.Scene
 import com.megabreezy.breezybuilds_wordle.android.core.util.LocalSceneDimensions
+import com.megabreezy.breezybuilds_wordle.android.stats.presentation.component.StatsGuessDistribution.getTitleTextStyle
 import com.megabreezy.breezybuilds_wordle.android.util.theme.ThemeFonts
 import com.megabreezy.breezybuilds_wordle.android.util.theme.dpToSp
 
@@ -45,7 +45,7 @@ object StatsModalContent
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .padding(horizontal = LocalSceneDimensions.current.width.times(20 / Scene.idealFrame().width))
+                    .padding(horizontal = LocalSceneDimensions.current.width.times(0 / Scene.idealFrame().width))
                     .padding(vertical = LocalSceneDimensions.current.height.times(40 / Scene.idealFrame().height))
                     .semantics { contentDescription = "${TagName.CONTAINER}" }
             )
@@ -58,9 +58,15 @@ object StatsModalContent
                     style = titleTextStyle
                 )
 
-                options.statsRow?.let { it() }
+                Box(modifier = Modifier.padding(horizontal = LocalSceneDimensions.current.width.times(15 / Scene.idealFrame().width)))
+                {
+                    options.statsRow?.let { it() }
+                }
 
-                options.guessDistribution?.let { it() }
+                Box(modifier = Modifier.padding(horizontal = LocalSceneDimensions.current.width.times(20 / Scene.idealFrame().width)))
+                {
+                    options.guessDistribution?.let { it() }
+                }
 
                 options.playAgainButton?.let { it() }
             }
@@ -97,6 +103,7 @@ object StatsModalContent
         fun Component(options: ComponentOptions = ComponentOptions())
         {
             Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = options.modifier
                     .padding(bottom = LocalSceneDimensions.current.height.times(15 / Scene.idealFrame().height))
                     .semantics { contentDescription = "${TagName.STAT}" }
@@ -109,7 +116,9 @@ object StatsModalContent
                         text = headlineText,
                         modifier = Modifier
                             .semantics { statsModalContentStatHeadlineTextStyle = headlineTextStyle },
-                        style = headlineTextStyle
+                        style = headlineTextStyle,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
                     )
                 }
 
