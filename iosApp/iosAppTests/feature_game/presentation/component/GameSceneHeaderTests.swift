@@ -167,7 +167,7 @@ final class GameSceneHeaderTests: XCTestCase
         ViewHosting.host(view: sut.environmentObject(SceneDimensions()))
         
         // then
-        XCTAssertEqual(expectedTitle, try sut.inspect().vStack().hStack(1).text(1).string())
+        XCTAssertEqual(expectedTitle, try sut.inspect().vStack().hStack(1).text(2).string())
     }
     
     func test_when_view_appears_with_title__title_text_matches_design_requirements() throws
@@ -182,7 +182,7 @@ final class GameSceneHeaderTests: XCTestCase
         defer { ViewHosting.expel() }
         ViewHosting.host(view: sut.environmentObject(dimensions))
         dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
-        let textAttributes =  try sut.inspect().vStack().hStack(1).text(1).attributes()
+        let textAttributes =  try sut.inspect().vStack().hStack(1).text(2).attributes()
         
         // then
         XCTAssertEqual(expectedFontSize, try textAttributes.font().size())

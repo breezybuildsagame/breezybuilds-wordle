@@ -1,5 +1,7 @@
 package com.megabreezy.breezybuilds_wordle.android.game.presentation
 
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneAnnouncement
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneBoard
@@ -111,7 +113,27 @@ class GameSceneHandler(private val scope: CoroutineScope? = null): GameSceneHand
     override fun onStartingGame() { updateMutableStates() }
 
     @Composable
-    fun GameHeader() { GameSceneHeader.Component(options = GameSceneHeader.ComponentOptions(text = headerTitleText)) }
+    fun GameHeader()
+    {
+        val scope = rememberCoroutineScope()
+
+        GameSceneHeader.Component(
+            options = GameSceneHeader.ComponentOptions(
+                text = headerTitleText,
+                gameOptions = viewModel.getHeader().options().filter()
+                { it.iconResourceId() != "game_image_settings_icon" }.map()
+                { option ->
+                    {
+                        GameSceneHeader.Option.Component(
+                            resourceId = option.iconResourceId() ?: "",
+                            scope = scope,
+                            onClick = { option.click() }
+                        )
+                    }
+                }
+            ),
+        )
+    }
 
     @Composable
     fun GameBoard() { GameSceneBoard.Component(options = GameSceneBoard.ComponentOptions(rows = gameBoardRows)) }
