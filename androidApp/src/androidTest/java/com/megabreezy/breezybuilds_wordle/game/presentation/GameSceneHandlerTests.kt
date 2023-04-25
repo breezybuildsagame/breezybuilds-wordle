@@ -81,7 +81,7 @@ class GameSceneHandlerTests
         // then
         composeTestRule.onNodeWithContentDescription(
             GameSceneHeader.TagName.COMPONENT.toString()
-        ).onChild().assertTextEquals(expectedTitle)
+        ).onChildAt(index = 1).assertTextEquals(expectedTitle)
     }
 
     @Test

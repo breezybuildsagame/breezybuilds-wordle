@@ -16,10 +16,7 @@ class AppDelegate: NSObject, UIApplicationDelegate
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool
     {
-        KoinPlatformManager.shared.start(scenarios: [
-            Scenario.wordFound,
-            Scenario.answerSaved
-        ])
+        KoinPlatformManager.shared.start(scenarios: [])
         
         return true
     }

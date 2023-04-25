@@ -31,7 +31,20 @@ class AppNavigator(
     {
         when(route)
         {
-            AppRoute.STATS ->
+            AppRoute.STATS_GAME_IN_PROGRESS ->
+            {
+                val modalContent = StatsUseCase().getStatsModal()
+
+                modalContent.setPlayAgainButton(
+                    newPlayAgainButton = StatsModal.Button(label = "Continue Game")
+                    {
+                        appModal.handler()?.onModalShouldHide(animationDuration = this.modalAnimationDuration)
+                    }
+                )
+                appModal.setContent(newContent = modalContent)
+                appModal.handler()?.onModalShouldShow(animationDuration = this.modalAnimationDuration)
+            }
+            AppRoute.STATS_GAME_OVER ->
             {
                 val modalContent = StatsUseCase().getStatsModal()
 

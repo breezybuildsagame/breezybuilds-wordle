@@ -85,7 +85,7 @@ class AppNavigatorTests
         sut.navigate(route = AppRoute.GAME)
 
         // when
-        sut.navigate(route = AppRoute.STATS)
+        sut.navigate(route = AppRoute.STATS_GAME_OVER)
 
         // then
         assertEquals(AppRoute.GAME, sut.currentRoute())
@@ -106,7 +106,7 @@ class AppNavigatorTests
         val sut = AppNavigator()
 
         // when
-        sut.navigate(route = AppRoute.STATS)
+        sut.navigate(route = AppRoute.STATS_GAME_OVER)
 
         // then
         assertEquals(expectedAppModalContent, appModal.contentToReturn)
@@ -121,7 +121,7 @@ class AppNavigatorTests
         val sut = AppNavigator()
 
         // when
-        sut.navigate(route = AppRoute.STATS)
+        sut.navigate(route = AppRoute.STATS_GAME_OVER)
 
         // then
         assertEquals(300L, mockModalViewHandler.onModalShouldShowPassedInAnimationDuration)
@@ -146,7 +146,7 @@ class AppNavigatorTests
         val sut = AppNavigator()
 
         // when
-        sut.navigate(route = AppRoute.STATS)
+        sut.navigate(route = AppRoute.STATS_GAME_OVER)
 
         // then
         assertNull((appModal.content() as StatsModal).playAgainButton())
@@ -159,7 +159,7 @@ class AppNavigatorTests
         val mockModalViewHandler = AppModalViewHandlerCommonMock()
         appModal.setHandler(newHandler = mockModalViewHandler)
         val sut = AppNavigator()
-        sut.navigate(route = AppRoute.STATS)
+        sut.navigate(route = AppRoute.STATS_GAME_OVER)
 
         if (appModal.content() is StatsModal)
         {
@@ -186,7 +186,7 @@ class AppNavigatorTests
         appModal.setHandler(newHandler = mockModalViewHandler)
         val sut = AppNavigator(modalAnimationDuration = 100L)
         sut.navigate(route = AppRoute.GAME)
-        sut.navigate(route = AppRoute.STATS)
+        sut.navigate(route = AppRoute.STATS_GAME_OVER)
         sut.setSceneNavigator(newSceneNavigator = mockSceneNavigator)
         mockSceneNavigator.navigatedRoute = null
         mockSceneNavigator.navigatedDirection = null
