@@ -31,6 +31,10 @@ class AppNavigator(
     {
         when(route)
         {
+            AppRoute.HELP ->
+            {
+
+            }
             AppRoute.STATS_GAME_IN_PROGRESS ->
             {
                 val modalContent = StatsUseCase().getStatsModal()

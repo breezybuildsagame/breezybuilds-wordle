@@ -92,6 +92,42 @@ class AppNavigatorTests
     }
 
     @Test
+    fun `When navigate invoked with Help AppRoute - AppRoute does not change`()
+    {
+        // given
+        val sut = AppNavigator()
+        sut.navigate(route = AppRoute.GAME)
+
+        // when
+        sut.navigate(route = AppRoute.HELP)
+
+        // then
+        assertEquals(AppRoute.GAME, sut.currentRoute())
+    }
+
+    @Test
+    fun `When navigate invoked with Help AppRoute - the injected AppSheetRepresentable setContent method is invoked passing in GetHelpSheet use case`()
+    {
+        // given
+
+        // when
+
+        // then
+        assertTrue(false)
+    }
+
+    @Test
+    fun `When navigate invoked with Stats AppRoute - the injected AppSheetRepresentable onSheetShouldShow is invoked with expected animation duration`()
+    {
+        // given
+
+        // when
+
+        // then
+        assertTrue(false)
+    }
+
+    @Test
     fun `When navigate invoked with Stats AppRoute - the injected AppModalRepresentable setContent method is invoked passing in GetStatsModal use case`()
     {
         // given
