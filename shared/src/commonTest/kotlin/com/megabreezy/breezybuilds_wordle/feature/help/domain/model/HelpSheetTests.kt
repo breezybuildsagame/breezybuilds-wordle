@@ -1,4 +1,4 @@
-package com.megabreezy.breezybuilds_wordle.help.domain.model
+package com.megabreezy.breezybuilds_wordle.feature.help.domain.model
 
 import com.megabreezy.breezybuilds_wordle.feature.help.domain.model.HelpSheet
 import kotlin.test.Test
