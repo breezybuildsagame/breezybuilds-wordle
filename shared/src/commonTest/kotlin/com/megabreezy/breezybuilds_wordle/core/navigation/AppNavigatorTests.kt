@@ -3,8 +3,13 @@ package com.megabreezy.breezybuilds_wordle.core.navigation
 import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.AppModalRepresentable
 import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.mock.AppModalCommonMock
 import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.mock.AppModalViewHandlerCommonMock
+import com.megabreezy.breezybuilds_wordle.core.ui.app_sheet.AppSheetRepresentable
+import com.megabreezy.breezybuilds_wordle.core.ui.app_sheet.mock.AppSheetCommonMock
+import com.megabreezy.breezybuilds_wordle.core.ui.app_sheet.mock.AppSheetViewHandlerCommonMock
 import com.megabreezy.breezybuilds_wordle.core.util.CoreKoinModule
 import com.megabreezy.breezybuilds_wordle.core.util.Scenario
+import com.megabreezy.breezybuilds_wordle.feature.help.domain.use_case.HelpUseCase
+import com.megabreezy.breezybuilds_wordle.feature.help.domain.use_case.getHelpSheet
 import com.megabreezy.breezybuilds_wordle.feature.stats.data.gateway.mock.StatsModalRepositoryCommonMock
 import com.megabreezy.breezybuilds_wordle.feature.stats.domain.gateway.StatsModalGateway
 import com.megabreezy.breezybuilds_wordle.feature.stats.domain.model.GuessDistribution
@@ -25,12 +30,14 @@ import kotlin.time.measureTime
 class AppNavigatorTests
 {
     private lateinit var appModal: AppModalCommonMock
+    private lateinit var appSheet: AppSheetCommonMock
     private lateinit var statsModalRepository: StatsModalRepositoryCommonMock
 
     @BeforeTest
     fun setUp()
     {
         appModal = AppModalCommonMock()
+        appSheet = AppSheetCommonMock()
         statsModalRepository = StatsModalRepositoryCommonMock()
 
         startKoin()
@@ -39,6 +46,7 @@ class AppNavigatorTests
                 CoreKoinModule().mockModule(),
                 StatsKoinModule().module(),
                 module { single<AppModalRepresentable> { appModal } },
+                module { single<AppSheetRepresentable> { appSheet }},
                 module { single<StatsModalGateway> { statsModalRepository } }
             )
         }
@@ -109,22 +117,50 @@ class AppNavigatorTests
     fun `When navigate invoked with Help AppRoute - the injected AppSheetRepresentable setContent method is invoked passing in GetHelpSheet use case`()
     {
         // given
+        val sut = AppNavigator()
+        val expectedSheetContent = HelpUseCase().getHelpSheet()
+        sut.navigate(route = AppRoute.GAME)
 
         // when
+        sut.navigate(route = AppRoute.HELP)
 
         // then
-        assertTrue(false)
+        assertEquals(expectedSheetContent, appSheet.content())
     }
 
     @Test
-    fun `When navigate invoked with Stats AppRoute - the injected AppSheetRepresentable onSheetShouldShow is invoked with expected animation duration`()
+    fun `When navigate invoked with Help AppRoute - the AppSheetViewHandleable onSheetShouldShow is invoked with expected animation duration`()
     {
         // given
+        val sut = AppNavigator()
+        val mockViewHandler = AppSheetViewHandlerCommonMock()
+        appSheet.setHandler(newHandler = mockViewHandler)
 
         // when
+        sut.navigate(route = AppRoute.HELP)
 
         // then
-        assertTrue(false)
+        assertEquals(300L, mockViewHandler.onSheetShouldShowPassedInAnimationDuration)
+        assertNull(mockViewHandler.onSheetShouldHidePassedInAnimationDuration)
+    }
+
+    @Test
+    fun `When the Help Sheet is displayed and close button clicked - the AppSheetViewHandleable onSheetShouldHide method is invoked with expected animation duration`()
+    {
+        // given
+        val sut = AppNavigator()
+        val mockViewHandler = AppSheetViewHandlerCommonMock()
+        appSheet.setHandler(newHandler = mockViewHandler)
+        sut.navigate(route = AppRoute.HELP)
+        mockViewHandler.onSheetShouldHidePassedInAnimationDuration = null
+        mockViewHandler.onSheetShouldShowPassedInAnimationDuration = null
+
+        // when
+        runBlocking { appSheet.content()?.closeButton()?.click() }
+
+        // then
+        assertNull(mockViewHandler.onSheetShouldShowPassedInAnimationDuration)
+        assertEquals(300L, mockViewHandler.onSheetShouldHidePassedInAnimationDuration)
     }
 
     @Test

@@ -1,12 +1,17 @@
 package com.megabreezy.breezybuilds_wordle.feature.help.domain.model
 
+import com.megabreezy.breezybuilds_wordle.core.ui.app_sheet.AppSheetContentRepresentable
+import com.megabreezy.breezybuilds_wordle.core.ui.button.ButtonRepresentable
+
 data class HelpSheet(
     private val title: String = "",
     private val instructions: List<Instruction> = listOf(),
     private val examples: List<Example> = listOf(),
     private val footer: String = ""
-)
+): AppSheetContentRepresentable
 {
+    private val closeButton = CloseButton()
+
     fun title() = this.title
     fun instructions() = this.instructions
     fun examples() = this.examples
@@ -37,5 +42,19 @@ data class HelpSheet(
         fun state() = this.state
 
         enum class State { HIDDEN, CLOSE, INCORRECT, CORRECT }
+    }
+
+    fun setCloseButtonOnClick(onClick: suspend () -> Unit)
+    {
+        this.closeButton.onClick = onClick
+    }
+
+    override fun closeButton(): ButtonRepresentable = this.closeButton
+
+    class CloseButton: ButtonRepresentable
+    {
+        var onClick: suspend () -> Unit = { }
+
+        override suspend fun click() = onClick()
     }
 }

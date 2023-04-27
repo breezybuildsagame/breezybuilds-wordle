@@ -2,6 +2,9 @@ package com.megabreezy.breezybuilds_wordle.core.navigation
 
 import com.megabreezy.breezybuilds_wordle.core.data.source.guess.GuessLocalDataManageable
 import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.AppModalRepresentable
+import com.megabreezy.breezybuilds_wordle.core.ui.app_sheet.AppSheetRepresentable
+import com.megabreezy.breezybuilds_wordle.feature.help.domain.use_case.HelpUseCase
+import com.megabreezy.breezybuilds_wordle.feature.help.domain.use_case.getHelpSheet
 import com.megabreezy.breezybuilds_wordle.feature.stats.domain.model.StatsModal
 import com.megabreezy.breezybuilds_wordle.feature.stats.domain.use_case.StatsUseCase
 import com.megabreezy.breezybuilds_wordle.feature.stats.domain.use_case.getStatsModal
@@ -14,6 +17,7 @@ class AppNavigator(
 ): AppNavigationHandleable, KoinComponent
 {
     private val appModal: AppModalRepresentable by inject()
+    private val appSheet: AppSheetRepresentable by inject()
     private val guessLocalDataSource: GuessLocalDataManageable by inject()
     private var routes = mutableListOf<AppRoute>()
     private var sceneNavigator: SceneNavigationHandleable? = null
@@ -33,7 +37,10 @@ class AppNavigator(
         {
             AppRoute.HELP ->
             {
-
+                val content = HelpUseCase().getHelpSheet()
+                content.setCloseButtonOnClick { appSheet.handler()?.onSheetShouldHide(animationDuration = 300L) }
+                appSheet.setContent(newContent = content)
+                appSheet.handler()?.onSheetShouldShow(animationDuration = 300L)
             }
             AppRoute.STATS_GAME_IN_PROGRESS ->
             {
