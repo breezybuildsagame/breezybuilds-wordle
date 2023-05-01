@@ -28,6 +28,9 @@
 		9D3C4B2129E31E9B00D365BA /* AppModalViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3C4B2029E31E9B00D365BA /* AppModalViewHandler.swift */; };
 		9D3DBD49296F9A0A00FA8FDE /* GameSceneHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3DBD48296F9A0A00FA8FDE /* GameSceneHandlerTests.swift */; };
 		9D3DBD4B296F9B2400FA8FDE /* GameSceneHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3DBD4A296F9B2400FA8FDE /* GameSceneHandler.swift */; };
+		9D40BB4B29FFFAC100312E41 /* AppSheetViewHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D40BB4A29FFFAC100312E41 /* AppSheetViewHandler.swift */; };
+		9D40BB4E29FFFC8700312E41 /* AppSheetViewHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D40BB4D29FFFC8700312E41 /* AppSheetViewHandlerTests.swift */; };
+		9D40BB5129FFFCF600312E41 /* AppSheetCommonMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D40BB5029FFFCF600312E41 /* AppSheetCommonMock.swift */; };
 		9D64C1732974613E00305AF7 /* GameSceneKeyboardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D64C1722974613E00305AF7 /* GameSceneKeyboardTests.swift */; };
 		9D64C1772974688B00305AF7 /* GameSceneKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D64C1762974688B00305AF7 /* GameSceneKeyboard.swift */; };
 		9D756F8F29703B35005C7705 /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9D3DBD41296F98D100FA8FDE /* Roboto-Black.ttf */; };
@@ -110,6 +113,9 @@
 		9D3DBD47296F98D100FA8FDE /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
 		9D3DBD48296F9A0A00FA8FDE /* GameSceneHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneHandlerTests.swift; sourceTree = "<group>"; };
 		9D3DBD4A296F9B2400FA8FDE /* GameSceneHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneHandler.swift; sourceTree = "<group>"; };
+		9D40BB4A29FFFAC100312E41 /* AppSheetViewHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSheetViewHandler.swift; sourceTree = "<group>"; };
+		9D40BB4D29FFFC8700312E41 /* AppSheetViewHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSheetViewHandlerTests.swift; sourceTree = "<group>"; };
+		9D40BB5029FFFCF600312E41 /* AppSheetCommonMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSheetCommonMock.swift; sourceTree = "<group>"; };
 		9D6098542948B75C00F2D7C9 /* iosAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iosAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D64C1722974613E00305AF7 /* GameSceneKeyboardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneKeyboardTests.swift; sourceTree = "<group>"; };
 		9D64C1762974688B00305AF7 /* GameSceneKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneKeyboard.swift; sourceTree = "<group>"; };
@@ -306,6 +312,31 @@
 			path = app_modal;
 			sourceTree = "<group>";
 		};
+		9D40BB4929FFFAB400312E41 /* app_sheet */ = {
+			isa = PBXGroup;
+			children = (
+				9D40BB4A29FFFAC100312E41 /* AppSheetViewHandler.swift */,
+			);
+			path = app_sheet;
+			sourceTree = "<group>";
+		};
+		9D40BB4C29FFFC6700312E41 /* app_sheet */ = {
+			isa = PBXGroup;
+			children = (
+				9D40BB4F29FFFCE800312E41 /* mock */,
+				9D40BB4D29FFFC8700312E41 /* AppSheetViewHandlerTests.swift */,
+			);
+			path = app_sheet;
+			sourceTree = "<group>";
+		};
+		9D40BB4F29FFFCE800312E41 /* mock */ = {
+			isa = PBXGroup;
+			children = (
+				9D40BB5029FFFCF600312E41 /* AppSheetCommonMock.swift */,
+			);
+			path = mock;
+			sourceTree = "<group>";
+		};
 		9D6098552948B75C00F2D7C9 /* iosAppTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -455,10 +486,11 @@
 		9DC3B69B296C504E00D90945 /* ui */ = {
 			isa = PBXGroup;
 			children = (
-				9D3C4B1F29E31E9100D365BA /* app_modal */,
-				9DC3B6A9296C59D900D90945 /* view */,
 				9DC3B69C296C506000D90945 /* Color+UI.swift */,
 				9DC3B6A1296C545300D90945 /* UIColor+RGBA.swift */,
+				9D3C4B1F29E31E9100D365BA /* app_modal */,
+				9D40BB4929FFFAB400312E41 /* app_sheet */,
+				9DC3B6A9296C59D900D90945 /* view */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -468,6 +500,7 @@
 			children = (
 				9DC3B69F296C52C600D90945 /* ColorTests.swift */,
 				9D3C4B1929E318FE00D365BA /* app_modal */,
+				9D40BB4C29FFFC6700312E41 /* app_sheet */,
 			);
 			path = ui;
 			sourceTree = "<group>";
@@ -700,6 +733,7 @@
 				9DC3B6A8296C565600D90945 /* GameSceneHeader.swift in Sources */,
 				9DC3B686296C352300D90945 /* Sizer.swift in Sources */,
 				9D3C4B2129E31E9B00D365BA /* AppModalViewHandler.swift in Sources */,
+				9D40BB4B29FFFAC100312E41 /* AppSheetViewHandler.swift in Sources */,
 				9D64C1772974688B00305AF7 /* GameSceneKeyboard.swift in Sources */,
 				9D1D2ECF29781453003A491E /* GameSceneAnnouncement.swift in Sources */,
 			);
@@ -713,11 +747,13 @@
 				9D3C4B1529E30FBE00D365BA /* AppNavigationHandlerCommonMock.swift in Sources */,
 				9D3C4B0F29E1EA4800D365BA /* StatsModalContentTests.swift in Sources */,
 				9D3DBD49296F9A0A00FA8FDE /* GameSceneHandlerTests.swift in Sources */,
+				9D40BB5129FFFCF600312E41 /* AppSheetCommonMock.swift in Sources */,
 				9D64C1732974613E00305AF7 /* GameSceneKeyboardTests.swift in Sources */,
 				9DC3B696296C3BBD00D90945 /* XCTestCase+SceneDimensions.swift in Sources */,
 				9D8C9C3C2969C46C00761DA2 /* GameSceneTests.swift in Sources */,
 				9DC3B6A0296C52C600D90945 /* ColorTests.swift in Sources */,
 				9D756F9C297043EB005C7705 /* GameSceneBoardTests.swift in Sources */,
+				9D40BB4E29FFFC8700312E41 /* AppSheetViewHandlerTests.swift in Sources */,
 				9D3C4B1229E30FA000D365BA /* SceneNavigationHandlerTests.swift in Sources */,
 				9DC3B69A296C425400D90945 /* ContentViewTests.swift in Sources */,
 				9D3C4B1B29E3191700D365BA /* AppModalViewHandlerTests.swift in Sources */,
