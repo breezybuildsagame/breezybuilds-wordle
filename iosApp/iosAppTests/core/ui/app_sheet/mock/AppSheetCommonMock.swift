@@ -16,7 +16,6 @@ class AppSheetCommonMock: AppSheetRepresentable
     var setContentPassedInNewContent: AppSheetContentRepresentable? = nil
     var setHandlerPassedInNewHandler: AppSheetViewHandleable? = nil
     
-    
     func content() -> AppSheetContentRepresentable?
     {
         self.contentToReturn
