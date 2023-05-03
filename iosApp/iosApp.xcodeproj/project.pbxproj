@@ -51,6 +51,8 @@
 		9D8C9C2E2969C15000761DA2 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C9C2D2969C15000761DA2 /* GameScene.swift */; };
 		9D8C9C382969C42200761DA2 /* ViewInspector in Frameworks */ = {isa = PBXBuildFile; productRef = 9D8C9C372969C42200761DA2 /* ViewInspector */; };
 		9D8C9C3C2969C46C00761DA2 /* GameSceneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C9C3B2969C46C00761DA2 /* GameSceneTests.swift */; };
+		9DB88BE42A029F76008B4870 /* HelpSheetTileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB88BE32A029F76008B4870 /* HelpSheetTileTests.swift */; };
+		9DB88BE92A02A061008B4870 /* HelpSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DB88BE82A02A061008B4870 /* HelpSheet.swift */; };
 		9DC3B686296C352300D90945 /* Sizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B685296C352300D90945 /* Sizer.swift */; };
 		9DC3B68B296C370200D90945 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B68A296C370200D90945 /* AppDelegate.swift */; };
 		9DC3B691296C384B00D90945 /* SceneDimensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DC3B690296C384B00D90945 /* SceneDimensionsTests.swift */; };
@@ -123,6 +125,8 @@
 		9D756F9D2970460A005C7705 /* GameSceneBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneBoard.swift; sourceTree = "<group>"; };
 		9D8C9C2D2969C15000761DA2 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		9D8C9C3B2969C46C00761DA2 /* GameSceneTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSceneTests.swift; sourceTree = "<group>"; };
+		9DB88BE32A029F76008B4870 /* HelpSheetTileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpSheetTileTests.swift; sourceTree = "<group>"; };
+		9DB88BE82A02A061008B4870 /* HelpSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpSheet.swift; sourceTree = "<group>"; };
 		9DC3B685296C352300D90945 /* Sizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sizer.swift; sourceTree = "<group>"; };
 		9DC3B68A296C370200D90945 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9DC3B690296C384B00D90945 /* SceneDimensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDimensionsTests.swift; sourceTree = "<group>"; };
@@ -195,6 +199,7 @@
 				9DC3B689296C36F100D90945 /* config */,
 				9DC3B683296C350B00D90945 /* core */,
 				9D8C9C2A2969C12500761DA2 /* feature_game */,
+				9DB88BE52A02A042008B4870 /* feature_help */,
 				9D3C4B0329E19E6300D365BA /* feature_stats */,
 				058557D7273AAEEB004C7B11 /* Preview Content */,
 			);
@@ -343,6 +348,7 @@
 				9DC3B68C296C382900D90945 /* core */,
 				9DC3B694296C3B7600D90945 /* extension */,
 				9D8C9C392969C44F00761DA2 /* feature_game */,
+				9DB88BE02A029F44008B4870 /* feature_help */,
 				9D3C4AFE29E19D5700D365BA /* feature_stats */,
 			);
 			path = iosAppTests;
@@ -382,6 +388,54 @@
 				9DC3B6A4296C556900D90945 /* component */,
 			);
 			path = presentation;
+			sourceTree = "<group>";
+		};
+		9DB88BE02A029F44008B4870 /* feature_help */ = {
+			isa = PBXGroup;
+			children = (
+				9DB88BE12A029F50008B4870 /* presentation */,
+			);
+			path = feature_help;
+			sourceTree = "<group>";
+		};
+		9DB88BE12A029F50008B4870 /* presentation */ = {
+			isa = PBXGroup;
+			children = (
+				9DB88BE22A029F57008B4870 /* component */,
+			);
+			path = presentation;
+			sourceTree = "<group>";
+		};
+		9DB88BE22A029F57008B4870 /* component */ = {
+			isa = PBXGroup;
+			children = (
+				9DB88BE32A029F76008B4870 /* HelpSheetTileTests.swift */,
+			);
+			path = component;
+			sourceTree = "<group>";
+		};
+		9DB88BE52A02A042008B4870 /* feature_help */ = {
+			isa = PBXGroup;
+			children = (
+				9DB88BE62A02A050008B4870 /* presentation */,
+			);
+			path = feature_help;
+			sourceTree = "<group>";
+		};
+		9DB88BE62A02A050008B4870 /* presentation */ = {
+			isa = PBXGroup;
+			children = (
+				9DB88BE72A02A055008B4870 /* component */,
+			);
+			path = presentation;
+			sourceTree = "<group>";
+		};
+		9DB88BE72A02A055008B4870 /* component */ = {
+			isa = PBXGroup;
+			children = (
+				9DB88BE82A02A061008B4870 /* HelpSheet.swift */,
+			);
+			path = component;
 			sourceTree = "<group>";
 		};
 		9DC3B683296C350B00D90945 /* core */ = {
@@ -725,6 +779,7 @@
 				9DC3B69D296C506000D90945 /* Color+UI.swift in Sources */,
 				9D3DBD4B296F9B2400FA8FDE /* GameSceneHandler.swift in Sources */,
 				9D3C4B1829E3137100D365BA /* SceneNavigationHandler.swift in Sources */,
+				9DB88BE92A02A061008B4870 /* HelpSheet.swift in Sources */,
 				7555FF83242A565900829871 /* ContentView.swift in Sources */,
 				9D756F9E2970460A005C7705 /* GameSceneBoard.swift in Sources */,
 				9DC3B693296C393400D90945 /* SceneDimensions.swift in Sources */,
@@ -756,6 +811,7 @@
 				9D40BB4E29FFFC8700312E41 /* AppSheetViewHandlerTests.swift in Sources */,
 				9D3C4B1229E30FA000D365BA /* SceneNavigationHandlerTests.swift in Sources */,
 				9DC3B69A296C425400D90945 /* ContentViewTests.swift in Sources */,
+				9DB88BE42A029F76008B4870 /* HelpSheetTileTests.swift in Sources */,
 				9D3C4B1B29E3191700D365BA /* AppModalViewHandlerTests.swift in Sources */,
 				9DC3B691296C384B00D90945 /* SceneDimensionsTests.swift in Sources */,
 				9D1D2ECD29781323003A491E /* GameSceneAnnouncementTests.swift in Sources */,

@@ -11,6 +11,18 @@ import shared
 
 class AppSheetViewHandler: AppSheetViewHandleable
 {
+    var appSheet: AppSheetRepresentable!
+    
+    init(appSheet: AppSheetRepresentable? = nil)
+    {
+        self.appSheet = appSheet ?? AppSheetHelper().appSheet()
+    }
+    
+    func setUp()
+    {
+        appSheet.setHandler(newHandler_: self)
+    }
+    
     func onSheetShouldHide(animationDuration: Int64)
     {
         
