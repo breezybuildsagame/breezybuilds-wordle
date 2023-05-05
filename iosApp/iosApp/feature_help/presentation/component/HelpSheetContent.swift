@@ -7,8 +7,9 @@
 //
 
 import SwiftUI
+import shared
 
-struct HelpSheet: View
+struct HelpSheetContent: View
 {
     var body: some View
     {
@@ -16,21 +17,22 @@ struct HelpSheet: View
     }
 }
 
-extension HelpSheet
+extension HelpSheetContent
 {
     struct Tile: View
     {
         @EnvironmentObject private var sceneDimensions: SceneDimensions
         
+        var letter: String = ""
+        
+        var state: HelpSheet.TileState = HelpSheet.TileState.hidden
+        
         var body: some View
         {
-            ZStack
-            {
-            
-            }
-            .frame(
-                width: sceneDimensions.height * (50.0 / idealFrameHeight()),
-                height: sceneDimensions.height * (50.0 / idealFrameHeight())
+            CoreTile(
+                letter: letter,
+                size: 50.0,
+                state: CoreTile.State(rawValue: state.name) ?? CoreTile.State.Hidden
             )
         }
     }
