@@ -55,15 +55,27 @@ extension HelpSheetContent
         
         var tiles: [HelpSheetContent.Tile]
         
+        var description: String = ""
+        
         var body: some View
         {
-            HStack(spacing: sceneDimensions.width * (6.0 / idealFrameWidth()))
+            VStack(spacing: sceneDimensions.height * (15.0 / idealFrameHeight()))
             {
-                ForEach(tiles, id: \.self) { $0 }
+                HStack(spacing: sceneDimensions.width * (6.0 / idealFrameWidth()))
+                {
+                    ForEach(tiles, id: \.self) { $0 }
+                    
+                    Spacer()
+                }
                 
-                Spacer()
+                Text(description)
+                    .multilineTextAlignment(.leading)
+                    .font(
+                        Font.custom("Roboto-Regular",
+                        size: sceneDimensions.height * (15.0 / idealFrameHeight()))
+                    )
+                    .foregroundColor(.ui.onBackground)
             }
-            .padding(.bottom, sceneDimensions.height * (15.0 / idealFrameHeight()))
         }
     }
 }
