@@ -19,9 +19,11 @@ struct HelpSheetContent: View
 
 extension HelpSheetContent
 {
-    struct Tile: View
+    struct Tile: View, Identifiable, Hashable
     {
         @EnvironmentObject private var sceneDimensions: SceneDimensions
+        
+        var id: UUID = UUID()
         
         var letter: String = ""
         
@@ -34,6 +36,34 @@ extension HelpSheetContent
                 size: 50.0,
                 state: CoreTile.State(rawValue: state.name) ?? CoreTile.State.Hidden
             )
+        }
+        
+        static func == (lhs: HelpSheetContent.Tile, rhs: HelpSheetContent.Tile) -> Bool
+        {
+            lhs.id == rhs.id && lhs.letter == rhs.letter && lhs.state == rhs.state
+        }
+        
+        func hash(into hasher: inout Hasher) { hasher.combine(id) }
+    }
+}
+
+extension HelpSheetContent
+{
+    struct Example: View
+    {
+        @EnvironmentObject private var sceneDimensions: SceneDimensions
+        
+        var tiles: [HelpSheetContent.Tile]
+        
+        var body: some View
+        {
+            HStack(spacing: sceneDimensions.width * (6.0 / idealFrameWidth()))
+            {
+                ForEach(tiles, id: \.self) { $0 }
+                
+                Spacer()
+            }
+            .padding(.bottom, sceneDimensions.height * (15.0 / idealFrameHeight()))
         }
     }
 }
