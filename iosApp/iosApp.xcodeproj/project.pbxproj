@@ -1036,6 +1036,7 @@
 		};
 		9D60985A2948B75C00F2D7C9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9903C30BBA4B2B467814F334 /* Pods-iosApp.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -1057,6 +1058,7 @@
 		};
 		9D60985B2948B75C00F2D7C9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 67C5921881F0D734189BA57F /* Pods-iosApp.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
