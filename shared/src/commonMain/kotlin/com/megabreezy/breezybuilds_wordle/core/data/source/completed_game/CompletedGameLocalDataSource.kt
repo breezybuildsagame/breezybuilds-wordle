@@ -30,7 +30,6 @@ class CompletedGameLocalDataSource(private var realm: Realm? = null): CompletedG
             copyToRealm(
                 CachedCompletedGame().apply()
                 {
-                    answer = newCompletedGame.answer()
                     date = newCompletedGame.date()
                     playerGuesses = guessesToAdd
                     playerGuessedCorrectly = newCompletedGame.answer().playerGuessedCorrectly() ?: false
