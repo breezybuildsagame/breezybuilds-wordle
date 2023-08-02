@@ -79,3 +79,21 @@ extension HelpSheetContent
         }
     }
 }
+
+extension HelpSheetContent
+{
+    struct Instruction: View
+    {
+        @EnvironmentObject private var sceneDimensions: SceneDimensions
+        
+        var instruction: String
+        
+        var body: some View
+        {
+            Text(instruction)
+                .font(Font.custom("Roboto-Regular", size: sceneDimensions.height * (15.0 / idealFrameHeight())))
+                .foregroundColor(.ui.onSurface)
+                .padding(.bottom, sceneDimensions.height * (20.0 / idealFrameHeight()))
+        }
+    }
+}
