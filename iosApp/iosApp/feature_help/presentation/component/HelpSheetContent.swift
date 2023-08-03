@@ -11,9 +11,34 @@ import shared
 
 struct HelpSheetContent: View
 {
+    @EnvironmentObject private var sceneDimensions: SceneDimensions
+    
+    var title: String
+    var instructions: [HelpSheetContent.Instruction]
+    
     var body: some View
     {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack
+        {
+            VStack
+            {
+                Text(title)
+                    .font(Font.custom("Roboto-Black", size: sceneDimensions.height * (20.0 / idealFrameHeight())))
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.ui.onSurface)
+                    .frame(
+                        width: sceneDimensions.width * (300.0 / idealFrameWidth()),
+                        height: sceneDimensions.height * (50.0 / idealFrameHeight())
+                    )
+                    .padding(sceneDimensions.height * (20.0 / idealFrameHeight()))
+                
+                ForEach(instructions, id: \.id) { $0 }
+                
+                Color.ui.error
+                    .frame(height: sceneDimensions.height * (1.0 / idealFrameHeight()))
+                    .padding(.bottom, sceneDimensions.height * (20.0 / idealFrameHeight()))
+            }
+        }
     }
 }
 
@@ -82,8 +107,15 @@ extension HelpSheetContent
 
 extension HelpSheetContent
 {
-    struct Instruction: View
+    struct Instruction: View, Identifiable, Hashable, Equatable
     {
+        var id: UUID = UUID()
+        
+        static func == (lhs: HelpSheetContent.Instruction, rhs: HelpSheetContent.Instruction) -> Bool
+        {
+            lhs.instruction == rhs.instruction
+        }
+        
         @EnvironmentObject private var sceneDimensions: SceneDimensions
         
         var instruction: String
@@ -95,5 +127,7 @@ extension HelpSheetContent
                 .foregroundColor(.ui.onSurface)
                 .padding(.bottom, sceneDimensions.height * (20.0 / idealFrameHeight()))
         }
+        
+        func hash(into hasher: inout Hasher) { hasher.combine(id) }
     }
 }
