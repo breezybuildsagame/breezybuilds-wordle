@@ -15,6 +15,7 @@ struct HelpSheetContent: View
     
     var title: String
     var instructions: [HelpSheetContent.Instruction]
+    var examples: [HelpSheetContent.Example]
     
     var body: some View
     {
@@ -30,14 +31,27 @@ struct HelpSheetContent: View
                         width: sceneDimensions.width * (300.0 / idealFrameWidth()),
                         height: sceneDimensions.height * (50.0 / idealFrameHeight())
                     )
-                    .padding(sceneDimensions.height * (20.0 / idealFrameHeight()))
+                    .padding(.bottom, sceneDimensions.height * (20.0 / idealFrameHeight()))
+                    .padding(.horizontal, sceneDimensions.width * (25.0 / idealFrameWidth()))
                 
                 ForEach(instructions, id: \.id) { $0 }
                 
                 Color.ui.error
                     .frame(height: sceneDimensions.height * (1.0 / idealFrameHeight()))
                     .padding(.bottom, sceneDimensions.height * (20.0 / idealFrameHeight()))
+                
+                Text("Examples")
+                    .font(Font.custom("Roboto-Regular", size: sceneDimensions.height * (16.0 / idealFrameHeight())))
+                    .multilineTextAlignment(.leading)
+                    .foregroundColor(.ui.onSurface)
+                    .padding(.bottom, sceneDimensions.height * (20.0 / idealFrameHeight()))
+                
+                ForEach(examples, id: \.id) { $0 }
             }
+            .frame(
+                width: sceneDimensions.width * (350.0 / idealFrameWidth()),
+                alignment: .leading
+            )
         }
     }
 }
@@ -74,9 +88,11 @@ extension HelpSheetContent
 
 extension HelpSheetContent
 {
-    struct Example: View
+    struct Example: View, Identifiable, Hashable, Equatable
     {
         @EnvironmentObject private var sceneDimensions: SceneDimensions
+        
+        var id: UUID = UUID()
         
         var tiles: [HelpSheetContent.Tile]
         
@@ -102,6 +118,13 @@ extension HelpSheetContent
                     .foregroundColor(.ui.onBackground)
             }
         }
+        
+        static func == (lhs: HelpSheetContent.Example, rhs: HelpSheetContent.Example) -> Bool {
+            lhs.tiles == rhs.tiles
+            && lhs.description == rhs.description
+        }
+        
+        func hash(into hasher: inout Hasher) { hasher.combine(id) }
     }
 }
 
@@ -110,11 +133,6 @@ extension HelpSheetContent
     struct Instruction: View, Identifiable, Hashable, Equatable
     {
         var id: UUID = UUID()
-        
-        static func == (lhs: HelpSheetContent.Instruction, rhs: HelpSheetContent.Instruction) -> Bool
-        {
-            lhs.instruction == rhs.instruction
-        }
         
         @EnvironmentObject private var sceneDimensions: SceneDimensions
         
@@ -126,6 +144,11 @@ extension HelpSheetContent
                 .font(Font.custom("Roboto-Regular", size: sceneDimensions.height * (15.0 / idealFrameHeight())))
                 .foregroundColor(.ui.onSurface)
                 .padding(.bottom, sceneDimensions.height * (20.0 / idealFrameHeight()))
+        }
+        
+        static func == (lhs: HelpSheetContent.Instruction, rhs: HelpSheetContent.Instruction) -> Bool
+        {
+            lhs.instruction == rhs.instruction
         }
         
         func hash(into hasher: inout Hasher) { hasher.combine(id) }

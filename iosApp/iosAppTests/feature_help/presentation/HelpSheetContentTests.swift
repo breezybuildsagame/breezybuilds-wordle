@@ -9,16 +9,35 @@
 import XCTest
 import SwiftUI
 import ViewInspector
+import shared
 @testable import iosApp
 
 final class HelpSheetContentTests: XCTestCase
 {
+    func test_when_view_initialized__expected_content_container_is_displayed() throws
+    {
+        // given
+        let sut = HelpSheetContent()
+        let dimensions = SceneDimensions()
+        let expectedVstackWidth = mockFrame().width * (350.0 / idealFrame().width)
+        
+        // when
+        defer { ViewHosting.expel() }
+        ViewHosting.host(view: sut.environmentObject(dimensions))
+        dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
+        
+        // then
+        XCTAssertEqual(expectedVstackWidth, try sut.inspect().view(HelpSheetContent.self).zStack().vStack(0).fixedWidth())
+        XCTAssertEqual(.leading, try sut.inspect().view(HelpSheetContent.self).zStack().vStack(0).fixedAlignment())
+    }
+    
     func test_when_view_initialized_with_title_String_paramter__expected_title_is_displayed() throws
     {
         // given
         let expectedTitle = "TEST HOW TO PLAY"
         let sut = HelpSheetContent(testTitle: expectedTitle)
         let expectedBottomPadding = mockFrame().height * (20.0 / idealFrame().height)
+        let expectedHorizontalPadding = mockFrame().width * (25.0 / idealFrame().width)
         let expectedFontSize = mockFrame().height * (20.0 / idealFrame().height)
         let expectedFrameWidth = mockFrame().width * (300.0 / idealFrame().width)
         let expectedFrameHeight = mockFrame().height * (50.0 / idealFrame().height)
@@ -40,6 +59,7 @@ final class HelpSheetContentTests: XCTestCase
         XCTAssertEqual(expectedFrameWidth, try textView.fixedWidth())
         XCTAssertEqual(expectedFrameHeight, try textView.fixedHeight())
         XCTAssertEqual(expectedBottomPadding, try textView.padding(.bottom))
+        XCTAssertEqual(expectedHorizontalPadding, try textView.padding(.horizontal))
     }
     
     func test_when_view_initialized_with_Instruction_list__expected_instructions_are_displayed() throws
@@ -51,9 +71,7 @@ final class HelpSheetContentTests: XCTestCase
             HelpSheetContent.Instruction(instruction: "Guess the WORDLE in 6 tries."),
             HelpSheetContent.Instruction(instruction: "Each guess must be a valid 5 letter word. Hit the enter button to submit.")
         ]
-        let sut = HelpSheetContent(
-            testInstructions: expectedInstructions
-        )
+        let sut = HelpSheetContent(testInstructions: expectedInstructions)
         let dimensions = SceneDimensions()
         
         // when
@@ -73,18 +91,69 @@ final class HelpSheetContentTests: XCTestCase
         XCTAssertEqual(expectedDividerHeight, try borderView.fixedHeight())
         XCTAssertEqual(expectedDividerBottomPadding, try borderView.padding(.bottom))
     }
+    
+    func test_when_initialized_with_Example_list__expected_examples_are_displayed() throws
+    {
+        // given
+        let expectedExamples = [
+            HelpSheetContent.Example(
+                tiles: [
+                    HelpSheetContent.Tile(letter: "W", state: HelpSheet.TileState.correct),
+                    HelpSheetContent.Tile(letter: "E", state: HelpSheet.TileState.incorrect),
+                    HelpSheetContent.Tile(letter: "A", state: HelpSheet.TileState.incorrect),
+                    HelpSheetContent.Tile(letter: "R", state: HelpSheet.TileState.incorrect),
+                    HelpSheetContent.Tile(letter: "Y", state: HelpSheet.TileState.incorrect),
+                ],
+                description: "The letter W is in the word and in the correct spot."
+            ),
+            HelpSheetContent.Example(
+                tiles: [
+                    HelpSheetContent.Tile(letter: "P", state: HelpSheet.TileState.correct),
+                    HelpSheetContent.Tile(letter: "I", state: HelpSheet.TileState.incorrect),
+                    HelpSheetContent.Tile(letter: "L", state: HelpSheet.TileState.incorrect),
+                    HelpSheetContent.Tile(letter: "L", state: HelpSheet.TileState.incorrect),
+                    HelpSheetContent.Tile(letter: "S", state: HelpSheet.TileState.incorrect),
+                ],
+                description: "The letter I is in the word but in the wrong spot."
+            ),
+        ]
+        let sut = HelpSheetContent(testExamples: expectedExamples)
+        let dimensions = SceneDimensions()
+        
+        // when
+        defer { ViewHosting.expel() }
+        ViewHosting.host(view: sut.environmentObject(dimensions))
+        dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
+        let examplesTitleView = try sut.inspect().view(HelpSheetContent.self).zStack().vStack(0).text(3)
+        
+        // then
+        XCTAssertEqual("Examples", try examplesTitleView.string())
+        XCTAssertEqual("Roboto-Regular", try examplesTitleView.attributes().font().name())
+        XCTAssertEqual(.ui.onSurface, try examplesTitleView.attributes().foregroundColor())
+        XCTAssertEqual(mockFrame().height * (16.0 / idealFrame().height), try examplesTitleView.attributes().font().size())
+        XCTAssertEqual(.leading, try examplesTitleView.multilineTextAlignment())
+        XCTAssertEqual(mockFrame().height * (20.0 / idealFrame().height), try examplesTitleView.padding(.bottom))
+        try expectedExamples.enumerated().forEach()
+        { (index, example) in
+            let exampleView = try sut.inspect().view(HelpSheetContent.self).zStack().vStack(0).forEach(4).view(HelpSheetContent.Example.self, index)
+            
+            XCTAssertEqual(expectedExamples[index], try exampleView.actualView())
+        }
+    }
 }
 
 extension HelpSheetContent
 {
     init(
         testTitle: String = "",
-        testInstructions: [HelpSheetContent.Instruction] = []
+        testInstructions: [HelpSheetContent.Instruction] = [],
+        testExamples: [HelpSheetContent.Example] = []
     )
     {
         self.init(
             title: testTitle,
-            instructions: testInstructions
+            instructions: testInstructions,
+            examples: testExamples
         )
     }
 }
