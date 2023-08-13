@@ -6,9 +6,13 @@ struct ContentView: View
 {
     @ObservedObject private var sizer = Sizer.shared
     @ObservedObject private var appModalHandler = AppModalViewHandler.shared
+    @ObservedObject private var appSheetHandler = AppSheetViewHandler.shared
+    
     @EnvironmentObject private var navigator: Navigator
     
     @StateObject private var sceneDimensions = SceneDimensions.shared
+    
+    @State private var showingSheet = false
     
 	var body: some View
     {
@@ -43,6 +47,7 @@ struct ContentView: View
         {
             SceneNavigationHandler.shared.setUp(navigator: navigator)
             appModalHandler.setUp()
+            appSheetHandler.setUp()
         }
         .environmentObject(sceneDimensions)
         .onReceive(sizer.$content)
@@ -54,6 +59,24 @@ struct ContentView: View
             )
         }
         .animation(.easeInOut, value: navigator.path)
+        .onChange(
+            of: appSheetHandler.appSheetIsShowing,
+            perform: { isShowing in showingSheet = isShowing }
+        )
+        .sheet(
+            isPresented: $showingSheet,
+            onDismiss: {
+                appSheetHandler.onSheetShouldHide(animationDuration: 300)
+            },
+            content: {
+                ZStack
+                {
+                    Color.ui.surface
+                    appSheetHandler.sheetContent()
+                }
+                .edgesIgnoringSafeArea(.all)
+                .environmentObject(sceneDimensions)
+            })
 	}
     
     private func SizerView() -> some View {

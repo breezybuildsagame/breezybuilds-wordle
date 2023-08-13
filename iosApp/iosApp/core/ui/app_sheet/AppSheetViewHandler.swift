@@ -11,6 +11,8 @@ import shared
 
 class AppSheetViewHandler: AppSheetViewHandleable, ObservableObject
 {
+    static let shared = AppSheetViewHandler()
+    
     var appSheet: AppSheetRepresentable!
     var appSheetIsShowing: Bool = false
     {
