@@ -11,7 +11,24 @@ import shared
 
 class AppSheetCommonMock: AppSheetRepresentable
 {
-    var contentToReturn: AppSheetContentRepresentable? = nil
+    var contentToReturn: AppSheetContentRepresentable? = HelpSheet(
+        title: "Help",
+        instructions: [
+            HelpSheet.Instruction(instruction: "Mock instruction")
+        ],
+        examples: [
+            HelpSheet.Example(
+                description: "Mock description..",
+                tiles: [
+                    HelpSheet.Tile(
+                        letter: "G".utf16.first!,
+                        state: HelpSheet.TileState.hidden
+                    )
+                ]
+            )
+        ],
+        footer: "Mock Footer.."
+    )
     var handlerToReturn: AppSheetViewHandleable? = nil
     var setContentPassedInNewContent: AppSheetContentRepresentable? = nil
     var setHandlerPassedInNewHandler: AppSheetViewHandleable? = nil

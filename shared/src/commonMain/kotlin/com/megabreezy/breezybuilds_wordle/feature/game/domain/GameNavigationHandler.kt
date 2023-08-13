@@ -11,7 +11,7 @@ class GameNavigationHandler: GameNavigationHandleable, KoinComponent
 
     override fun onHelpOptionClicked()
     {
-        println("Help feature TBD")
+        appNavigator.navigate(route = AppRoute.HELP)
     }
 
     override fun onStatsOptionClicked()

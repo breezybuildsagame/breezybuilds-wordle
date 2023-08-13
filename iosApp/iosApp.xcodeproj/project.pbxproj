@@ -551,11 +551,11 @@
 		9DC3B69B296C504E00D90945 /* ui */ = {
 			isa = PBXGroup;
 			children = (
-				9DFC19532A0534F700C9D5DD /* tile */,
 				9DC3B69C296C506000D90945 /* Color+UI.swift */,
 				9DC3B6A1296C545300D90945 /* UIColor+RGBA.swift */,
 				9D3C4B1F29E31E9100D365BA /* app_modal */,
 				9D40BB4929FFFAB400312E41 /* app_sheet */,
+				9DFC19532A0534F700C9D5DD /* tile */,
 				9DC3B6A9296C59D900D90945 /* view */,
 			);
 			path = ui;
@@ -574,10 +574,10 @@
 		9DC3B6A3296C556200D90945 /* component */ = {
 			isa = PBXGroup;
 			children = (
-				9DC3B6A7296C565600D90945 /* GameSceneHeader.swift */,
-				9D756F9D2970460A005C7705 /* GameSceneBoard.swift */,
-				9D64C1762974688B00305AF7 /* GameSceneKeyboard.swift */,
 				9D1D2ECE29781453003A491E /* GameSceneAnnouncement.swift */,
+				9D756F9D2970460A005C7705 /* GameSceneBoard.swift */,
+				9DC3B6A7296C565600D90945 /* GameSceneHeader.swift */,
+				9D64C1762974688B00305AF7 /* GameSceneKeyboard.swift */,
 			);
 			path = component;
 			sourceTree = "<group>";
