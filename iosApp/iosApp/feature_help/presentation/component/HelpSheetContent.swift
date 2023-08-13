@@ -16,6 +16,8 @@ struct HelpSheetContent: View
     var title: String
     var instructions: [HelpSheetContent.Instruction]
     var examples: [HelpSheetContent.Example]
+    var footer: String
+    var closeButton: HelpSheetContent.CloseButton
     
     var body: some View
     {
@@ -47,12 +49,20 @@ struct HelpSheetContent: View
                     .padding(.bottom, sceneDimensions.height * (20.0 / idealFrameHeight()))
                 
                 ForEach(examples, id: \.id) { $0 }
+                
+                Text(footer)
+                    .font(Font.custom("Roboto-Black", size: sceneDimensions.height * (15.0 / idealFrameHeight())))
+                    .foregroundColor(.ui.onSurface)
+                    .multilineTextAlignment(.leading)
             }
             .frame(
                 width: sceneDimensions.width * (350.0 / idealFrameWidth()),
                 alignment: .leading
             )
+            
+            closeButton
         }
+        .frame(alignment: .top)
     }
 }
 
@@ -152,5 +162,36 @@ extension HelpSheetContent
         }
         
         func hash(into hasher: inout Hasher) { hasher.combine(id) }
+    }
+}
+
+extension HelpSheetContent
+{
+    struct CloseButton: View
+    {
+        @EnvironmentObject private var sceneDimensions: SceneDimensions
+        
+        var imageResourceId: String? = nil
+        var onClick: () -> Void = { }
+        
+        var body: some View
+        {
+            HStack
+            {
+                Spacer()
+                
+                if let imageResourceId = imageResourceId
+                {
+                    Button(action: onClick)
+                    {
+                        Image(imageResourceId)
+                            .frame(width: sceneDimensions.height * (25.0 / idealFrameHeight()))
+                            .frame(height: sceneDimensions.height * (25.0 / idealFrameHeight()))
+                    }
+                }
+            }
+            .padding(.top, sceneDimensions.height * (10.0 / idealFrameHeight()))
+            .padding(.trailing, sceneDimensions.width * (15.0 / idealFrameWidth()))
+        }
     }
 }

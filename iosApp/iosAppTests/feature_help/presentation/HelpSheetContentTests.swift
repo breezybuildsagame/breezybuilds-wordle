@@ -140,6 +140,58 @@ final class HelpSheetContentTests: XCTestCase
             XCTAssertEqual(expectedExamples[index], try exampleView.actualView())
         }
     }
+    
+    func test_when_initialized_with_footer_String_parameter__expected_text_is_displayed() throws
+    {
+        // given
+        let expectedFooterText = "No daily restrictions - play as often as you like!"
+        let sut = HelpSheetContent(testFooter: expectedFooterText)
+        let dimensions = SceneDimensions()
+        let expectedFontSize = mockFrame().height * (15.0 / idealFrame().height)
+        
+        // when
+        defer { ViewHosting.expel() }
+        ViewHosting.host(view: sut.environmentObject(dimensions))
+        dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
+        let textView = try sut.inspect().zStack().vStack(0).find(text: expectedFooterText)
+        
+        // then
+        XCTAssertEqual("Roboto-Black", try textView.attributes().font().name())
+        XCTAssertEqual(.ui.onSurface, try textView.attributes().foregroundColor())
+        XCTAssertEqual(expectedFontSize, try textView.attributes().font().size())
+        XCTAssertEqual(.leading, try textView.multilineTextAlignment())
+    }
+    
+    func test_when_initialized_with_CloseButton__expected_button_is_displayed() throws
+    {
+        // given
+        var buttonClickDidInvoke = false
+        let expectedButton = HelpSheetContent.CloseButton(
+            imageResourceId: "core_image_close_icon",
+            onClick: { buttonClickDidInvoke = true }
+        )
+        let dimensions = SceneDimensions()
+        let sut = HelpSheetContent(testCloseButton: expectedButton)
+        let expectedButtonImageSize = mockFrame().height * (25.0 / idealFrame().height)
+        let expectedTopPadding = mockFrame().height * (10.0 / idealFrame().height)
+        let expectedTrailingPadding = mockFrame().width * (15.0 / idealFrame().width)
+        
+        // when
+        defer { ViewHosting.expel() }
+        ViewHosting.host(view: sut.environmentObject(dimensions))
+        let displayedButton = try sut.inspect().find(HelpSheetContent.CloseButton.self)
+        dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
+        
+        // then
+        XCTAssertNoThrow(try displayedButton.hStack().spacer(0))
+        try displayedButton.hStack().button(1).tap()
+        XCTAssertTrue(buttonClickDidInvoke)
+        XCTAssertEqual(expectedButtonImageSize, try displayedButton.hStack().button(1).labelView().image().fixedWidth())
+        XCTAssertEqual(expectedButtonImageSize, try displayedButton.hStack().button(1).labelView().image().fixedHeight())
+        XCTAssertEqual(expectedTopPadding, try displayedButton.hStack().padding(.top))
+        XCTAssertEqual(expectedTrailingPadding, try displayedButton.hStack().padding(.trailing))
+        XCTAssertEqual(expectedButton.imageResourceId, try displayedButton.actualView().imageResourceId)
+    }
 }
 
 extension HelpSheetContent
@@ -147,13 +199,17 @@ extension HelpSheetContent
     init(
         testTitle: String = "",
         testInstructions: [HelpSheetContent.Instruction] = [],
-        testExamples: [HelpSheetContent.Example] = []
+        testExamples: [HelpSheetContent.Example] = [],
+        testFooter: String = "",
+        testCloseButton: HelpSheetContent.CloseButton = HelpSheetContent.CloseButton()
     )
     {
         self.init(
             title: testTitle,
             instructions: testInstructions,
-            examples: testExamples
+            examples: testExamples,
+            footer: testFooter,
+            closeButton: testCloseButton
         )
     }
 }
