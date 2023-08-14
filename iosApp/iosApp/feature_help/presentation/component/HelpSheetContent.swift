@@ -60,7 +60,12 @@ struct HelpSheetContent: View
                 alignment: .leading
             )
             
-            closeButton
+            VStack
+            {
+                closeButton
+                
+                Spacer()
+            }
         }
         .frame(alignment: .top)
     }

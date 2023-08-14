@@ -67,7 +67,13 @@ class AppSheetViewHandler: AppSheetViewHandleable, ObservableObject
                         )
                     },
                     footer: content.footer(),
-                    closeButton: HelpSheetContent.CloseButton()
+                    closeButton: HelpSheetContent.CloseButton(
+                        imageResourceId: "core_image_close_icon",
+                        onClick: {
+                            self.appSheet.content()?.closeButton().click()
+                                { _ in }
+                        }
+                    )
                 )
             }
         }

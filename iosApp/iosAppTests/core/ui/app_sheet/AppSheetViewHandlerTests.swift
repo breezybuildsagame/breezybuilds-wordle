@@ -75,6 +75,7 @@ final class AppSheetViewHandlerTests: XCTestCase
             XCTAssertEqual(expectedExampleViews[index].description, displayedExampleView.description)
         }
         XCTAssertEqual(appSheetMockContent.footer(), try displayedContent.actualView().footer)
+        XCTAssertEqual("core_image_close_icon", try displayedContent.actualView().closeButton.imageResourceId)
     }
     
     func test_when_onSheetShouldHide_invoked__expected_view_is_displayed() throws
