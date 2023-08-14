@@ -32,6 +32,7 @@ final class HelpSheetContentInstructionTests: XCTestCase
         XCTAssertEqual("Roboto-Regular", try textAttributes.font().name())
         XCTAssertEqual(expectedFontSize, try textAttributes.font().size())
         XCTAssertEqual(Color.ui.onSurface, try textAttributes.foregroundColor())
-        XCTAssertEqual(expectedBottomPadding, try sut.inspect().view(HelpSheetContent.Instruction.self).text().padding(.bottom))
+        XCTAssertEqual(expectedBottomPadding, try sut.inspect().view(HelpSheetContent.Instruction.self).hStack().text(0).padding(.bottom))
+        XCTAssertEqual(.leading, try sut.inspect().find(text: instructionText).multilineTextAlignment())
     }
 }

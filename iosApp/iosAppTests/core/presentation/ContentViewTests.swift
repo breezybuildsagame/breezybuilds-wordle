@@ -35,7 +35,11 @@ final class ContentViewTests: XCTestCase
     func test_when_sizer_width_changes__sceneDimensions_updated_to_expected_values() throws
     {
         // given
-        let sut = ContentView()
+        let sut = ContentView(
+            appModalHandler: AppModalViewHandler(appModal: AppModalCommonMock()),
+            appSheetHandler: AppSheetViewHandler(appSheet: AppSheetCommonMock()),
+            gameSceneHandler: GameSceneHandler(viewModel: GameSceneViewModelMock())
+        )
         
         // when
         defer { ViewHosting.expel() }

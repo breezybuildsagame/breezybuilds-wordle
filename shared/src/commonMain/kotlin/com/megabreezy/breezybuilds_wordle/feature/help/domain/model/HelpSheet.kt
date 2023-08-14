@@ -42,6 +42,8 @@ data class HelpSheet(
         fun state() = this.state
 
         enum class State { HIDDEN, CLOSE, INCORRECT, CORRECT }
+
+        override fun toString(): String = "${this.letter()}"
     }
 
     fun setCloseButtonOnClick(onClick: suspend () -> Unit)

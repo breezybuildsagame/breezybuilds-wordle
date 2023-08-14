@@ -14,6 +14,11 @@ struct GameScene: View
     
     @ObservedObject private var handler = GameSceneHandler.shared
     
+    init(handler: GameSceneHandler? = nil)
+    {
+        self.handler = handler ?? self.handler
+    }
+    
     var body: some View
     {
         ZStack

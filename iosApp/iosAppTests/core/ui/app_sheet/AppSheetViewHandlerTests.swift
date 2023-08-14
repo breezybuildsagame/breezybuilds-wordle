@@ -57,7 +57,7 @@ final class AppSheetViewHandlerTests: XCTestCase
                 tiles: example.tiles().map()
                 { tile in
                     HelpSheetContent.Tile(
-                        letter: String(describing: tile.letter()),
+                        letter: String(describing: tile),
                         state: tile.state()
                     )
                 },
@@ -68,7 +68,7 @@ final class AppSheetViewHandlerTests: XCTestCase
         {
             for (tileIndex, tile) in displayedExampleView.tiles.enumerated()
             {
-                XCTAssertEqual(expectedExampleViews[index].tiles[tileIndex].letter, tile.letter)
+                XCTAssertEqual(String(describing: expectedExampleViews[index].tiles[tileIndex].letter), tile.letter)
                 XCTAssertEqual(expectedExampleViews[index].tiles[tileIndex].state, tile.state)
             }
             

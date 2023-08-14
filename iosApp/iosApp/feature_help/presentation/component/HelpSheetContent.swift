@@ -50,10 +50,17 @@ struct HelpSheetContent: View
                 
                 ForEach(examples, id: \.id) { $0 }
                 
+                Color.ui.error
+                    .frame(height: sceneDimensions.height * (1.0 / idealFrameHeight()))
+                    .padding(.top, sceneDimensions.height * (20.0 / idealFrameHeight()))
+                    .padding(.bottom, sceneDimensions.height * (20.0 / idealFrameHeight()))
+                
                 Text(footer)
                     .font(Font.custom("Roboto-Black", size: sceneDimensions.height * (15.0 / idealFrameHeight())))
                     .foregroundColor(.ui.onSurface)
                     .multilineTextAlignment(.leading)
+                
+                Spacer()
             }
             .frame(
                 width: sceneDimensions.width * (350.0 / idealFrameWidth()),
@@ -124,13 +131,18 @@ extension HelpSheetContent
                     Spacer()
                 }
                 
-                Text(description)
-                    .multilineTextAlignment(.leading)
-                    .font(
-                        Font.custom("Roboto-Regular",
-                        size: sceneDimensions.height * (15.0 / idealFrameHeight()))
-                    )
-                    .foregroundColor(.ui.onBackground)
+                HStack
+                {
+                    Text(description)
+                        .multilineTextAlignment(.leading)
+                        .font(
+                            Font.custom("Roboto-Regular",
+                            size: sceneDimensions.height * (15.0 / idealFrameHeight()))
+                        )
+                        .foregroundColor(.ui.onBackground)
+                    
+                    Spacer()
+                }
             }
         }
         
@@ -155,10 +167,15 @@ extension HelpSheetContent
         
         var body: some View
         {
-            Text(instruction)
-                .font(Font.custom("Roboto-Regular", size: sceneDimensions.height * (15.0 / idealFrameHeight())))
-                .foregroundColor(.ui.onSurface)
-                .padding(.bottom, sceneDimensions.height * (20.0 / idealFrameHeight()))
+            HStack
+            {
+                Text(instruction)
+                    .font(Font.custom("Roboto-Regular", size: sceneDimensions.height * (15.0 / idealFrameHeight())))
+                    .multilineTextAlignment(.leading)
+                    .foregroundColor(.ui.onSurface)
+                    .padding(.bottom, sceneDimensions.height * (20.0 / idealFrameHeight()))
+                Spacer()
+            }
         }
         
         static func == (lhs: HelpSheetContent.Instruction, rhs: HelpSheetContent.Instruction) -> Bool

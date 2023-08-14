@@ -67,7 +67,7 @@ final class HelpSheetContentExampleTests: XCTestCase
             screenSize: CGSize(width: mockScreen().width, height: mockScreen().height)
         )
         let displayedColumn = try sut.inspect().view(HelpSheetContent.Example.self).vStack()
-        let displayedText = try displayedColumn.text(1)
+        let displayedText = try displayedColumn.hStack(1).text(0)
         
         // then
         XCTAssertEqual(expectedDescription, try displayedText.string())

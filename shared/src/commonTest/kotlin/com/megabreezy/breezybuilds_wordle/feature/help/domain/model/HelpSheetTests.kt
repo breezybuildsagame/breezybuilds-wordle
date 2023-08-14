@@ -46,6 +46,10 @@ class HelpSheetTests
 
         // then
         assertEquals(expectedTiles, sut.tiles())
+        expectedTiles.forEachIndexed()
+        { index, tile ->
+            assertEquals(expectedTiles[index].letter().toString(), "$tile")
+        }
     }
 
     @Test

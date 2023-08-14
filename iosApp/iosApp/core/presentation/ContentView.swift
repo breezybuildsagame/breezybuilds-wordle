@@ -8,11 +8,24 @@ struct ContentView: View
     @ObservedObject private var appModalHandler = AppModalViewHandler.shared
     @ObservedObject private var appSheetHandler = AppSheetViewHandler.shared
     
+    private var gameSceneHandler: GameSceneHandler? = nil
+    
     @EnvironmentObject private var navigator: Navigator
     
     @StateObject private var sceneDimensions = SceneDimensions.shared
     
     @State private var showingSheet = false
+    
+    init(
+        appModalHandler: AppModalViewHandler? = nil,
+        appSheetHandler: AppSheetViewHandler? = nil,
+        gameSceneHandler: GameSceneHandler? = nil
+    )
+    {
+        self.appModalHandler = appModalHandler ?? self.appModalHandler
+        self.appSheetHandler = appSheetHandler ?? self.appSheetHandler
+        self.gameSceneHandler = gameSceneHandler
+    }
     
 	var body: some View
     {
@@ -24,11 +37,11 @@ struct ContentView: View
             {
                 Route(AppRoute.game.name)
                 {
-                    GameScene()
+                    GameScene(handler: gameSceneHandler)
                 }
                 Route
                 {
-                    GameScene()
+                    GameScene(handler: gameSceneHandler)
                 }
             }
             .transition(.opacity)

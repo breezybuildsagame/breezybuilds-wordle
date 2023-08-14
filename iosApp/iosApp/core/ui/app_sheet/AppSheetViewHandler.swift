@@ -59,7 +59,7 @@ class AppSheetViewHandler: AppSheetViewHandleable, ObservableObject
                             tiles: example.tiles().map()
                             { tile in
                                 HelpSheetContent.Tile(
-                                    letter: "\(tile.letter())",
+                                    letter: String(describing: tile),
                                     state: tile.state()
                                 )
                             },

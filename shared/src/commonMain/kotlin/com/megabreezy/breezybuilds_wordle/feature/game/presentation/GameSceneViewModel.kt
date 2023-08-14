@@ -3,22 +3,22 @@ package com.megabreezy.breezybuilds_wordle.feature.game.presentation
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.*
 import com.megabreezy.breezybuilds_wordle.feature.game.domain.use_case.*
 
-class GameSceneViewModel
+class GameSceneViewModel: GameSceneViewModelRepresentable
 {
-    suspend fun setUp(handler: GameSceneHandleable? = null)
+    override suspend fun setUp(gameSceneHandler: GameSceneHandleable?)
     {
-        handler?.onStartingGame()
-        GameUseCase().setUpGameEvents(sceneHandler = handler)
+        gameSceneHandler?.onStartingGame()
+        GameUseCase().setUpGameEvents(sceneHandler = gameSceneHandler)
         println("game started")
         println("the answer for this game: ${GameUseCase().getGameAnswer()}")
-        handler?.onGameStarted()
+        gameSceneHandler?.onGameStarted()
     }
 
-    fun getAnnouncement(): AnnouncementRepresentable = GameUseCase().getAnnouncement()
+    override fun getAnnouncement(): AnnouncementRepresentable = GameUseCase().getAnnouncement()
 
-    fun getHeader(): GameHeader = GameUseCase().getHeader()
+    override fun getHeader(): GameHeader = GameUseCase().getHeader()
 
-    suspend fun getGameBoard(): GameBoard = GameUseCase().getGameBoard()
+    override suspend fun getGameBoard(): GameBoard = GameUseCase().getGameBoard()
 
-    fun getGameKeyboard(): GameKeyboard = GameUseCase().getGameKeyboard()
+    override fun getGameKeyboard(): GameKeyboard = GameUseCase().getGameKeyboard()
 }
