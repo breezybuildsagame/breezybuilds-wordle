@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.megabreezy.breezybuilds_wordle.android.core.ui.Scene
+import com.megabreezy.breezybuilds_wordle.android.core.ui.tile.CoreTile
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneBoard
 import com.megabreezy.breezybuilds_wordle.android.util.theme.ThemeFonts
 import com.megabreezy.breezybuilds_wordle.android.util.theme.dpToSp
@@ -32,7 +33,7 @@ class GameSceneBoardTests
     fun when_tile_composable_is_displayed__expected_tag_name_is_applied()
     {
         // given
-        val expectedTagName = "game_scene_board_tile_component"
+        val expectedTagName = "${CoreTile.TagName.TILE}"
 
         // when
         composeTestRule.setContent { SceneMock.display { GameSceneBoard.Tile.Component() } }
@@ -62,8 +63,8 @@ class GameSceneBoardTests
         }
 
         // then
-        composeTestRule.onNodeWithContentDescription(GameSceneBoard.TagName.TILE.toString()).assertWidthIsEqualTo(expectedSize!!)
-        composeTestRule.onNodeWithContentDescription(GameSceneBoard.TagName.TILE.toString()).assertHeightIsEqualTo(expectedSize!!)
+        composeTestRule.onNodeWithContentDescription(CoreTile.TagName.TILE.toString()).assertWidthIsEqualTo(expectedSize!!)
+        composeTestRule.onNodeWithContentDescription(CoreTile.TagName.TILE.toString()).assertHeightIsEqualTo(expectedSize!!)
     }
 
     @Test
@@ -95,7 +96,7 @@ class GameSceneBoardTests
 
         // then
         composeTestRule.onNode(
-            SemanticsMatcher.expectValue(GameSceneBoard.Tile.BorderStrokeKey, expectedBorder)
+            SemanticsMatcher.expectValue(CoreTile.BorderStrokeKey, expectedBorder)
         ).assertExists()
     }
 
@@ -126,9 +127,9 @@ class GameSceneBoardTests
 
         // then
         composeTestRule.onNode(
-            SemanticsMatcher.expectValue(GameSceneBoard.Tile.TextStyleKey, expectedTextStyle)
+            SemanticsMatcher.expectValue(CoreTile.TextStyleKey, expectedTextStyle)
         ).assertExists()
-        composeTestRule.onNodeWithContentDescription(GameSceneBoard.TagName.TILE.toString()).onChild().assertTextEquals("G")
+        composeTestRule.onNodeWithContentDescription(CoreTile.TagName.TILE.toString()).onChild().assertTextEquals("G")
     }
 
     @Test
@@ -160,10 +161,10 @@ class GameSceneBoardTests
 
         // then
         composeTestRule.onNode(
-            SemanticsMatcher.expectValue(GameSceneBoard.Tile.BackgroundColorKey, expectedBackgroundColor!!)
+            SemanticsMatcher.expectValue(CoreTile.BackgroundColorKey, expectedBackgroundColor!!)
         ).assertExists()
         composeTestRule.onNode(
-            SemanticsMatcher.expectValue(GameSceneBoard.Tile.BorderStrokeKey, expectedBorder)
+            SemanticsMatcher.expectValue(CoreTile.BorderStrokeKey, expectedBorder)
         ).assertExists()
     }
 
@@ -196,10 +197,10 @@ class GameSceneBoardTests
 
         // then
         composeTestRule.onNode(
-            SemanticsMatcher.expectValue(GameSceneBoard.Tile.BackgroundColorKey, expectedBackgroundColor!!)
+            SemanticsMatcher.expectValue(CoreTile.BackgroundColorKey, expectedBackgroundColor!!)
         ).assertExists()
         composeTestRule.onNode(
-            SemanticsMatcher.expectValue(GameSceneBoard.Tile.BorderStrokeKey, expectedBorder)
+            SemanticsMatcher.expectValue(CoreTile.BorderStrokeKey, expectedBorder)
         ).assertExists()
     }
 
@@ -232,10 +233,10 @@ class GameSceneBoardTests
 
         // then
         composeTestRule.onNode(
-            SemanticsMatcher.expectValue(GameSceneBoard.Tile.BackgroundColorKey, expectedBackgroundColor!!)
+            SemanticsMatcher.expectValue(CoreTile.BackgroundColorKey, expectedBackgroundColor!!)
         ).assertExists()
         composeTestRule.onNode(
-            SemanticsMatcher.expectValue(GameSceneBoard.Tile.BorderStrokeKey, expectedBorder)
+            SemanticsMatcher.expectValue(CoreTile.BorderStrokeKey, expectedBorder)
         ).assertExists()
     }
 

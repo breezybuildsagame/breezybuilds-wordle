@@ -1,6 +1,5 @@
 package com.megabreezy.breezybuilds_wordle.core.ui.app_sheet
 
-import com.megabreezy.breezybuilds_wordle.core.ui.app_modal.AppModalRepresentable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -18,9 +17,12 @@ class AppSheet: AppSheetRepresentable
     override fun setHandler(newHandler: AppSheetViewHandleable?) { this.handler = newHandler }
 }
 
-class AppSheetHelper(): KoinComponent
+class AppSheetHelper: KoinComponent
 {
-    private val appSheet: AppSheetRepresentable by inject()
+    fun appSheet(): AppSheetRepresentable
+    {
+        val sharedInstance: AppSheetRepresentable by inject()
 
-    fun appSheet() = this.appSheet
+        return sharedInstance
+    }
 }
