@@ -1,11 +1,11 @@
 package com.megabreezy.breezybuilds_wordle.android.help.presentation
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import com.megabreezy.breezybuilds_wordle.android.core.ui.tile.CoreTile
+import com.megabreezy.breezybuilds_wordle.feature.help.domain.model.HelpSheet
 
 object HelpSheetComposable
 {
@@ -18,15 +18,23 @@ object HelpSheetComposable
     object Tile
     {
         @Composable
-        fun Component()
+        fun Component(options: ComponentOptions = ComponentOptions())
         {
             CoreTile.Component(
                 options = CoreTile.ComponentOptions(
+                    letter = options.letter,
                     modifier = Modifier
-                        .semantics { contentDescription = "${TagName.TILE}" }
+                        .semantics { contentDescription = "${TagName.TILE}" },
+                    state = options.state.name,
+                    tileSize = 50f
                 )
             )
         }
+
+        data class ComponentOptions(
+            val state: HelpSheet.Tile.State = HelpSheet.Tile.State.HIDDEN,
+            val letter: String = ""
+        )
     }
 
     enum class TagName(private val id: String)

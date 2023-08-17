@@ -19,7 +19,7 @@ data class HelpSheet(
 
     data class Example(
         private val description: String = "",
-        private val tiles: List<HelpSheet.Tile> = listOf()
+        private val tiles: List<Tile> = listOf()
     )
     {
         fun description() = this.description

@@ -55,7 +55,7 @@ object GameSceneBoard
         {
             CoreTile.Component(
                 options = CoreTile.ComponentOptions(
-                    state = options.state,
+                    state = options.state.name,
                     textStyle = TextStyle(
                         color = MaterialTheme.colorScheme.onPrimary,
                         fontFamily = ThemeFonts.roboto,

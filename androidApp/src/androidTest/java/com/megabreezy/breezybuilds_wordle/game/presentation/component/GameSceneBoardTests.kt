@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.megabreezy.breezybuilds_wordle.android.core.ui.Scene
 import com.megabreezy.breezybuilds_wordle.android.core.ui.tile.CoreTile
+import com.megabreezy.breezybuilds_wordle.android.core.util.LocalSceneDimensions
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneBoard
 import com.megabreezy.breezybuilds_wordle.android.util.theme.ThemeFonts
 import com.megabreezy.breezybuilds_wordle.android.util.theme.dpToSp
@@ -80,9 +81,12 @@ class GameSceneBoardTests
             {
                 BoxWithConstraints()
                 {
+                    val expectedBorderWidth: Dp = LocalSceneDimensions.current.height *
+                            (61f / Scene.idealFrame().height) *
+                            (2f / 61f)
                     expectedBorder = BorderStroke(
                         color = MaterialTheme.colorScheme.error,
-                        width = this.maxHeight * (2 /Scene.idealFrame().height)
+                        width = expectedBorderWidth
                     )
                 }
 

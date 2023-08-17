@@ -22,7 +22,6 @@ import com.megabreezy.breezybuilds_wordle.android.core.ui.Scene
 import com.megabreezy.breezybuilds_wordle.android.core.util.LocalSceneDimensions
 import com.megabreezy.breezybuilds_wordle.android.util.theme.ThemeFonts
 import com.megabreezy.breezybuilds_wordle.android.util.theme.dpToSp
-import com.megabreezy.breezybuilds_wordle.feature.game.domain.model.GameBoard
 
 object CoreTile
 {
@@ -31,26 +30,28 @@ object CoreTile
     {
         val borderWidth: Float = when(options.state)
         {
-            GameBoard.Tile.State.HIDDEN -> 2f
+            State.HIDDEN.name -> 2f / 61
             else -> 0f
         }
 
         val borderColor: Color = when(options.state)
         {
-            GameBoard.Tile.State.HIDDEN -> MaterialTheme.colorScheme.error
+            State.HIDDEN.name -> MaterialTheme.colorScheme.error
             else -> Color.Transparent
         }
 
         val backgroundColor: Color = when(options.state)
         {
-            GameBoard.Tile.State.CLOSE -> MaterialTheme.colorScheme.tertiary
-            GameBoard.Tile.State.CORRECT -> MaterialTheme.colorScheme.secondary
-            GameBoard.Tile.State.INCORRECT -> MaterialTheme.colorScheme.error
+            State.CLOSE.name -> MaterialTheme.colorScheme.tertiary
+            State.CORRECT.name -> MaterialTheme.colorScheme.secondary
+            State.INCORRECT.name -> MaterialTheme.colorScheme.error
             else -> Color.Transparent
         }
 
         val borderStroke = BorderStroke(
-            width = LocalSceneDimensions.current.height * (borderWidth / Scene.idealFrame().height),
+            width = LocalSceneDimensions.current.height
+                * (options.tileSize / Scene.idealFrame().height)
+                * borderWidth,
             color = borderColor
         )
 
@@ -63,6 +64,7 @@ object CoreTile
             ),
             fontWeight = FontWeight.Bold
         )
+        println("1AR: background color: $backgroundColor")
 
         Box(
             contentAlignment = Alignment.Center,
@@ -92,7 +94,7 @@ object CoreTile
 
     data class ComponentOptions(
         val modifier: Modifier = Modifier,
-        val state: GameBoard.Tile.State = GameBoard.Tile.State.HIDDEN,
+        val state: String = State.HIDDEN.name,
         val tileSize: Float = 61f,
         val textStyle: TextStyle? = null,
         val letter: String = ""
@@ -104,6 +106,8 @@ object CoreTile
 
         override fun toString(): String = this.id
     }
+
+    enum class State { CLOSE, CORRECT, INCORRECT, HIDDEN; }
 
     val BackgroundColorKey = SemanticsPropertyKey<Color>("BackgroundColor")
     val BorderStrokeKey = SemanticsPropertyKey<BorderStroke>("BorderStroke")
