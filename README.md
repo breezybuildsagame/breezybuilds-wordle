@@ -40,7 +40,7 @@ The Help feature presents game instructions at the touch of a button
 
 ![BreezyBuilds Wordle Stats Screenshot](breezybuildswordle_help_screen.png)
 
-* [Visual Design Doc] (https://www.figma.com/file/zQEo2VR54levonpi5pTd1v/Wordle?node-id=18%3A366&t=J7s3sjvHTIxL951t-1)
+* [Visual Design Doc](https://www.figma.com/file/zQEo2VR54levonpi5pTd1v/Wordle?node-id=18%3A366&t=J7s3sjvHTIxL951t-1)
 * [Clean Architecture Design Doc](https://www.figma.com/file/MGS6fPuVWmYU5GG0uXIOFH/KMM-by-Example%3A-Wordle-(Clean-Architecture)?type=whiteboard&node-id=669-3228&t=17tWkVCF4akQHAUR-0)
 * [Shared Code](https://github.com/breezybuildsagame/breezybuilds-wordle/tree/main/shared/src/commonMain/kotlin/com/megabreezy/breezybuilds_wordle/feature/help)
 * [Shared Unit Tests](https://github.com/breezybuildsagame/breezybuilds-wordle/tree/main/shared/src/commonTest/kotlin/com/megabreezy/breezybuilds_wordle/feature/help)
