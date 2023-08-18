@@ -14,12 +14,16 @@ import androidx.compose.ui.test.onChild
 import androidx.compose.ui.test.onChildAt
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.megabreezy.breezybuilds_wordle.android.core.ui.Scene
 import com.megabreezy.breezybuilds_wordle.android.core.ui.tile.CoreTile
 import com.megabreezy.breezybuilds_wordle.android.core.util.LocalSceneDimensions
 import com.megabreezy.breezybuilds_wordle.android.help.presentation.HelpSheetComposable
+import com.megabreezy.breezybuilds_wordle.android.util.theme.ThemeFonts
+import com.megabreezy.breezybuilds_wordle.android.util.theme.dpToSp
 import com.megabreezy.breezybuilds_wordle.core.ui.SceneMock
 import com.megabreezy.breezybuilds_wordle.feature.help.domain.model.HelpSheet
 import org.junit.Rule
@@ -215,5 +219,43 @@ class HelpSheetComposableTests
             displayedExample.onChildAt(index = 0).onChildAt(index = index).assertContentDescriptionEquals("${HelpSheetComposable.TagName.TILE}")
             displayedExample.onChildAt(index = 0).onChildAt(index = index).onChild().assertTextEquals("$character")
         }
+    }
+
+    @Test
+    fun test_when_Example_initialized_with_description__expected_description_is_displayed()
+    {
+        // given
+        val expectedDescriptionText = "Testing out **W** description line."
+        lateinit var expectedDescriptionTextStyle: TextStyle
+
+        // when
+        composeTestRule.setContent()
+        {
+            SceneMock.display()
+            {
+                expectedDescriptionTextStyle = TextStyle(
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontFamily = ThemeFonts.roboto,
+                    fontSize = dpToSp(dp = LocalSceneDimensions.current.height.times(15 / Scene.idealFrame().height)),
+                    fontWeight = FontWeight.Normal
+                )
+
+                HelpSheetComposable.Example.Component(
+                    options = HelpSheetComposable.Example.ComponentOptions(
+                        tiles = mockTiles,
+                        description = expectedDescriptionText
+                    )
+                )
+            }
+        }
+        val displayedExample = composeTestRule.onNodeWithContentDescription(
+            "${HelpSheetComposable.TagName.EXAMPLE}", useUnmergedTree = true)
+
+        // then
+        displayedExample.onChildAt(index = 1).onChildAt(index = 0).assertTextEquals(expectedDescriptionText)
+        displayedExample.onChildAt(index = 1).onChildAt(index = 1).assertContentDescriptionEquals("spacer")
+        composeTestRule.onNode(
+            SemanticsMatcher.expectValue(HelpSheetComposable.Example.DescriptionTextStyleKey, expectedDescriptionTextStyle)
+        ).assertExists()
     }
 }

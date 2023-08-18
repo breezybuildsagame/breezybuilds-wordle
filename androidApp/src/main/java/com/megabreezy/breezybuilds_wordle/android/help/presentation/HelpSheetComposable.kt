@@ -4,13 +4,22 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.SemanticsPropertyKey
+import androidx.compose.ui.semantics.SemanticsPropertyReceiver
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import com.megabreezy.breezybuilds_wordle.android.core.ui.Scene
 import com.megabreezy.breezybuilds_wordle.android.core.ui.tile.CoreTile
 import com.megabreezy.breezybuilds_wordle.android.core.util.LocalSceneDimensions
+import com.megabreezy.breezybuilds_wordle.android.util.theme.ThemeFonts
+import com.megabreezy.breezybuilds_wordle.android.util.theme.dpToSp
 import com.megabreezy.breezybuilds_wordle.feature.help.domain.model.HelpSheet
 
 object HelpSheetComposable
@@ -48,7 +57,15 @@ object HelpSheetComposable
         @Composable
         fun Component(options: ComponentOptions = ComponentOptions())
         {
+            val descriptionTextStyle = TextStyle(
+                color = MaterialTheme.colorScheme.onBackground,
+                fontFamily = ThemeFonts.roboto,
+                fontSize = dpToSp(dp = LocalSceneDimensions.current.height.times(15 / Scene.idealFrame().height)),
+                fontWeight = FontWeight.Normal
+            )
+
             Column(
+                horizontalAlignment = Alignment.Start,
                 modifier = Modifier
                     .semantics { contentDescription = "${TagName.EXAMPLE}" },
                 verticalArrangement = Arrangement.spacedBy(
@@ -63,12 +80,32 @@ object HelpSheetComposable
                 {
                     options.tiles.forEach { it() }
                 }
+
+                Row(
+                    modifier = Modifier
+                        .semantics { contentDescription = "ROW" }
+                )
+                {
+                    Text(
+                        text = options.description,
+                        modifier = Modifier
+                            .semantics { helpSheetExampleDescriptionTextStyle = descriptionTextStyle },
+                        style = descriptionTextStyle
+                    )
+
+                    Scene().ColumnSpacer(modifier = Modifier.weight(1f))
+                }
             }
         }
 
         data class ComponentOptions(
-            val tiles: List<@Composable () -> Unit> = listOf()
+            val tiles: List<@Composable () -> Unit> = listOf(),
+            val description: String = ""
         )
+
+        val DescriptionTextStyleKey = SemanticsPropertyKey<TextStyle>("DescriptionTextStyle")
+
+        private var SemanticsPropertyReceiver.helpSheetExampleDescriptionTextStyle by DescriptionTextStyleKey
     }
 
     enum class TagName(private val id: String)
