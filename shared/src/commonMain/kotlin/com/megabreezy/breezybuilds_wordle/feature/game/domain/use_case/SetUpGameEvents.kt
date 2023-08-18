@@ -54,7 +54,7 @@ suspend fun GameUseCase.setUpGameEvents(
                     guessRepository.clear()
                     getAnnouncement().setMessage(newMessage = "Correct! Thanks for playing!")
                     sceneHandler?.onGameOver()
-                    delay(timeMillis = announcementDelay)
+                    delay(timeMillis = announcementDelay * 3)
                     gameNavigationHandler.onGameOver()
                 }
                 catch(e: GameUseCase.GuessWordInvalidGuessException)
@@ -76,12 +76,13 @@ suspend fun GameUseCase.setUpGameEvents(
                     }
                     catch (e: GameBoard.SetNewActiveRowFailedException)
                     {
+                        val answer = getGameAnswer()
                         savedGameRepository.create()
-                        answerRepository.updateAnswerNotGuessed(existingAnswer = getGameAnswer())
+                        answerRepository.updateAnswerNotGuessed(existingAnswer = answer)
                         guessRepository.clear()
-                        getAnnouncement().setMessage(newMessage = "Game Over")
+                        getAnnouncement().setMessage(newMessage = "Game Over - correct answer: ${answer.word()}")
                         sceneHandler?.onGameOver()
-                        delay(timeMillis = announcementDelay)
+                        delay(timeMillis = announcementDelay * 3)
                         gameNavigationHandler.onGameOver()
                     }
                 }
