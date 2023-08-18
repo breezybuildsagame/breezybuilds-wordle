@@ -322,7 +322,6 @@ class HelpSheetComposableTests
         val expectedTitle = "TEST HOW TO PLAY"
 
         var expectedTitleWidth: Dp? = null
-        var expectedTitleHeight: Dp? = null
 
         lateinit var expectedTitleTextStyle: TextStyle
 
@@ -340,7 +339,6 @@ class HelpSheetComposableTests
                     textAlign = TextAlign.Center
                 )
                 expectedTitleWidth = LocalSceneDimensions.current.width.times(300 / Scene.idealFrame().width)
-                expectedTitleHeight = LocalSceneDimensions.current.height.times(50 / Scene.idealFrame().height)
 
                 HelpSheetComposable.Component(
                     options = HelpSheetComposable.ComponentOptions(
@@ -358,7 +356,6 @@ class HelpSheetComposableTests
         ).assertExists()
         displayedContent.onChildAt(index = 0).assertTextEquals(expectedTitle)
         displayedContent.onChildAt(index = 0).assertWidthIsEqualTo(expectedTitleWidth!!)
-        displayedContent.onChildAt(index = 0).assertHeightIsEqualTo(expectedTitleHeight!!)
     }
 
     @Test
@@ -507,8 +504,6 @@ class HelpSheetComposableTests
     fun test_when_Component_invoked_with_CloseButton__expected_button_is_displayed()
     {
         // given
-        lateinit var expectedFooterTextStyle: TextStyle
-        val expectedFooter = "No daily restrictions - play as often as you like!"
         val examples: List<@Composable () -> Unit> = listOf("Example 1", "Example 2").map()
         {
             {
@@ -537,13 +532,6 @@ class HelpSheetComposableTests
         {
             SceneMock.display()
             {
-                expectedFooterTextStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontFamily = ThemeFonts.roboto,
-                    fontSize = dpToSp(dp = LocalSceneDimensions.current.height.times(15 / Scene.idealFrame().height)),
-                    fontWeight = FontWeight.Black
-                )
-
                 HelpSheetComposable.Component(
                     options = HelpSheetComposable.ComponentOptions(
                         title = "HOW TO PLAY",

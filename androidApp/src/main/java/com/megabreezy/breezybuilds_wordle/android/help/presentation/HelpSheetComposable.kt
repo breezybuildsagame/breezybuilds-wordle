@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -57,10 +59,15 @@ object HelpSheetComposable
         Box(
             contentAlignment = Alignment.TopCenter,
             modifier = Modifier
+                .fillMaxWidth()
                 .semantics { contentDescription = "${TagName.CONTENT}" }
         )
         {
-            Column(verticalArrangement = Arrangement.spacedBy(LocalSceneDimensions.current.height.times(20 / Scene.idealFrame().height)))
+            Column(
+                verticalArrangement = Arrangement.spacedBy(LocalSceneDimensions.current.height.times(20 / Scene.idealFrame().height)),
+                modifier = Modifier
+                    .width(LocalSceneDimensions.current.width.times(350 / Scene.idealFrame().width))
+            )
             {
                 Text(
                     text = options.title,
@@ -68,6 +75,7 @@ object HelpSheetComposable
                         .padding(horizontal = LocalSceneDimensions.current.height.times(25 / Scene.idealFrame().height))
                         .width(width = LocalSceneDimensions.current.height.times(300 / Scene.idealFrame().height))
                         .aspectRatio(ratio = 300f / 50)
+                        .wrapContentHeight(align = Alignment.CenterVertically)
                         .semantics { helpSheetComposableTitleTextStyle = titleTextStyle },
                     style = titleTextStyle
                 )
@@ -96,7 +104,7 @@ object HelpSheetComposable
 
             options.closeButton?.let()
             {
-                Column()
+                Column(modifier = Modifier.fillMaxWidth())
                 {
                     it()
 
