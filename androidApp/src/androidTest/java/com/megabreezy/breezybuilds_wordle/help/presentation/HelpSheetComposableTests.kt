@@ -234,7 +234,7 @@ class HelpSheetComposableTests
             SceneMock.display()
             {
                 expectedDescriptionTextStyle = TextStyle(
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontFamily = ThemeFonts.roboto,
                     fontSize = dpToSp(dp = LocalSceneDimensions.current.height.times(15 / Scene.idealFrame().height)),
                     fontWeight = FontWeight.Normal
@@ -256,6 +256,43 @@ class HelpSheetComposableTests
         displayedExample.onChildAt(index = 1).onChildAt(index = 1).assertContentDescriptionEquals("spacer")
         composeTestRule.onNode(
             SemanticsMatcher.expectValue(HelpSheetComposable.Example.DescriptionTextStyleKey, expectedDescriptionTextStyle)
+        ).assertExists()
+    }
+
+    @Test
+    fun test_when_Instruction_initialized_with_String_parameter__expected_composable_is_displayed()
+    {
+        // given
+        val expectedInstruction = "Guess the **WORDLE** in 6 tries."
+        lateinit var expectedInstructionTextStyle: TextStyle
+
+        // when
+        composeTestRule.setContent()
+        {
+            SceneMock.display()
+            {
+                expectedInstructionTextStyle = TextStyle(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontFamily = ThemeFonts.roboto,
+                    fontSize = dpToSp(dp = LocalSceneDimensions.current.height.times(15 / Scene.idealFrame().height)),
+                    fontWeight = FontWeight.Normal
+                )
+
+                HelpSheetComposable.Instruction.Component(
+                    options = HelpSheetComposable.Instruction.ComponentOptions(
+                        instruction = expectedInstruction
+                    )
+                )
+            }
+        }
+        val displayedInstruction = composeTestRule.onNodeWithContentDescription(
+            "${HelpSheetComposable.TagName.INSTRUCTION}", useUnmergedTree = true)
+
+        // then
+        displayedInstruction.onChildAt(index = 0).assertTextEquals(expectedInstruction)
+        displayedInstruction.onChildAt(index = 1).assertContentDescriptionEquals("spacer")
+        composeTestRule.onNode(
+            SemanticsMatcher.expectValue(HelpSheetComposable.Instruction.TextStyleKey, expectedInstructionTextStyle)
         ).assertExists()
     }
 }

@@ -17,6 +17,37 @@ open class Scene
     companion object
     {
         fun idealFrame() = SizingFrame(width = 390f, height = 844f)
+
+        @Composable
+        private fun SceneSpacer(
+            modifier: Modifier = Modifier,
+            ratio: Float? = null
+        )
+        {
+            Spacer(
+                modifier = Modifier
+                    .then(ratio?.let { modifier.aspectRatio(ratio = it) } ?: modifier)
+                    .semantics { contentDescription = "spacer" }
+            )
+        }
+
+        @Composable
+        fun ColumnSpacer(
+            modifier: Modifier = Modifier,
+            ratio: Float? = null
+        )
+        {
+            SceneSpacer(modifier = modifier.fillMaxHeight(), ratio = ratio)
+        }
+
+        @Composable
+        fun RowSpacer(
+            modifier: Modifier = Modifier,
+            ratio: Float? = null
+        )
+        {
+            SceneSpacer(modifier = modifier.fillMaxWidth(), ratio = ratio)
+        }
     }
 
     @Composable
@@ -39,37 +70,6 @@ open class Scene
                 View()
             }
         }
-    }
-
-    @Composable
-    private fun SceneSpacer(
-        modifier: Modifier = Modifier,
-        ratio: Float? = null
-    )
-    {
-        Spacer(
-            modifier = Modifier
-                .then(ratio?.let { modifier.aspectRatio(ratio = it) } ?: modifier)
-                .semantics { contentDescription = "spacer" }
-        )
-    }
-
-    @Composable
-    fun ColumnSpacer(
-        modifier: Modifier = Modifier,
-        ratio: Float? = null
-    )
-    {
-        SceneSpacer(modifier = modifier.fillMaxHeight(), ratio = ratio)
-    }
-
-    @Composable
-    fun RowSpacer(
-        modifier: Modifier = Modifier,
-        ratio: Float? = null
-    )
-    {
-        SceneSpacer(modifier = modifier.fillMaxWidth(), ratio = ratio)
     }
 
     @Composable

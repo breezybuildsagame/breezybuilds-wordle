@@ -3,7 +3,6 @@ package com.megabreezy.breezybuilds_wordle.android.help.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -58,7 +57,7 @@ object HelpSheetComposable
         fun Component(options: ComponentOptions = ComponentOptions())
         {
             val descriptionTextStyle = TextStyle(
-                color = MaterialTheme.colorScheme.onBackground,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontFamily = ThemeFonts.roboto,
                 fontSize = dpToSp(dp = LocalSceneDimensions.current.height.times(15 / Scene.idealFrame().height)),
                 fontWeight = FontWeight.Normal
@@ -93,7 +92,7 @@ object HelpSheetComposable
                         style = descriptionTextStyle
                     )
 
-                    Scene().ColumnSpacer(modifier = Modifier.weight(1f))
+                    Scene.ColumnSpacer(modifier = Modifier.weight(1f))
                 }
             }
         }
@@ -108,11 +107,47 @@ object HelpSheetComposable
         private var SemanticsPropertyReceiver.helpSheetExampleDescriptionTextStyle by DescriptionTextStyleKey
     }
 
+    object Instruction
+    {
+        @Composable
+        fun Component(options: ComponentOptions = ComponentOptions())
+        {
+            val textStyle = TextStyle(
+                color = MaterialTheme.colorScheme.onSurface,
+                fontFamily = ThemeFonts.roboto,
+                fontSize = dpToSp(dp = LocalSceneDimensions.current.height.times(15 / Scene.idealFrame().height)),
+                fontWeight = FontWeight.Normal
+            )
+
+            Row(
+                modifier = Modifier
+                    .semantics { contentDescription = "${TagName.INSTRUCTION}" }
+            )
+            {
+                Text(
+                    text = options.instruction,
+                    modifier = Modifier
+                        .semantics { helpSheetExampleInstructionTextStyle = textStyle },
+                    style = textStyle
+                )
+
+                Scene.ColumnSpacer(modifier = Modifier.weight(1f))
+            }
+        }
+
+        data class ComponentOptions(val instruction: String = "")
+
+        val TextStyleKey = SemanticsPropertyKey<TextStyle>("TextStyle")
+
+        private var SemanticsPropertyReceiver.helpSheetExampleInstructionTextStyle by TextStyleKey
+    }
+
     enum class TagName(private val id: String)
     {
         CONTENT(id = "help_sheet_content"),
         TILE(id = "help_sheet_tile"),
-        EXAMPLE(id = "help_sheet_example");
+        EXAMPLE(id = "help_sheet_example"),
+        INSTRUCTION(id = "help_sheet_instruction");
 
         override fun toString(): String = this.id
     }
