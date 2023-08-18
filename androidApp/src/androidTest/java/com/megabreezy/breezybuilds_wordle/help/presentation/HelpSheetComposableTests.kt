@@ -14,8 +14,10 @@ import androidx.compose.ui.test.onChild
 import androidx.compose.ui.test.onChildAt
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.megabreezy.breezybuilds_wordle.android.core.ui.Scene
@@ -26,6 +28,7 @@ import com.megabreezy.breezybuilds_wordle.android.util.theme.ThemeFonts
 import com.megabreezy.breezybuilds_wordle.android.util.theme.dpToSp
 import com.megabreezy.breezybuilds_wordle.core.ui.SceneMock
 import com.megabreezy.breezybuilds_wordle.feature.help.domain.model.HelpSheet
+import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,7 +39,7 @@ class HelpSheetComposableTests
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    val mockTiles: List<@Composable () -> Unit> = listOf(
+    private val mockTiles: List<@Composable () -> Unit> = listOf(
         { HelpSheetComposable.Tile.Component(options = HelpSheetComposable.Tile.ComponentOptions(letter = "T", state = HelpSheet.Tile.State.CORRECT)) },
         { HelpSheetComposable.Tile.Component(options = HelpSheetComposable.Tile.ComponentOptions(letter = "E", state = HelpSheet.Tile.State.HIDDEN)) },
         { HelpSheetComposable.Tile.Component(options = HelpSheetComposable.Tile.ComponentOptions(letter = "S", state = HelpSheet.Tile.State.HIDDEN)) },
@@ -203,7 +206,7 @@ class HelpSheetComposableTests
             {
                 HelpSheetComposable.Example.Component(
                     options = HelpSheetComposable.Example.ComponentOptions(
-                        tiles = mockTiles
+                        tiles = expectedTiles
                     )
                 )
             }
@@ -294,5 +297,276 @@ class HelpSheetComposableTests
         composeTestRule.onNode(
             SemanticsMatcher.expectValue(HelpSheetComposable.Instruction.TextStyleKey, expectedInstructionTextStyle)
         ).assertExists()
+    }
+
+    @Test
+    fun test_when_Composable_invoked__expected_content_container_is_displayed()
+    {
+        // given
+        val expectedTagName = "${HelpSheetComposable.TagName.CONTENT}"
+
+        // when
+        composeTestRule.setContent()
+        {
+            SceneMock.display { HelpSheetComposable.Component() }
+        }
+
+        // then
+        composeTestRule.onNodeWithContentDescription(expectedTagName).assertExists()
+    }
+
+    @Test
+    fun test_when_Component_invoked_with_title_String_parameter__expected_title_is_displayed()
+    {
+        // given
+        val expectedTitle = "TEST HOW TO PLAY"
+
+        var expectedTitleWidth: Dp? = null
+        var expectedTitleHeight: Dp? = null
+
+        lateinit var expectedTitleTextStyle: TextStyle
+
+        // when
+        composeTestRule.setContent()
+        {
+            SceneMock.display()
+            {
+                expectedTitleTextStyle = TextStyle(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontFamily = ThemeFonts.roboto,
+                    fontSize = dpToSp(dp = LocalSceneDimensions.current.height.times(20 / Scene.idealFrame().height)),
+                    fontWeight = FontWeight.Black,
+                    lineHeight = dpToSp(dp = LocalSceneDimensions.current.height.times(50 / Scene.idealFrame().height)),
+                    textAlign = TextAlign.Center
+                )
+                expectedTitleWidth = LocalSceneDimensions.current.width.times(300 / Scene.idealFrame().width)
+                expectedTitleHeight = LocalSceneDimensions.current.height.times(50 / Scene.idealFrame().height)
+
+                HelpSheetComposable.Component(
+                    options = HelpSheetComposable.ComponentOptions(
+                        title = expectedTitle
+                    )
+                )
+            }
+        }
+        val displayedContent = composeTestRule.onNodeWithContentDescription(
+            "${HelpSheetComposable.TagName.CONTENT}", useUnmergedTree = true)
+
+        // then
+        composeTestRule.onNode(
+            SemanticsMatcher.expectValue(HelpSheetComposable.TitleTextStyleKey, expectedTitleTextStyle)
+        ).assertExists()
+        displayedContent.onChildAt(index = 0).assertTextEquals(expectedTitle)
+        displayedContent.onChildAt(index = 0).assertWidthIsEqualTo(expectedTitleWidth!!)
+        displayedContent.onChildAt(index = 0).assertHeightIsEqualTo(expectedTitleHeight!!)
+    }
+
+    @Test
+    fun test_when_Component_invoked_with_Instruction_list__expected_instructions_are_displayed()
+    {
+        // given
+        val instructionsList = listOf("Instruction 1", "Instruction 2")
+        val expectedInstructions: List<@Composable () -> Unit> = instructionsList.map()
+        {
+            {
+                HelpSheetComposable.Instruction.Component(
+                    options = HelpSheetComposable.Instruction.ComponentOptions(
+                        instruction = it
+                    )
+                )
+            }
+        }
+
+        // when
+        composeTestRule.setContent()
+        {
+            SceneMock.display()
+            {
+                HelpSheetComposable.Component(
+                    options = HelpSheetComposable.ComponentOptions(
+                        title = "HOW TO PLAY",
+                        instructions = expectedInstructions
+                    )
+                )
+            }
+        }
+        val displayedContent = composeTestRule.onNodeWithContentDescription(
+            "${HelpSheetComposable.TagName.CONTENT}", useUnmergedTree = true)
+
+        // then
+        instructionsList.forEachIndexed()
+        { index, text ->
+            displayedContent.onChildAt(index = index + 1).assertContentDescriptionEquals("${HelpSheetComposable.TagName.INSTRUCTION}")
+            displayedContent.onChildAt(index = index + 1).onChildAt(index = 0).assertTextEquals(text)
+        }
+    }
+
+    @Test
+    fun test_when_Component_invoked_with_Example_list__expected_examples_are_displayed()
+    {
+        // given
+        val exampleText = listOf("Example 1", "Example 2")
+        val exampleComposables: List<@Composable () -> Unit> = exampleText.map()
+        {
+            {
+                HelpSheetComposable.Example.Component(
+                    options = HelpSheetComposable.Example.ComponentOptions(
+                        tiles = mockTiles,
+                        description = it
+                    )
+                )
+            }
+        }
+
+        // when
+        composeTestRule.setContent()
+        {
+            SceneMock.display()
+            {
+                HelpSheetComposable.Component(
+                    options = HelpSheetComposable.ComponentOptions(
+                        title = "HOW TO PLAY",
+                        examples = exampleComposables
+                    )
+                )
+            }
+        }
+        val displayedContent = composeTestRule.onNodeWithContentDescription(
+            "${HelpSheetComposable.TagName.CONTENT}", useUnmergedTree = true)
+
+        // then
+        exampleText.forEachIndexed()
+        { index, text ->
+            displayedContent.onChildAt(index = index + 1).assertContentDescriptionEquals("${HelpSheetComposable.TagName.EXAMPLE}")
+            displayedContent.onChildAt(index = index + 1).onChildAt(index = 1).onChildAt(index = 0).assertTextEquals(text)
+        }
+    }
+
+    @Test
+    fun test_when_Component_invoked_with_footer_String_parameter__expected_text_is_displayed()
+    {
+        // given
+        lateinit var expectedFooterTextStyle: TextStyle
+        val expectedFooter = "No daily restrictions - play as often as you like!"
+        val examples: List<@Composable () -> Unit> = listOf("Example 1", "Example 2").map()
+        {
+            {
+                HelpSheetComposable.Example.Component(
+                    options = HelpSheetComposable.Example.ComponentOptions(
+                        tiles = mockTiles,
+                        description = it
+                    )
+                )
+            }
+        }
+        val instructions: List<@Composable () -> Unit> = listOf("Instruction 1", "Instruction 2").map()
+        {
+            {
+                HelpSheetComposable.Instruction.Component(
+                    options = HelpSheetComposable.Instruction.ComponentOptions(
+                        instruction = it
+                    )
+                )
+            }
+        }
+
+        // when
+        composeTestRule.setContent()
+        {
+            SceneMock.display()
+            {
+                expectedFooterTextStyle = TextStyle(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontFamily = ThemeFonts.roboto,
+                    fontSize = dpToSp(dp = LocalSceneDimensions.current.height.times(15 / Scene.idealFrame().height)),
+                    fontWeight = FontWeight.Black
+                )
+
+                HelpSheetComposable.Component(
+                    options = HelpSheetComposable.ComponentOptions(
+                        title = "HOW TO PLAY",
+                        instructions = instructions,
+                        examples = examples,
+                        footer = expectedFooter
+                    )
+                )
+            }
+        }
+        val displayedContent = composeTestRule.onNodeWithContentDescription(
+            "${HelpSheetComposable.TagName.CONTENT}", useUnmergedTree = true)
+
+        // then
+        displayedContent.onChildAt(index = 5).assertTextEquals(expectedFooter)
+
+        composeTestRule.onNode(
+            SemanticsMatcher.expectValue(HelpSheetComposable.FooterTextStyleKey, expectedFooterTextStyle)
+        ).assertExists()
+    }
+
+    @Test
+    fun test_when_Component_invoked_with_CloseButton__expected_button_is_displayed()
+    {
+        // given
+        lateinit var expectedFooterTextStyle: TextStyle
+        val expectedFooter = "No daily restrictions - play as often as you like!"
+        val examples: List<@Composable () -> Unit> = listOf("Example 1", "Example 2").map()
+        {
+            {
+                HelpSheetComposable.Example.Component(
+                    options = HelpSheetComposable.Example.ComponentOptions(
+                        tiles = mockTiles,
+                        description = it
+                    )
+                )
+            }
+        }
+        val instructions: List<@Composable () -> Unit> = listOf("Instruction 1", "Instruction 2").map()
+        {
+            {
+                HelpSheetComposable.Instruction.Component(
+                    options = HelpSheetComposable.Instruction.ComponentOptions(
+                        instruction = it
+                    )
+                )
+            }
+        }
+        var closeButtonClicked = false
+
+        // when
+        composeTestRule.setContent()
+        {
+            SceneMock.display()
+            {
+                expectedFooterTextStyle = TextStyle(
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontFamily = ThemeFonts.roboto,
+                    fontSize = dpToSp(dp = LocalSceneDimensions.current.height.times(15 / Scene.idealFrame().height)),
+                    fontWeight = FontWeight.Black
+                )
+
+                HelpSheetComposable.Component(
+                    options = HelpSheetComposable.ComponentOptions(
+                        title = "HOW TO PLAY",
+                        instructions = instructions,
+                        examples = examples,
+                        footer = "No daily restrictions - play as often as you like!",
+                        closeButton = {
+                            HelpSheetComposable.CloseButton.Component(
+                                options = HelpSheetComposable.CloseButton.ComponentOptions { closeButtonClicked = true }
+                            )
+                        }
+                    )
+                )
+            }
+        }
+
+        // then
+        composeTestRule.onNodeWithContentDescription("${HelpSheetComposable.TagName.CLOSE_BUTTON}").assertExists()
+        composeTestRule.onNodeWithContentDescription("${HelpSheetComposable.TagName.CLOSE_BUTTON}", useUnmergedTree = true)
+            .onChildAt(index = 0).assertContentDescriptionEquals("spacer")
+        composeTestRule.onNodeWithContentDescription("${HelpSheetComposable.TagName.CLOSE_BUTTON}", useUnmergedTree = true)
+            .onChildAt(index = 1).performClick()
+        composeTestRule.waitForIdle()
+        Assert.assertTrue(closeButtonClicked)
     }
 }
