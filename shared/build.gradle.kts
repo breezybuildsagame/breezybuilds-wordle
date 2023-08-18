@@ -6,11 +6,19 @@ plugins {
     id(Dependency.MokoResources.plugin)
 }
 
+@OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
+    targetHierarchy.default()
+
     android()
     iosX64()
     iosArm64()
     iosSimulatorArm64()
+
+    tasks.matching {it.name == "iosX64ProcessResources" }.configureEach()
+    {
+        dependsOn(tasks.getByName("generateMRcommonMain"))
+    }
 
     cocoapods {
         summary = "Shared module for BreezyBuilds-Wordle"
@@ -21,6 +29,13 @@ kotlin {
         framework {
             baseName = "shared"
         }
+
+        /**
+         * Bugfix to prevent thousands of warnings showing up in Xcode on certain machines.
+         *
+         * - details: https://slack-chats.kotlinlang.org/t/2913718/hi-is-anyone-else-getting-a-lot-of-warnings-in-their-ios-bui
+         */
+        xcodeConfigurationToNativeBuildType["Debug"] = org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType.RELEASE
     }
     
     sourceSets {
@@ -52,24 +67,14 @@ kotlin {
                 implementation(Dependency.Koin.testJunit)
             }
         }
-        val iosX64Main by getting
-        val iosArm64Main by getting
-        val iosSimulatorArm64Main by getting
-        val iosMain by creating {
-            dependsOn(commonMain)
-            iosX64Main.dependsOn(this)
-            iosArm64Main.dependsOn(this)
-            iosSimulatorArm64Main.dependsOn(this)
-        }
-        val iosX64Test by getting
-        val iosArm64Test by getting
-        val iosSimulatorArm64Test by getting
-        val iosTest by creating {
-            dependsOn(commonTest)
-            iosX64Test.dependsOn(this)
-            iosArm64Test.dependsOn(this)
-            iosSimulatorArm64Test.dependsOn(this)
-        }
+        val iosMain by sourceSets.getting
+        val iosTest by sourceSets.getting
+        val iosSimulatorArm64Main by sourceSets.getting
+        val iosSimulatorArm64Test by sourceSets.getting
+
+        // Set up dependencies between the source sets
+        iosSimulatorArm64Main.dependsOn(iosMain)
+        iosSimulatorArm64Test.dependsOn(iosTest)
     }
 }
 

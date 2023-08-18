@@ -88,7 +88,6 @@ class CompletedGameLocalDataSourceTests
 
                 copyToRealm(
                     CachedCompletedGame().apply {
-                        answer = it.answer()
                         date = it.date()
                         playerGuesses = guessesToSave
                         playerGuessedCorrectly = it.answer().playerGuessedCorrectly() ?: false

@@ -1,7 +1,7 @@
 plugins {
     //trick: for the same plugin versions in all sub-modules
-    id("com.android.application").version("7.3.1").apply(false)
-    id("com.android.library").version("7.3.1").apply(false)
+    id("com.android.application").version(Version.gradleVersion).apply(false)
+    id("com.android.library").version(Version.gradleVersion).apply(false)
     kotlin("android").version(Version.kotlinVersion).apply(false)
     kotlin("multiplatform").version(Version.kotlinVersion).apply(false)
 }

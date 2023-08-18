@@ -1,7 +1,5 @@
 package com.megabreezy.breezybuilds_wordle.android.game.presentation
 
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneAnnouncement
 import com.megabreezy.breezybuilds_wordle.android.game.presentation.component.GameSceneBoard
@@ -23,7 +21,7 @@ class GameSceneHandler(private val scope: CoroutineScope? = null): GameSceneHand
     var gameAnnouncementText by mutableStateOf(viewModel.getAnnouncement().message())
     var gameKeyboardIsEnabled by mutableStateOf(false)
 
-    suspend fun setUp() { viewModel.setUp(handler = this) }
+    suspend fun setUp() { viewModel.setUp(gameSceneHandler = this) }
 
     private fun updateGameBoardRows()
     {

@@ -48,7 +48,7 @@ class GameSceneViewModelTests: KoinComponent
         val sut = GameSceneViewModel()
 
         // when
-        runBlocking { sut.setUp(handler = handler) }
+        runBlocking { sut.setUp(gameSceneHandler = handler) }
 
         // then
         assertNotNull(answerLocalDataSource.putNewAnswerToReturn)

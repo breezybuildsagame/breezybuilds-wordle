@@ -40,33 +40,10 @@ extension GameSceneBoard
         
         var body: some View
         {
-            let backgroundColor: Color = {
-                switch(state)
-                {
-                    case .close: return Color.ui.tertiary
-                    case .correct: return Color.ui.secondary
-                    case .incorrect: return Color.ui.error
-                    default: return Color.clear
-                }
-            }()
-            
-            return ZStack
-            {
-                if let letter = letter
-                {
-                    Text(letter)
-                        .font(Font.custom("Roboto-Bold", size: sceneDimensions.height * (35.0 / idealFrameHeight())))
-                        .foregroundColor(.ui.onPrimary)
-                }
-            }
-            .frame(
-                width: sceneDimensions.height * (61.0 / idealFrameHeight()),
-                height: sceneDimensions.height * (61.0 / idealFrameHeight())
-            )
-            .background(backgroundColor)
-            .border(
-                Color.ui.error,
-                width: sceneDimensions.height * (state != .hidden ? 0.0 : 2.0 / idealFrameHeight())
+            CoreTile(
+                letter: letter,
+                size: 61.0,
+                state: CoreTile.State(rawValue: state.name) ?? CoreTile.State.Hidden
             )
         }
         

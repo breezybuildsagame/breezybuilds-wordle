@@ -82,6 +82,22 @@ class GameNavigationHandlerTests
         assertEquals(expectedDirection, appNavigator.navigatedDirection)
     }
 
+    @Test
+    fun `When the onHelpOptionClicked method is invoked - the AppNavigationHandler navigate method is invoked - passing in expected route and direction parameters`()
+    {
+        // given
+        val expectedAppRoute = AppRoute.HELP
+        val expectedDirection = NavigationDirection.INSTANT
+        val sut = GameNavigationHandler()
+
+        // when
+        sut.onHelpOptionClicked()
+
+        // then
+        assertEquals(expectedAppRoute, appNavigator.navigatedRoute)
+        assertEquals(expectedDirection, appNavigator.navigatedDirection)
+    }
+
     class MockAppNavigator: AppNavigationHandleable
     {
         var navigatedRoute: AppRoute? = null

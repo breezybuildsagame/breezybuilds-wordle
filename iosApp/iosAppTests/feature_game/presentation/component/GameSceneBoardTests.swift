@@ -27,9 +27,9 @@ final class GameSceneBoardTests: XCTestCase
         dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
         
         // then
-        XCTAssertNoThrow(try sut.inspect().zStack())
-        XCTAssertEqual(expectedSize, try sut.inspect().zStack().fixedWidth())
-        XCTAssertEqual(expectedSize, try sut.inspect().zStack().fixedHeight())
+        XCTAssertNoThrow(try sut.inspect().find(CoreTile.self).zStack())
+        XCTAssertEqual(expectedSize, try sut.inspect().find(CoreTile.self).zStack().fixedWidth())
+        XCTAssertEqual(expectedSize, try sut.inspect().find(CoreTile.self).zStack().fixedHeight())
     }
     
     func test_when_hidden_tile_appears__view_matches_design_requirements()
@@ -45,8 +45,8 @@ final class GameSceneBoardTests: XCTestCase
         dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
         
         // then
-        XCTAssertEqual(expectedBorderSize, try sut.inspect().zStack().border(Color.self).width)
-        XCTAssertEqual(Color.clear, try sut.inspect().zStack().background().color().value())
+        XCTAssertEqual(expectedBorderSize, try sut.inspect().find(CoreTile.self).zStack().border(Color.self).width)
+        XCTAssertEqual(Color.clear, try sut.inspect().find(CoreTile.self).zStack().background().color().value())
     }
     
     func test_when_tile_with_letter_appears__view_matches_design_requirements() throws
@@ -80,8 +80,8 @@ final class GameSceneBoardTests: XCTestCase
         dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
         
         // then
-        XCTAssertEqual(0, try sut.inspect().zStack().border(Color.self).width)
-        XCTAssertEqual(.ui.error, try sut.inspect().zStack().background().color().value())
+        XCTAssertEqual(0, try sut.inspect().find(CoreTile.self).zStack().border(Color.self).width)
+        XCTAssertEqual(.ui.error, try sut.inspect().find(CoreTile.self).zStack().background().color().value())
     }
     
     func test_when_close_tile_appears__view_matches_design_requirements()
@@ -96,8 +96,8 @@ final class GameSceneBoardTests: XCTestCase
         dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
         
         // then
-        XCTAssertEqual(0, try sut.inspect().zStack().border(Color.self).width)
-        XCTAssertEqual(.ui.tertiary, try sut.inspect().zStack().background().color().value())
+        XCTAssertEqual(0, try sut.inspect().find(CoreTile.self).zStack().border(Color.self).width)
+        XCTAssertEqual(.ui.tertiary, try sut.inspect().find(CoreTile.self).zStack().background().color().value())
     }
     
     func test_when_correct_tile_appears__view_matches_design_requirements()
@@ -112,8 +112,8 @@ final class GameSceneBoardTests: XCTestCase
         dimensions.setDimensions(width: mockFrame().width, height: mockFrame().height)
         
         // then
-        XCTAssertEqual(0, try sut.inspect().zStack().border(Color.self).width)
-        XCTAssertEqual(.ui.secondary, try sut.inspect().zStack().background().color().value())
+        XCTAssertEqual(0, try sut.inspect().find(CoreTile.self).zStack().border(Color.self).width)
+        XCTAssertEqual(.ui.secondary, try sut.inspect().find(CoreTile.self).zStack().background().color().value())
     }
     
     func test_when_view_appears_with_Rows__view_matches_design_requirements() throws

@@ -21,7 +21,6 @@ class CachedCompletedGame(): RealmObject
     @Index
     var date: Long = 0L
 
-    var answer: Answer = Answer(word = Word(word = this.word), isCurrent = false)
     var isCurrent = false
     var playerGuessedCorrectly = false
     var playerGuesses: RealmList<String> = realmListOf()
@@ -31,7 +30,6 @@ class CachedCompletedGame(): RealmObject
         val guessesList = realmListOf<String>()
         game.playerGuesses().forEach { guessesList.add("${it.word()}") }
 
-        this.answer = game.answer()
         this.date = game.date()
         this.playerGuesses = guessesList
         this.playerGuessedCorrectly = game.answer().playerGuessedCorrectly() ?: false

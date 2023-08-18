@@ -25,11 +25,16 @@ class GameSceneHandler: ObservableObject
         willSet { Task { await MainActor.run { objectWillChange.send() } } }
     }
     
-    private let viewModel = GameSceneViewModel()
+    private var viewModel: GameSceneViewModelRepresentable!
+    
+    init(viewModel: GameSceneViewModelRepresentable? = nil)
+    {
+        self.viewModel = viewModel ?? GameSceneViewModel()
+    }
     
     func setUp()
     {
-        viewModel.setUp(handler: self) { _ in self.getGameBoard() }
+        viewModel.setUp(gameSceneHandler: self) { _ in self.getGameBoard() }
     }
     
     private func getGameBoard()
