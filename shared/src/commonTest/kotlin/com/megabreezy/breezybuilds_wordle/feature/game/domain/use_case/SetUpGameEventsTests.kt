@@ -440,7 +440,7 @@ class SetUpGameEventsTests: KoinComponent
         val keysInUse = listOf(
             getKey(letters = "T"), getKey(letters = "R"), getKey(letters = "E"), getKey(letters = "A"), getKey(letters = "T")
         )
-        val expectedAnnouncementMessage = "Game Over"
+        val expectedAnnouncementMessage = runBlocking { "Game Over - correct answer: " + GameUseCase().getGameAnswer().word() }
 
         // when
         for (round in gameBoard.rows())
