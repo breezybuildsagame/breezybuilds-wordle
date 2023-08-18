@@ -4,10 +4,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.test.SemanticsMatcher
+import androidx.compose.ui.test.assertContentDescriptionEquals
 import androidx.compose.ui.test.assertHeightIsEqualTo
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.assertWidthIsEqualTo
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onChild
+import androidx.compose.ui.test.onChildAt
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.unit.Dp
@@ -27,6 +31,14 @@ class HelpSheetComposableTests
 {
     @get:Rule
     val composeTestRule = createComposeRule()
+
+    val mockTiles: List<@Composable () -> Unit> = listOf(
+        { HelpSheetComposable.Tile.Component(options = HelpSheetComposable.Tile.ComponentOptions(letter = "T", state = HelpSheet.Tile.State.CORRECT)) },
+        { HelpSheetComposable.Tile.Component(options = HelpSheetComposable.Tile.ComponentOptions(letter = "E", state = HelpSheet.Tile.State.HIDDEN)) },
+        { HelpSheetComposable.Tile.Component(options = HelpSheetComposable.Tile.ComponentOptions(letter = "S", state = HelpSheet.Tile.State.HIDDEN)) },
+        { HelpSheetComposable.Tile.Component(options = HelpSheetComposable.Tile.ComponentOptions(letter = "T", state = HelpSheet.Tile.State.HIDDEN)) },
+        { HelpSheetComposable.Tile.Component(options = HelpSheetComposable.Tile.ComponentOptions(letter = "S", state = HelpSheet.Tile.State.HIDDEN)) },
+    )
 
     @Test
     fun test_when_tile_appears__view_matches_design_requirements()
@@ -171,6 +183,37 @@ class HelpSheetComposableTests
             HelpSheet.Tile.State.CORRECT -> MaterialTheme.colorScheme.secondary
             HelpSheet.Tile.State.INCORRECT -> MaterialTheme.colorScheme.error
             else -> Color.Transparent
+        }
+    }
+
+    @Test
+    fun test_when_Example_initialized_with_tiles__expected_Row_is_displayed()
+    {
+        // given
+        val expectedTiles = mockTiles
+
+        // when
+        composeTestRule.setContent()
+        {
+            SceneMock.display()
+            {
+                HelpSheetComposable.Example.Component(
+                    options = HelpSheetComposable.Example.ComponentOptions(
+                        tiles = mockTiles
+                    )
+                )
+            }
+        }
+        val displayedExample = composeTestRule.onNodeWithContentDescription(
+            "${HelpSheetComposable.TagName.EXAMPLE}", useUnmergedTree = true)
+
+        // then
+        displayedExample.assertExists()
+
+        "TESTS".forEachIndexed()
+        { index, character ->
+            displayedExample.onChildAt(index = 0).onChildAt(index = index).assertContentDescriptionEquals("${HelpSheetComposable.TagName.TILE}")
+            displayedExample.onChildAt(index = 0).onChildAt(index = index).onChild().assertTextEquals("$character")
         }
     }
 }
